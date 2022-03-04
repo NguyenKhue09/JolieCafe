@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/JolieCafe/app/src/main/res/font/fonts.xml" value="0.3046875" />
+        <entry key="..\:/JolieCafe/app/src/main/res/layout-v28/activity_login.xml" value="0.27447916666666666" />
+        <entry key="..\:/JolieCafe/app/src/main/res/layout/activity_login.xml" value="0.27447916666666666" />
         <entry key="..\:/JolieCafe/app/src/main/res/layout/activity_main.xml" value="0.25" />
       </map>
     </option>

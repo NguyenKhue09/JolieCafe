@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:background="#291b11"
+    tools:context=".ui.login.LoginActivity">
+
+    <TextView
+        android:id="@+id/tvAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/festive_regular"
+        android:text="@string/app_name"
+        android:textColor="#e4e4e4"
+        android:textSize="75sp" />
+
+    <TextView
+        android:id="@+id/tvSignin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvAppName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="90dp"
+        android:fontFamily="@font/raleway_variable_font_wght"
+        android:textFontWeight = '700'
+        android:text="@string/sing_in"
+        android:textColor="#bc834b"
+        android:textSize="24sp"
+        tools:targetApi="p" />
+
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/username"
+        android:textColor="#e4e4e4"
+        android:fontFamily="@font/raleway_variable_font_wght"
+        android:layout_marginTop="32dp"
+        android:layout_below="@id/tvSignin"
+        android:textSize="16sp"
+        />
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/etUserName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvUsername"
+        android:backgroundTint="#ffffff"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:inputType="textEmailAddress"/>
+
+    <TextView
+        android:id="@+id/tvPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/password"
+        android:textColor="#e4e4e4"
+        android:fontFamily="@font/raleway_variable_font_wght"
+        android:layout_marginTop="24dp"
+        android:layout_below="@id/etUserName"
+        android:textSize="16sp"
+        />
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvPassword"
+        android:backgroundTint="#ffffff"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:inputType="textPassword"/>
+
+    <TextView
+        android:id="@+id/tvForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/forgot_password"
+        android:textColor="#e7a15c"
+        android:fontFamily="@font/raleway_variable_font_wght"
+        android:layout_marginTop="12dp"
+        android:layout_below="@id/etPassword"
+        android:textSize="16sp"
+        />
+
+</RelativeLayout>
