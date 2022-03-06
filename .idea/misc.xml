@@ -5,6 +5,14 @@
       <map>
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout-v28/activity_login.xml" value="0.16799999999999998" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/circle_shape.xml" value="0.176" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1795" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/rounded_shape.xml" value="0.169" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/activity_forgot_password.xml" value="0.23738738738738738" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/activity_login.xml" value="0.4" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/activity_main.xml" value="0.23468468468468467" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/activity_sign_up.xml" value="0.4" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/fragment_home.xml" value="0.23738738738738738" />
         <entry key="..\:/JolieCafe/app/src/main/res/layout/activity_main.xml" value="0.25" />
       </map>
     </option>
