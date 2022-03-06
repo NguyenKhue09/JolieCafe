@@ -1,4 +1,4 @@
-package com.nt118.joliecafe.ui.login
+package com.nt118.joliecafe.ui.activities.login
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
