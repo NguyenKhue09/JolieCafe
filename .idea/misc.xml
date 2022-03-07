@@ -6,9 +6,16 @@
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/bottom_nav_icon_color.xml" value="0.169" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/bottom_navigation_custion_bg.xml" value="0.169" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/bottom_navigation_custom_bg.xml" value="0.138" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/ic_cart.xml" value="0.141" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/ic_favorite.xml" value="0.2115" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/ic_favorite_white_24dp.xml" value="0.141" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/ic_heart.xml" value="0.141" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/ic_heart_fill.xml" value="0.2115" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/ic_home.xml" value="0.141" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/ic_home_white_24dp.xml" value="0.141" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/ic_profile.xml" value="0.141" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/item_image_custom_bg.xml" value="0.233" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/item_row_layout_custom_bg.xml" value="0.233" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout-v28/activity_login.xml" value="0.16799999999999998" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/activity_main.xml" value="0.176" />
@@ -16,6 +23,7 @@
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/fragment_home.xml" value="0.16983695652173914" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/fragment_notifications.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/fragment_profile.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/item_row_layout.xml" value="0.536" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/circle_shape.xml" value="0.176" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1795" />
