@@ -5,6 +5,11 @@
       <map>
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout-v28/activity_login.xml" value="0.16799999999999998" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/activity_main.xml" value="0.176" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/fragment_dashboard.xml" value="0.16983695652173914" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/fragment_home.xml" value="0.16983695652173914" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/fragment_notifications.xml" value="0.25" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/circle_shape.xml" value="0.176" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1795" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/rounded_shape.xml" value="0.169" />
