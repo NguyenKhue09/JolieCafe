@@ -1,4 +1,4 @@
-package com.nt118.joliecafe.ui.dashboard
+package com.nt118.joliecafe.ui.fragments.favorite
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.nt118.joliecafe.databinding.FragmentDashboardBinding
+import com.nt118.joliecafe.databinding.FragmentFavoriteBinding
+import com.nt118.joliecafe.viewmodels.FavoriteViewModel
 
-class DashboardFragment : Fragment() {
+class FavoriteFragment : Fragment() {
 
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentFavoriteBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -23,9 +24,9 @@ class DashboardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
+            ViewModelProvider(this).get(FavoriteViewModel::class.java)
 
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val textView: TextView = binding.textDashboard
