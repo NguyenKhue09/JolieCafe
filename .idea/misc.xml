@@ -12,7 +12,10 @@
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/activity_login.xml" value="0.4" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/activity_main.xml" value="0.23468468468468467" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/activity_sign_up.xml" value="0.4" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/fragment_dashboard.xml" value="0.1" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/fragment_home.xml" value="0.23738738738738738" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/fragment_notifications.xml" value="0.1" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
         <entry key="..\:/JolieCafe/app/src/main/res/layout/activity_main.xml" value="0.25" />
       </map>
     </option>

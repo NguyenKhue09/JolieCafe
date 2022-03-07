@@ -79,8 +79,8 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
 
     // Coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
 
     // Lifecycle
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
