@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/bottom_nav_icon_color.xml" value="0.169" />
+        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/bottom_navigation_custion_bg.xml" value="0.169" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout-v28/activity_login.xml" value="0.16799999999999998" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/activity_main.xml" value="0.176" />
