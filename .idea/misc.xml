@@ -3,21 +3,22 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/bottom_nav_icon_color.xml" value="0.169" />
-        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/bottom_navigation_custion_bg.xml" value="0.169" />
-        <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/drawable/bottom_navigation_custom_bg.xml" value="0.138" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout-v28/activity_login.xml" value="0.16799999999999998" />
         <entry key="..\:/AndroidStudioProjects/JolieCafe/app/src/main/res/layout/activity_login.xml" value="0.25" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/circle_shape.xml" value="0.176" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1795" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/ic_notification.xml" value="0.1795" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/rounded_shape.xml" value="0.169" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/drawable/searchview_background.xml" value="0.1795" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/activity_forgot_password.xml" value="0.23738738738738738" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/activity_login.xml" value="0.4" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/activity_main.xml" value="0.23468468468468467" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/activity_sign_up.xml" value="0.4" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/fragment_dashboard.xml" value="0.1" />
-        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/fragment_home.xml" value="0.23738738738738738" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/fragment_home.xml" value="0.264" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/fragment_notifications.xml" value="0.1" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/item_slide_home.xml" value="0.22387387387387386" />
+        <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/layout/toobar_home.xml" value="0.536" />
         <entry key="..\:/DoAnApp/JolieCafe/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
         <entry key="..\:/JolieCafe/app/src/main/res/layout/activity_main.xml" value="0.25" />
       </map>
