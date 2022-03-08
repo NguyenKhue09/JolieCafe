@@ -52,7 +52,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabLayoutFavorite"
-        android:layout_marginTop="25dp">
+        android:layout_marginTop="10dp"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_row_layout">
 
     </androidx.recyclerview.widget.RecyclerView>
 

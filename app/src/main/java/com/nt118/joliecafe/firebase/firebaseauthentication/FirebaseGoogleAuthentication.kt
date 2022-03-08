@@ -10,6 +10,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,24 +25,34 @@ class FirebaseGoogleAuthentication {
         mAuth.signOut()
         mGoogleSignInClient.signOut().addOnCompleteListener(activity,
             OnCompleteListener<Void?> { })
-        Toast.makeText(activity, "Google sign out: ${mAuth.currentUser}", Toast.LENGTH_LONG).show()
     }
 
     fun googleAuthForFirebase(account: GoogleSignInAccount, activity: Activity) {
         val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                mAuth.signInWithCredential(credentials).await()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(activity, e.message, Toast.LENGTH_LONG).show()
+        try {
+            mAuth.signInWithCredential(credentials).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(activity, "Google sign in successfully", Toast.LENGTH_LONG)
+                        .show()
+                    when(activity) {
+                        is LoginActivity -> {
+                            activity.navigateToMainScreen()
+                        }
+                    }
+                } else {
+                    Toast.makeText(activity, "Google sign in failed", Toast.LENGTH_LONG).show()
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(activity, e.message, Toast.LENGTH_LONG).show()
         }
     }
 
-    fun loginGoogle(loginGGRequest: ActivityResultLauncher<Intent>, mGoogleSignInClient: GoogleSignInClient) {
+    fun loginGoogle(
+        loginGGRequest: ActivityResultLauncher<Intent>,
+        mGoogleSignInClient: GoogleSignInClient
+    ) {
         mGoogleSignInClient.signInIntent.also {
             loginGGRequest.launch(it)
         }
@@ -52,7 +63,7 @@ class FirebaseGoogleAuthentication {
             Log.d("CurrentUser", true.toString())
             return true
         } else {
-            Log.d("CurrentUser", true.toString())
+            Log.d("CurrentUser", false.toString())
         }
         return false
     }
