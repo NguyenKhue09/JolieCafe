@@ -4,20 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.favorite.FavoriteFragment"
-    android:background="@color/grey_primary">
+    android:background="@color/grey_primary"
+    tools:context=".ui.fragments.favorite.FavoriteFragment">
 
     <TextView
-        android:id="@+id/text_dashboard"
-        android:layout_width="match_parent"
+        android:id="@+id/text_favorite_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="24dp"
+        android:fitsSystemWindows="true"
+        android:fontFamily="@font/montserrat_regular"
+        android:text="@string/favorite_screen_title"
         android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/grey_primary_variant"
+        android:textSize="25sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutFavorite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_favorite_title"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="@color/grey_primary_variant"
+        android:textAlignment="textStart"
+        app:tabIndicatorColor="@color/grey_primary_variant"
+        android:layout_marginTop="25dp"
+        app:tabPaddingStart="10dp"
+        app:tabMinWidth="10dp"
+        app:tabMaxWidth="90dp"
+        app:tabContentStart="30dp"
+        app:tabTextColor="@color/text_color"
+        app:tabTextAppearance="@style/MyCustomTabTextAppearance">
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favorite_item_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayoutFavorite"
+        android:layout_marginTop="25dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

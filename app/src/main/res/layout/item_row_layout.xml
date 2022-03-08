@@ -116,7 +116,6 @@
                 app:layout_constraintBottom_toBottomOf="@+id/item_img"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/item_img">
-
             </ImageView>
 
 
