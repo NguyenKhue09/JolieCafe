@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="15dp">
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp"
+    android:paddingTop="15dp">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/item_card"
@@ -41,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:fontFamily="@font/raleway_variable_font_wght"
+                android:fontFamily="@font/montserrat_regular"
                 android:text="@string/item_name"
                 android:textColor="@color/text_color"
                 android:textSize="16sp"
