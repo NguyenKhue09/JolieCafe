@@ -14,4 +14,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_profile">Profile</string>
+    <string name="item_name">Latte</string>
+    <string name="item_price">90.0000 VND</string>
+    <string name="item_favorite">5</string>
+    <string name="dot_center_vertical">•</string>
+    <string name="favorite_screen_title">Favorite</string>
 </resources>
