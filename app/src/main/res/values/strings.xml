@@ -9,10 +9,10 @@
     <string name="sing_in">SIGN IN</string>
     <string name="intro_forgot_password">No worries! Enter your email address and we\'ll help you reset your password.</string>
 
-    <string name="facebook_app_id">665952998072748</string>
-    <string name="fb_login_protocol_scheme">fb665952998072748</string>
+    <string name="facebook_app_id">535573224495202</string>
+    <string name="fb_login_protocol_scheme">fb535573224495202</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment">Logout</string>
     <string name="title_profile">Profile</string>
     <string name="order">order</string>
     <string name="edit">Edit</string>

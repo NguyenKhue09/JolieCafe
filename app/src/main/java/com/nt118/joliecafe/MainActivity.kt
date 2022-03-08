@@ -1,5 +1,6 @@
 package com.nt118.joliecafe
 
+import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.nt118.joliecafe.databinding.ActivityMainBinding
+import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseGoogleAuthentication
+import com.nt118.joliecafe.ui.activities.login.LoginActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +31,14 @@ class MainActivity : AppCompatActivity() {
 
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
+        println(FirebaseAuth.getInstance().currentUser?.displayName)
+        println(currentUser?.displayName)
+        if (!FirebaseGoogleAuthentication().checkUser()) {
+            println("Không user")
+            startActivity(Intent(this, LoginActivity::class.java))
+        } else {
+            println("Có user")
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        //setupActionBarWithNavController(mNavController, appBarConfiguration)
+        //setupActionBarWithNavController(mNavController, appBarConfiguration) remove actionbar
         navView.setupWithNavController(mNavController)
     }
 
