@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:paddingStart="15dp"
-    android:paddingEnd="15dp"
-    android:paddingTop="15dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="15dp">
+
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/item_card"
@@ -43,7 +42,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:fontFamily="@font/montserrat_regular"
+                android:fontFamily="@font/raleway_variable_font_wght"
                 android:text="@string/item_name"
                 android:textColor="@color/text_color"
                 android:textSize="16sp"
@@ -84,12 +83,11 @@
             </TextView>
 
             <TextView
-                android:id="@+id/item_favorite"
+                android:id="@+id/item_bestsaller"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat_regular"
                 android:paddingBottom="0dp"
-                android:text="@string/item_favorite"
                 android:textColor="@color/text_color"
                 android:textSize="16sp"
                 android:layout_marginStart="3dp"
@@ -103,22 +101,47 @@
                 android:layout_height="15dp"
                 android:layout_marginStart="3dp"
                 android:src="@drawable/ic_favorite"
-                app:layout_constraintBottom_toBottomOf="@+id/item_favorite"
-                app:layout_constraintStart_toEndOf="@+id/item_favorite"
-                app:layout_constraintTop_toTopOf="@+id/item_favorite">
+                app:layout_constraintBottom_toBottomOf="@+id/item_bestsaller"
+                app:layout_constraintStart_toEndOf="@+id/item_bestsaller"
+                app:layout_constraintTop_toTopOf="@+id/item_bestsaller">
 
             </ImageView>
 
-            <ImageView
-                android:id="@+id/btn_favorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+
+
+            <androidx.cardview.widget.CardView
                 android:layout_marginEnd="15dp"
-                android:src="@drawable/ic_heart_fill"
                 app:layout_constraintBottom_toBottomOf="@+id/item_img"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/item_img">
-            </ImageView>
+                app:layout_constraintTop_toTopOf="@+id/item_img"
+                app:cardCornerRadius="15dp"
+                android:layout_width="85dp"
+                android:layout_height="41dp">
+
+                <RelativeLayout
+                    android:background="@color/grey_primary_variant"
+                    android:padding="12dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="48dp"
+                        android:src="@drawable/ic_cart"
+                        android:layout_centerVertical="true"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:text="Add"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

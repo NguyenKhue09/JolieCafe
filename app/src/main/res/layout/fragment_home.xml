@@ -20,6 +20,7 @@
         android:layout_alignParentBottom="true">
 
         <RelativeLayout
+            android:id="@+id/sliderHome"
             android:layout_width="match_parent"
             android:layout_height="139dp">
 
@@ -42,7 +43,42 @@
             app:dotsWidthFactor="2.5"
             app:selectedDotColor="@color/grey_primary_variant"
             />
-        </RelativeLayout>
 
+            <TextView
+                android:layout_marginTop="27dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvCategories"
+                android:text="Categories"
+                android:textColor="@color/grey_primary_variant"
+                android:textSize="19sp"
+                android:layout_below="@id/dots_indicator"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/tvCategories"
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvBestSellers"
+                android:text="Best sellers"
+                android:textColor="@color/grey_primary_variant"
+                android:textSize="19sp"
+                android:layout_below="@id/recyclerView"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_below="@id/tvBestSellers"
+                android:id="@+id/recyclerViewBestSeller"
+                tools:itemCount="5"
+                tools:listitem="@layout/item_rv_bestsaller"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
