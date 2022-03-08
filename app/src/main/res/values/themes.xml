@@ -15,7 +15,13 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowBackground">@color/grey_primary</item>
         <!-- Customize your theme here. -->
+    </style>
 
+    <style name="MyCustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="fontFamily">@font/raleway_variable_font_wght</item>
+        <item name="android:fontFamily">@font/raleway_variable_font_wght</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="RegularText" parent="Theme.JolieCafe">
