@@ -8,12 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.nt118.joliecafe.R
+import com.nt118.joliecafe.adapter.BestSallerAdapter
+import com.nt118.joliecafe.adapter.CategorieAdapter
 import com.nt118.joliecafe.databinding.FragmentHomeBinding
+import com.nt118.joliecafe.models.CategorieModel
 import com.nt118.joliecafe.viewmodels.HomeViewModel
 import kotlin.math.abs
 
@@ -85,6 +89,18 @@ class HomeFragment : Fragment() {
         // change color search view
 
 
+        // RecyclerView Categories
+        val recyclerView = binding.recyclerView
+        val categorieAdapter = CategorieAdapter(fetData())
+        recyclerView.layoutManager = GridLayoutManager(context,4)
+        recyclerView.adapter = categorieAdapter
+
+        // RecyclerView Best Saller
+        val recyclerViewBS = binding.recyclerViewBestSeller
+        val bestSallerAdapter = BestSallerAdapter(fetDataBestSaler())
+        recyclerViewBS.layoutManager = GridLayoutManager(context,1)
+        recyclerViewBS.adapter = bestSallerAdapter
+
         return root
     }
 
@@ -110,4 +126,28 @@ class HomeFragment : Fragment() {
         super.onResume()
         sliderHandle.postDelayed(sliderRunnable, 3000)
     }
+
+    private fun fetData() : ArrayList<CategorieModel>{
+        val item = ArrayList<CategorieModel>()
+
+        item.add(CategorieModel("All",R.drawable.ic_star))
+        item.add(CategorieModel("Coffee",R.drawable.ic_coffee))
+        item.add(CategorieModel("Tea",R.drawable.ic_leaf))
+        item.add(CategorieModel("Juice",R.drawable.ic_watermelon))
+        item.add(CategorieModel("Pastry",R.drawable.ic_croissant_svgrepo_com))
+        item.add(CategorieModel("Coffee",R.drawable.ic_coffee))
+        item.add(CategorieModel("Coffee",R.drawable.ic_coffee))
+        item.add(CategorieModel("More",R.drawable.ic_coffee))
+
+        return  item
+    }
+
+    private fun fetDataBestSaler() : ArrayList<String> {
+        val item = ArrayList<String>()
+        for (i in 0 until 5) {
+            item.add("$i")
+        }
+        return item
+    }
+
 }
