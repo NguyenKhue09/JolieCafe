@@ -17,4 +17,8 @@
     <string name="order">order</string>
     <string name="edit">Edit</string>
     <string name="tea">Tea</string>
+    <string name="coffee">Coffee</string>
+    <string name="cart_is_empty">Cart is empty</string>
+    <string name="your_cart_is_empty">Your cart is empty!</string>
+    <string name="havent_add_anything">You haven\'t added anything yet.</string>
 </resources>

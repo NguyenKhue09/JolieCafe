@@ -8,11 +8,40 @@
     tools:context=".ui.fragments.cart.CartFragment"
     android:background="@color/grey_primary">
 
+    <LinearLayout
+        android:id="@+id/header1"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/BigText"
+            android:text="My cart ("
+            android:textColor="@color/text_color_2"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/BigNumber"
+            android:textColor="@color/text_color_2"
+            android:text="0"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/BigText"
+            android:textColor="@color/text_color_2"
+            android:text=" item)"/>
+
+
+    </LinearLayout>
+
     <FrameLayout
-        android:id="@+id/header"
+        android:id="@+id/header2"
+        android:layout_below="@id/header1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:visibility="gone">
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -32,11 +61,12 @@
 
     <ScrollView
         android:id="@+id/container"
-        android:layout_below="@id/header"
+        android:layout_below="@id/header2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/footer"
-        android:layout_marginBottom="19dp">
+        android:layout_marginBottom="19dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -54,7 +84,7 @@
                 app:cardCornerRadius="9dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/CartViewPadding"
                     android:orientation="vertical">
@@ -87,7 +117,38 @@
                 app:cardCornerRadius="9dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/CartViewPadding"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/RegularCheckBox"
+                        android:text="@string/coffee"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="2"
+                        tools:listitem="@layout/item_cart" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_shape"
+                android:backgroundTint="#4B413A"
+                style="@style/CardView"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="9dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/CartViewPadding"
                     android:orientation="vertical">
@@ -118,38 +179,7 @@
                 app:cardCornerRadius="9dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/CartViewPadding"
-                    android:orientation="vertical">
-
-                    <CheckBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="@style/RegularCheckBox"
-                        android:text="@string/tea"/>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:itemCount="2"
-                        tools:listitem="@layout/item_cart" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_shape"
-                android:backgroundTint="#4B413A"
-                style="@style/CardView"
-                android:layout_marginBottom="15dp"
-                app:cardCornerRadius="9dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="@style/CartViewPadding"
                     android:orientation="vertical">
@@ -181,14 +211,37 @@
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="58dp"
+        android:visibility="gone">
 
-        <TextView
-            style="@style/RegularText"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="Total: 990.000 VND" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/RegularText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Total: " />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/RegularNumber"
+                android:layout_gravity="center_vertical"
+                android:text="990.000"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/BigText"
+                android:layout_gravity="center_vertical"
+                android:text=" VND"/>
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/btn_order"
@@ -200,5 +253,36 @@
             app:backgroundTint="@color/grey_primary_variant" />
 
     </FrameLayout>
-    
+
+    <LinearLayout
+        android:id="@+id/empty_cart_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:contentDescription="@string/cart_is_empty"
+            android:src="@drawable/cart" />
+
+        <TextView
+            style="@style/BigText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:text="@string/your_cart_is_empty" />
+
+        <TextView
+            style="@style/SmallText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/havent_add_anything"
+            android:textColor="@color/dark_text_color" />
+
+
+    </LinearLayout>
+
 </RelativeLayout>
