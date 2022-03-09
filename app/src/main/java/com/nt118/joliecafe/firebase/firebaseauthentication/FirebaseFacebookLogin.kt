@@ -34,9 +34,7 @@ class FirebaseFacebookLogin {
             override fun onError(error: FacebookException) {
                 println("facebook:onError")
             }
-        }).also {
-
-        }
+        })
     }
 
     private fun handleFacebookAccessToken(token: AccessToken, activity: Activity, auth: FirebaseAuth) {

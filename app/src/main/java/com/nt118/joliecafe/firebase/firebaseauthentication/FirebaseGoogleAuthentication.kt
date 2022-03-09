@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
+import com.nt118.joliecafe.ui.activities.login.SignUpActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,6 +37,9 @@ class FirebaseGoogleAuthentication {
                         .show()
                     when(activity) {
                         is LoginActivity -> {
+                            activity.navigateToMainScreen()
+                        }
+                        is SignUpActivity -> {
                             activity.navigateToMainScreen()
                         }
                     }
