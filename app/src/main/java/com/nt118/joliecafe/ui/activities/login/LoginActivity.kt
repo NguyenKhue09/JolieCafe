@@ -86,6 +86,7 @@ class LoginActivity : AppCompatActivity() {
         // handle click open Sign Up
         binding.tvCreateAccount.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
+            finish()
         }
 
         // Google Signin
