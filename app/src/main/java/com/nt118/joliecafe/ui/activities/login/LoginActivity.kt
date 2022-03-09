@@ -16,7 +16,8 @@ import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseFacebookLogin
 
 class LoginActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityLoginBinding
+    private var _binding: ActivityLoginBinding? = null
+    private val  binding get() = _binding!!
     private lateinit var facebookLogin: FirebaseFacebookLogin
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +28,7 @@ class LoginActivity : AppCompatActivity() {
         setAdvertiserIDCollectionEnabled(true)
         facebookLogin = FirebaseFacebookLogin()
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
+        _binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.imgFb.setOnClickListener {
@@ -82,5 +83,10 @@ class LoginActivity : AppCompatActivity() {
         spannableString.setSpan(bColor,19,31,Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
 
         tvCreateAccount.text = spannableString
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
