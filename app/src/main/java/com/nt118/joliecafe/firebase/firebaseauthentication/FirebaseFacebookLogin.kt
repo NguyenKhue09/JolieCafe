@@ -17,7 +17,7 @@ class FirebaseFacebookLogin {
     fun facebookLogin(activity: Activity, callbackManager: CallbackManager, auth: FirebaseAuth) {
         LoginManager.getInstance().logInWithReadPermissions(
             activity = activity,
-            listOf("email", "public_profile")
+            listOf("email", "public_profile", "user_friends")
         )
         println("Facebook Login")
         LoginManager.getInstance().registerCallback(callbackManager, object :
@@ -32,7 +32,7 @@ class FirebaseFacebookLogin {
             }
 
             override fun onError(error: FacebookException) {
-                println("facebook:onError")
+                println("facebook:onError: ${error.message}")
             }
         })
     }
