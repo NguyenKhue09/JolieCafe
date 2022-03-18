@@ -63,17 +63,10 @@ class SignUpActivity : AppCompatActivity() {
         onClick()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        // Pass the activity result back to the Facebook SDK
-        callbackManager.onActivityResult(requestCode, resultCode, data)
-    }
-
     private fun onClick() {
         // FaceBook Login
         binding.imgFb.setOnClickListener {
-            facebookLogin.facebookLogin(this, callbackManager, auth)
+            facebookLogin.facebookLogin(this, callbackManager, auth, this)
         }
 
         // Google Signin

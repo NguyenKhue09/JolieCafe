@@ -1,7 +1,10 @@
 package com.nt118.joliecafe.firebase.firebaseauthentication
 
 import android.app.Activity
+import android.content.Context
 import android.widget.Toast
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.ActivityResultRegistryOwner
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -14,9 +17,15 @@ import com.nt118.joliecafe.ui.activities.login.LoginActivity
 
 
 class FirebaseFacebookLogin {
-    fun facebookLogin(activity: Activity, callbackManager: CallbackManager, auth: FirebaseAuth) {
+    fun facebookLogin(
+        activity: Activity,
+        callbackManager: CallbackManager,
+        auth: FirebaseAuth,
+        context: Context
+    ) {
         LoginManager.getInstance().logInWithReadPermissions(
-            activity = activity,
+            context as ActivityResultRegistryOwner,
+            callbackManager,
             listOf("email", "public_profile", "user_friends")
         )
         println("Facebook Login")
