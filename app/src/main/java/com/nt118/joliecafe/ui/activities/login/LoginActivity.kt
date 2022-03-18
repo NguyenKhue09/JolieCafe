@@ -64,7 +64,7 @@ class LoginActivity : AppCompatActivity() {
     private fun onClick() {
         // FaceBook Login
         binding.imgFb.setOnClickListener {
-            facebookLogin.facebookLogin(this, callbackManager, auth, this)
+            facebookLogin.facebookLogin(callbackManager, auth, this)
         }
 
 

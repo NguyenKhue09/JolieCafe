@@ -18,7 +18,6 @@ import com.nt118.joliecafe.ui.activities.login.LoginActivity
 
 class FirebaseFacebookLogin {
     fun facebookLogin(
-        activity: Activity,
         callbackManager: CallbackManager,
         auth: FirebaseAuth,
         context: Context
@@ -33,7 +32,7 @@ class FirebaseFacebookLogin {
             FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult) {
                 println("facebook:onSuccess:$result")
-                handleFacebookAccessToken(result.accessToken, activity, auth)
+                handleFacebookAccessToken(result.accessToken, context as Activity, auth)
             }
 
             override fun onCancel() {
