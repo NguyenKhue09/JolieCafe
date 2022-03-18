@@ -28,7 +28,7 @@
         android:text="@string/sing_in"
         android:textColor="#bc834b"
         android:textSize="24sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvUsername"
@@ -101,16 +101,16 @@
         />
 
     <TextView
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:id="@+id/tvOr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/btnLogin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/raleway_variable_font_wght"
         android:text="--- OR ---"
         android:textColor="#ffffff"
-        android:textSize="16sp"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/tvOr"
-        android:layout_below="@+id/btnLogin"
-        android:layout_marginTop="20dp"/>
+        android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/groupIcon"
