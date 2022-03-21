@@ -10,13 +10,31 @@ import com.nt118.joliecafe.R
 import com.nt118.joliecafe.models.CategorieModel
 
 class CategorieAdapter(private val item : ArrayList<CategorieModel>) : RecyclerView.Adapter<CategorieAdapter.ViewHolder>() {
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    class ViewHolder(itemView: View, listener: onItemClickListener) : RecyclerView.ViewHolder(itemView){
         val tvCart: TextView = itemView.findViewById(R.id.tvCart)
         val imgCart : ImageView = itemView.findViewById(R.id.imgCart)
+        init {
+            itemView.setOnClickListener {
+                listener.onItemClick(absoluteAdapterPosition)
+            }
+        }
     }
 
+
+    private lateinit var mlistener: onItemClickListener
+
+    interface onItemClickListener{
+        fun onItemClick(position: Int)
+    }
+
+    fun setOnClickListener(listener: onItemClickListener){
+        mlistener = listener
+    }
+
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_rv_categories,parent,false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_rv_categories,parent,false),mlistener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
