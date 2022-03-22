@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.CategorieAdapter
+import com.nt118.joliecafe.adapter.ProductAdapter
 import com.nt118.joliecafe.databinding.ActivityProductsBinding
 import com.nt118.joliecafe.models.CategorieModel
-import com.nt118.joliecafe.ui.fragments.home.HomeFragment
 
 class products : AppCompatActivity() {
     private var _binding: ActivityProductsBinding? = null
@@ -43,6 +43,17 @@ class products : AppCompatActivity() {
 
             }
         })
+
+        // RecyclerView product
+        val recyclerViewProduct = binding.recyclerViewProduct
+        val productAdapter = ProductAdapter(fetDataBestSaler())
+        recyclerViewProduct.layoutManager = GridLayoutManager(this,2)
+        recyclerViewProduct.adapter = productAdapter
+        productAdapter.setOnClickListener(object : ProductAdapter.onItemClickListener{
+            override fun onItemClick(position: Int) {
+
+            }
+        })
     }
 
     //set margin
@@ -69,5 +80,14 @@ class products : AppCompatActivity() {
         item.add(CategorieModel("Coffee",R.drawable.ic_coffee))
         item.add(CategorieModel("More",R.drawable.ic_coffee))
         return  item
+    }
+
+    // test product
+    private fun fetDataBestSaler() : ArrayList<String> {
+        val item = ArrayList<String>()
+        for (i in 0 until 15) {
+            item.add("$i")
+        }
+        return item
     }
 }

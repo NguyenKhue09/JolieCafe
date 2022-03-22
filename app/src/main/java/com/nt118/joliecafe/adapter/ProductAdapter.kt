@@ -9,7 +9,6 @@ import com.nt118.joliecafe.R
 
 class ProductAdapter(private val item : ArrayList<String>) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
     class ViewHolder(itemView: View, listener: onItemClickListener) : RecyclerView.ViewHolder(itemView){
-
         val tvCart: TextView = itemView.findViewById(R.id.tv_categories_product)
         init {
             itemView.setOnClickListener {

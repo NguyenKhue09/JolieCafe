@@ -256,6 +256,7 @@
 
     <LinearLayout
         android:id="@+id/empty_cart_view"
+        android:layout_above="@id/suggest_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -282,6 +283,31 @@
             android:text="@string/havent_add_anything"
             android:textColor="@color/dark_text_color" />
 
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/suggest_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/RegularText"
+            android:text="Suggestion"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/text_color_2"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_cart_suggestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="horizontal"
+            tools:listitem="@layout/item_cart_suggestion" />
 
     </LinearLayout>
 
