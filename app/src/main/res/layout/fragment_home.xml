@@ -75,6 +75,7 @@
                 android:layout_below="@id/tvBestSellers"
                 android:id="@+id/recyclerViewBestSeller"
                 tools:itemCount="5"
+                android:layout_marginBottom="70dp"
                 tools:listitem="@layout/item_rv_bestsaller"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

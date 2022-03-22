@@ -1,15 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.products.products">
+    tools:context=".ui.activities.products.products"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="20dp"
+    android:background="@color/grey_primary">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <include
+        android:id="@+id/toolbarHome"
+        layout="@layout/toobar_home" />
+
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tvTest"
-        android:textSize="58sp"
-        android:textColor="@color/white"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_below="@id/toolbarHome"
+        android:layout_alignParentBottom="true">
+
+        <RelativeLayout
+            android:id="@+id/sliderHome"
+            android:layout_width="match_parent"
+            android:layout_height="139dp">
+
+            <TextView
+                android:layout_marginTop="27dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvCategories"
+                android:text="Categories"
+                android:textColor="@color/grey_primary_variant"
+                android:textSize="19sp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvCategories"
+                android:layout_marginTop="10dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewProduct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/recyclerView"
+                android:layout_marginTop="41dp" />
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>
