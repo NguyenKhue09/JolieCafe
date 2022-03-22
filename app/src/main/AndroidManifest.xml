@@ -14,10 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JolieCafe">
         <activity
-            android:name=".ui.activities.login.SignUpActivity"
+            android:name=".ui.activities.signup.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.login.ForgotPasswordActivity"
+            android:name=".ui.activities.forgotpassword.ForgotPasswordActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activities.login.LoginActivity"
