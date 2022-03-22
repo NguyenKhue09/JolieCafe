@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingVertical="22dp"
+    android:paddingHorizontal="22dp"
+    tools:context=".ui.activities.checkout.CheckoutActivity">
+
+    <LinearLayout
+        android:id="@+id/toolbar_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/btn_nav_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/ic_arrow_back"
+            android:backgroundTint="@color/text_color"
+            android:layout_marginEnd="18dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/BigText"
+            android:text="@string/checkout"
+            android:textColor="@color/text_color_2"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_information_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/RegularText"
+        android:text="@string/shipping_information"
+        android:layout_marginTop="27dp"
+        android:textColor="@color/grey_secondary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_checkout"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/SmallText"
+        android:text="@string/change"
+        android:textColor="@color/text_color_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_checkout"
+        android:layout_marginTop="33dp"/>
+    
+    <androidx.cardview.widget.CardView
+        android:id="@+id/shipping_container"
+        android:layout_marginTop="14dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_information_label"
+        app:cardCornerRadius="9dp"
+        android:backgroundTint="#4B413A">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="18dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/RegularText2"
+                android:text="Sweetie Latte"
+                android:textColor="@color/text_color"
+                android:layout_marginBottom="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/RegularNumber2"
+                android:text="0365895412"
+                android:textColor="@color/text_color"
+                android:layout_marginBottom="5dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/RegularText2"
+                android:text="12 Robusta Street, Frappe District, White city"
+                android:textColor="@color/text_color"
+                android:layout_marginBottom="5dp"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+    
+    <TextView
+        android:id="@+id/tv_product_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/shipping_container"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/RegularText"
+        android:layout_marginTop="24dp"
+        android:text="@string/product"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/product_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_label"
+        android:layout_marginTop="14dp"
+        app:cardCornerRadius="9dp"
+        android:backgroundTint="#4B413A">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_product"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_checkout"
+            tools:itemCount="2"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/tv_voucher_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/product_container"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/RegularText"
+        android:layout_marginTop="24dp"
+        android:text="@string/voucher"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/voucher_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="9dp"
+        android:backgroundTint="#4B413A"
+        app:layout_constraintTop_toBottomOf="@id/tv_voucher_label"
+        android:layout_marginTop="14dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="18dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_voucher"
+                app:tint="@color/text_color" 
+                android:layout_marginEnd="19dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/RegularText2"
+                android:textColor="#E4E4E4E4"
+                android:text="Choose a voucher..."/>
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
