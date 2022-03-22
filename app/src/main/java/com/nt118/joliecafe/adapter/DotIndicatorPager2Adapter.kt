@@ -1,4 +1,4 @@
-package com.nt118.joliecafe.ui.fragments.home
+package com.nt118.joliecafe.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
