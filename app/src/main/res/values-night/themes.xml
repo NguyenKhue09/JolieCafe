@@ -17,6 +17,14 @@
 
     </style>
 
+    <style name="TextInputLayoutAppearance" parent="Widget.Design.TextInputLayout">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="colorControlActivated">@color/white</item>
+        <item name="colorControlHighlight">@color/white</item>
+    </style>
+
     <style name="RegularText" parent="Theme.JolieCafe">
         <item name="fontFamily">@font/raleway_regular</item>
         <item name="android:textSize">16sp</item>

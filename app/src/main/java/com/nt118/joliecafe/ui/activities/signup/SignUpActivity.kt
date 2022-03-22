@@ -1,4 +1,4 @@
-package com.nt118.joliecafe.ui.activities.login
+package com.nt118.joliecafe.ui.activities.signup
 
 import android.app.Activity
 import android.content.Intent
@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Patterns
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import com.facebook.CallbackManager
@@ -19,8 +20,10 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.nt118.joliecafe.MainActivity
 import com.nt118.joliecafe.databinding.ActivitySignUpBinding
+import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseEmailPasswordAuthentication
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseFacebookLogin
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseGoogleAuthentication
+import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.util.Constants
 import java.io.IOException
 
@@ -75,6 +78,10 @@ class SignUpActivity : AppCompatActivity() {
                 FirebaseGoogleAuthentication().loginGoogle(userSignIn, mGoogleSignInClient)
             }
         }
+
+        binding.btnSignUp.setOnClickListener {
+            registerUserWithEmailPassword()
+        }
     }
 
     private val userSignIn =
@@ -92,6 +99,91 @@ class SignUpActivity : AppCompatActivity() {
 
             }
         }
+
+    private fun registerUserWithEmailPassword() {
+        if(validateUserName() && validateEmail() && validatePassword() && validateConfirmPassword()) {
+            val email = binding.etEmail.text.toString().trim{it <= ' '}
+            val password = binding.etPassword.text.toString().trim{it <= ' '}
+            println(email)
+
+            FirebaseEmailPasswordAuthentication().registerUser(
+                email = email,
+                password= password,
+                signUpActivity = this
+            )
+        }
+    }
+
+    private fun validateUserName(): Boolean {
+        val username = binding.etUserName.text.toString().trim{it <= ' '}
+
+        if (username.isEmpty()) {
+            binding.etUserName.requestFocus()
+            binding.etUserNameLayout.error = "You must enter your username!"
+            return false
+        }
+        return true
+    }
+
+    private fun validatePassword(): Boolean {
+        val password = binding.etPassword.text.toString().trim{it <= ' '}
+
+        if (password.isEmpty()) {
+            binding.etPassword.requestFocus()
+            binding.etPasswordLayout.error = "You must enter your password!"
+            return false
+        }
+        if (password.length < 6) {
+            binding.etPassword.requestFocus()
+            binding.etPasswordLayout.error = "Your password length less than 6 character!"
+            return false
+        }
+
+        return true
+    }
+
+    private fun validateConfirmPassword(): Boolean {
+        val password = binding.etConfirmPassword.text.toString().trim{it <= ' '}
+
+        if (password.isEmpty()) {
+            binding.etConfirmPassword.requestFocus()
+            binding.etConfirmPasswordLayout.error = "You must enter your password!"
+            return false
+        }
+        if (password.length < 6) {
+            binding.etConfirmPassword.requestFocus()
+            binding.etConfirmPasswordLayout.error = "Your password length less than 6 character!"
+            return false
+        }
+
+        if (password != binding.etPassword.text.toString()) {
+            binding.etConfirmPassword.requestFocus()
+            binding.etConfirmPasswordLayout.error = "Your confirm password not match your password!"
+            return false
+        }
+
+        return true
+    }
+
+    private fun validateEmail(): Boolean {
+        val email = binding.etEmail.text.toString().trim{it <= ' '}
+
+        if (email.isEmpty()) {
+            binding.etEmail.requestFocus()
+            binding.etEmailLayout.error = "You must enter your email!"
+            return false
+        }
+        if (!isValidEmail(email)) {
+            binding.etEmail.requestFocus()
+            binding.etEmailLayout.error = "Your email is wrong format!"
+            return false
+        }
+        return true
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
 
     fun navigateToMainScreen() {
         startActivity(Intent(this, MainActivity::class.java))
