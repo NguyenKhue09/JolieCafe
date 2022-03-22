@@ -4,12 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.activities.products.products"
-    android:paddingHorizontal="20dp"
     android:paddingTop="20dp"
     android:background="@color/grey_primary">
 
     <include
         android:id="@+id/toolbarHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
         layout="@layout/toobar_home" />
 
     <ScrollView
@@ -25,6 +27,7 @@
 
             <TextView
                 android:layout_marginTop="27dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tvCategories"
@@ -37,14 +40,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tvCategories"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:layout_marginHorizontal="20dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewProduct"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/recyclerView"
-                android:layout_marginTop="41dp" />
+                android:layout_marginTop="17dp"
+                android:layout_marginHorizontal="8dp"/>
 
         </RelativeLayout>
     </ScrollView>
