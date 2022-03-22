@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.nt118.joliecafe.databinding.FragmentCartBinding
 import com.nt118.joliecafe.viewmodels.CartViewModel
 
@@ -33,6 +34,9 @@ class CartFragment : Fragment() {
 //        notificationsViewModel.text.observe(viewLifecycleOwner) {
 //            textView.text = it
 //        }
+
+        val rvCartSuggestion: RecyclerView = binding.rvCartSuggestion
+        rvCartSuggestion.adapter = CartSuggestionAdapter()
         return root
     }
 
