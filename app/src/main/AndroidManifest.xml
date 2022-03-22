@@ -23,6 +23,9 @@
             android:name=".ui.activities.products.products"
             android:exported="false" />
         <activity
+            android:name=".ui.activities.checkout.CheckoutActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.signup.SignUpActivity"
             android:exported="false" />
         <activity
