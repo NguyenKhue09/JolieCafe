@@ -26,4 +26,9 @@
     <string name="item_favorite">5</string>
     <string name="dot_center_vertical">•</string>
     <string name="favorite_screen_title">Favorite</string>
+    <string name="shipping_information">Shipping information</string>
+    <string name="change">Change</string>
+    <string name="product">Product</string>
+    <string name="voucher">Voucher</string>
+    <string name="checkout">Checkout</string>
 </resources>
