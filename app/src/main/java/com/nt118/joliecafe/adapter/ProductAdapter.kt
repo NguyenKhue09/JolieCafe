@@ -3,16 +3,13 @@ package com.nt118.joliecafe.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.nt118.joliecafe.R
-import com.nt118.joliecafe.models.CategorieModel
 
-class CategorieAdapter(private val item : ArrayList<CategorieModel>) : RecyclerView.Adapter<CategorieAdapter.ViewHolder>() {
+class ProductAdapter(private val item : ArrayList<String>) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
     class ViewHolder(itemView: View, listener: onItemClickListener) : RecyclerView.ViewHolder(itemView){
-        val tvCart: TextView = itemView.findViewById(R.id.tvCart)
-        val imgCart : ImageView = itemView.findViewById(R.id.imgCart)
+        val tvCart: TextView = itemView.findViewById(R.id.tv_categories_product)
         init {
             itemView.setOnClickListener {
                 listener.onItemClick(absoluteAdapterPosition)
@@ -34,12 +31,11 @@ class CategorieAdapter(private val item : ArrayList<CategorieModel>) : RecyclerV
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_rv_categories,parent,false),mlistener)
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_rv_product,parent,false),mlistener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.imgCart.setImageResource(item[position].image)
-        holder.tvCart.text = item[position].title
+        holder.tvCart.text = item[position]
     }
 
     override fun getItemCount(): Int {
