@@ -31,4 +31,13 @@
     <string name="product">Product</string>
     <string name="voucher">Voucher</string>
     <string name="checkout">Checkout</string>
+    <string name="payment">Payment</string>
+    <string name="cash">Cash</string>
+    <string name="credit_card">Credit card</string>
+    <string name="summary">Summary</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="shipping_fee">Shipping fee</string>
+    <string name="discount">Discount</string>
+    <string name="total">Total</string>
+    <string name="cancel">Cancel</string>
 </resources>
