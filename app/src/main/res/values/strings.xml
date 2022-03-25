@@ -12,7 +12,7 @@
     <string name="facebook_app_id">535573224495202</string>
     <string name="fb_login_protocol_scheme">fb535573224495202</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Logout</string>
+    <string name="sign_out">Sign out</string>
     <string name="title_profile">Profile</string>
     <string name="order">order</string>
     <string name="edit">Edit</string>
@@ -31,4 +31,9 @@
     <string name="product">Product</string>
     <string name="voucher">Voucher</string>
     <string name="checkout">Checkout</string>
+    <string name="settings">Settings</string>
+    <string name="order_history">Order history</string>
+    <string name="address_book">Address book</string>
+    <string name="profile">Profile</string>
+    <string name="sweet_latte">Sweet Latte</string>
 </resources>

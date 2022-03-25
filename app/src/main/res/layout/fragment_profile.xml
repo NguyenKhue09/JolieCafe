@@ -1,21 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.profile.ProfileFragment"
-    android:background="@color/grey_primary">
+    android:background="@color/grey_primary"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".ui.fragments.profile.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_logout"
-        android:layout_width="wrap_content"
+
+    <ImageView
+        android:layout_marginTop="50dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/circle_shape"
+        android:layout_gravity="center">
+    </ImageView>
+
+    <TextView
+        android:layout_marginTop="18dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hello_blank_fragment"
+        android:text="@string/sweet_latte"
+        android:textSize="16sp"
+        android:fontFamily="@font/raleway_medium"
+        android:textColor="@color/text_color"
+        android:textAlignment="center">
+
+    </TextView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_profile"
+        android:layout_marginTop="36dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/profile_button_custom_bg"
+        android:drawableStart="@drawable/ic_profile"
+        android:drawablePadding="10dp"
+        android:paddingHorizontal="21dp"
+        android:paddingVertical="16dp"
+        android:text="@string/profile"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/text_color"
+        android:textSize="16sp"
+        android:fontFamily="@font/raleway_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_address_book"
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/profile_button_custom_bg"
+        android:drawableStart="@drawable/ic_profile"
+        android:drawablePadding="10dp"
+        android:paddingHorizontal="21dp"
+        android:paddingVertical="16dp"
+        android:text="@string/address_book"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/text_color"
+        android:textSize="16sp"
+        android:fontFamily="@font/raleway_medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_order_history"
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/profile_button_custom_bg"
+        android:drawableStart="@drawable/ic_profile"
+        android:drawablePadding="10dp"
+        android:paddingHorizontal="21dp"
+        android:paddingVertical="16dp"
+        android:text="@string/order_history"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/text_color"
+        android:textSize="16sp"
+        android:fontFamily="@font/raleway_medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_settings"
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/profile_button_custom_bg"
+        android:drawableStart="@drawable/ic_profile"
+        android:drawablePadding="10dp"
+        android:paddingHorizontal="21dp"
+        android:paddingVertical="16dp"
+        android:text="@string/settings"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/text_color"
+        android:textSize="16sp"
+        android:fontFamily="@font/raleway_medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_logout"
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/profile_button_custom_bg"
+        android:drawableStart="@drawable/ic_profile"
+        android:drawablePadding="10dp"
+        android:paddingHorizontal="21dp"
+        android:paddingVertical="16dp"
+        android:text="@string/sign_out"
+        android:textAlignment="textStart"
+        android:textAllCaps="false"
+        android:textColor="@color/text_color"
+        android:textSize="16sp"
+        android:fontFamily="@font/raleway_medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</LinearLayout>

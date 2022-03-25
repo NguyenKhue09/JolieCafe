@@ -2,4 +2,9 @@
 <resources>
     <string name="title_profile">Profile</string>
     <string name="favorite_screen_title">Favorite</string>
+    <string name="settings">Settings</string>
+    <string name="order_history">Order history</string>
+    <string name="address_book">Address book</string>
+    <string name="profile">Profile</string>
+    <string name="sweet_latte">Sweet Latte</string>
 </resources>
