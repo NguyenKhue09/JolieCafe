@@ -12,8 +12,8 @@
 
     <ImageView
         android:layout_marginTop="50dp"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@drawable/circle_shape"
         android:layout_gravity="center">
     </ImageView>
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sweet_latte"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:fontFamily="@font/raleway_medium"
         android:textColor="@color/text_color"
         android:textAlignment="center">
