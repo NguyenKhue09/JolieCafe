@@ -48,20 +48,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvUsername"
+        android:theme="@style/TextInputLayoutAppearance"
         app:boxBackgroundColor="@color/grey_primary"
         app:boxStrokeColor="@color/box_stroke_color_textinput"
-        app:errorEnabled="true"
-        android:theme="@style/TextInputLayoutAppearance">
+        app:errorEnabled="true">
+
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etUserName"
             android:layout_width="match_parent"
-            android:inputType="textEmailAddress"
-            android:textColor="#ffffff"
-            android:textSize="16sp"
             android:layout_height="match_parent"
-            android:paddingTop="4dp"
+            android:inputType="textEmailAddress"
             android:paddingStart="0dp"
-            android:paddingEnd="0dp"/>
+            android:paddingTop="4dp"
+            android:paddingEnd="0dp"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
