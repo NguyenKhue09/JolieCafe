@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginVertical="18dp">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_name_phone"
+        android:id="@+id/card_add_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
@@ -28,6 +29,7 @@
                 android:layout_marginEnd="18dp"
                 android:background="@null"
                 android:src="@drawable/ic_edit"
+                android:contentDescription="@string/edit"
                 app:layout_constraintBottom_toBottomOf="@+id/et_name_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/et_name_layout">
@@ -40,6 +42,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:src="@drawable/ic_trash"
+                android:contentDescription="@string/delete"
                 android:layout_marginEnd="4dp"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_edit"
                 app:layout_constraintEnd_toStartOf="@+id/btn_edit"
@@ -201,7 +204,7 @@
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_address_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/is_default_address" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_cancel"
@@ -220,6 +223,34 @@
                 app:layout_constraintBottom_toBottomOf="@+id/btn_save"
                 app:layout_constraintEnd_toStartOf="@+id/btn_save"
                 app:layout_constraintTop_toTopOf="@+id/btn_save" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/is_default_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/text_color"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/et_address_layout"
+                app:layout_constraintTop_toBottomOf="@+id/et_address_layout">
+
+            </androidx.appcompat.widget.AppCompatCheckBox>
+
+            <TextView
+                android:id="@+id/tv_default_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/raleway_regular"
+                android:text="@string/set_as_default_address"
+                android:textColor="@color/grey_secondary"
+                android:textSize="14sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/is_default_address"
+                app:layout_constraintStart_toEndOf="@+id/is_default_address"
+                app:layout_constraintTop_toTopOf="@+id/is_default_address">
+
+            </TextView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

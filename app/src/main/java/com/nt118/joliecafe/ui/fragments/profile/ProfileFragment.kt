@@ -14,6 +14,7 @@ import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseFacebookLogin
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseGoogleAuthentication
 import com.nt118.joliecafe.ui.activities.address_book.AddressBookActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
+import com.nt118.joliecafe.ui.activities.order_history.OrderHistoryActivity
 import com.nt118.joliecafe.ui.activities.profile.ProfileActivity
 import com.nt118.joliecafe.util.Constants
 
@@ -56,6 +57,10 @@ class ProfileFragment : Fragment() {
 
         binding.btnAddressBook.setOnClickListener {
             startActivity(Intent(requireContext(), AddressBookActivity::class.java))
+        }
+
+        binding.btnOrderHistory.setOnClickListener {
+            startActivity(Intent(requireContext(), OrderHistoryActivity::class.java))
         }
 
         return binding.root
