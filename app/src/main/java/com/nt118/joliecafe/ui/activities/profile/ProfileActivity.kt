@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ActivityProfileBinding
+import com.nt118.joliecafe.ui.fragments.profile_bottom_sheet.ProfileBottomSheetFragment
 
 class ProfileActivity : AppCompatActivity() {
     private var _binding: ActivityProfileBinding? = null
@@ -14,6 +15,11 @@ class ProfileActivity : AppCompatActivity() {
         _binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupActionBar()
+
+        binding.btnGetImage.setOnClickListener {
+            val bottomSheet = ProfileBottomSheetFragment()
+            bottomSheet.show(supportFragmentManager, "TAG")
+        }
     }
 
     private fun setupActionBar() {

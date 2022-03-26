@@ -16,4 +16,7 @@
     <string name="new_password">New password</string>
     <string name="save">Save</string>
     <string name="confirm_password">Confirm password</string>
+    <string name="action">Action</string>
+    <string name="choose_from_gallery">Choose from gallery</string>
+    <string name="camera">Camera</string>
 </resources>

@@ -43,4 +43,9 @@
     <string name="new_password">New password</string>
     <string name="save">Save</string>
     <string name="confirm_password">Confirm password</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action">Action</string>
+    <string name="choose_from_gallery">Choose from gallery</string>
+    <string name="camera">Camera</string>
 </resources>
