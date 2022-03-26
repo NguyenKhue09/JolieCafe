@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.FragmentProfileBinding
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseFacebookLogin
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseGoogleAuthentication
+import com.nt118.joliecafe.ui.activities.address_book.AddressBookActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.profile.ProfileActivity
 import com.nt118.joliecafe.util.Constants
@@ -52,6 +52,10 @@ class ProfileFragment : Fragment() {
 
         binding.btnProfile.setOnClickListener {
             startActivity(Intent(requireContext(), ProfileActivity::class.java))
+        }
+
+        binding.btnAddressBook.setOnClickListener {
+            startActivity(Intent(requireContext(), AddressBookActivity::class.java))
         }
 
         return binding.root

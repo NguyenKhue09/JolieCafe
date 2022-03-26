@@ -33,4 +33,9 @@ class ProfileActivity : AppCompatActivity() {
 
         binding.toolbarProfileActivity.setNavigationOnClickListener { onBackPressed() }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }
