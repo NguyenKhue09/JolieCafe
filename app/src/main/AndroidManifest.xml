@@ -20,6 +20,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JolieCafe">
         <activity
+            android:name=".ui.activities.order_history.OrderHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.address_book.AddressBookActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.profile.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.products.products"
             android:exported="false" />
         <activity
