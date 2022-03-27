@@ -272,10 +272,57 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
+                android:id="@+id/tv_jolie_coin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/btn_credit_card"
+                app:layout_constraintStart_toStartOf="parent"
+                style="@style/RegularText"
+                android:layout_marginTop="24dp"
+                android:text="@string/jolie_coin"/>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/jolie_coin_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                app:cardCornerRadius="9dp"
+                android:backgroundTint="#4B413A"
+                app:layout_constraintTop_toBottomOf="@id/tv_jolie_coin">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="18dp"
+                    android:paddingVertical="7dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        style="@style/RegularNumber2"
+                        android:layout_weight="1"
+                        android:text="@string/use_jolie_coin"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/RegularNumber2"
+                        android:text="[-200]"/>
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="false"/>
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
                 android:id="@+id/tv_summary_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/btn_cash"
+                app:layout_constraintTop_toBottomOf="@id/jolie_coin_container"
                 app:layout_constraintStart_toStartOf="parent"
                 style="@style/RegularText"
                 android:layout_marginTop="24dp"
@@ -359,13 +406,35 @@
                         android:text="-30.000 VND"
                         style="@style/SmallNumber"/>
 
+                    <TextView
+                        android:id="@+id/tv_jolie_coin_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/SmallText"
+                        android:textSize="14sp"
+                        android:layout_marginTop="12dp"
+                        app:layout_constraintTop_toBottomOf="@id/tv_discount_label"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:text="@string/jolie_coin"/>
+
+                    <TextView
+                        android:id="@+id/tv_jolie_coin_detail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/tv_discount_detail"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginTop="12dp"
+                        android:textSize="14sp"
+                        android:text="-200 VND"
+                        style="@style/SmallNumber"/>
+
                     <View
                         android:id="@+id/divider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/text_color"
                         android:layout_marginTop="12dp"
-                        app:layout_constraintTop_toBottomOf="@id/tv_discount_label"/>
+                        app:layout_constraintTop_toBottomOf="@id/tv_jolie_coin_label"/>
 
                     <TextView
                         android:id="@+id/tv_total_label"
