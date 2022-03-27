@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_add_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        app:cardCornerRadius="9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/profile_button_custom_bg"
+            android:padding="18dp">
+
+            <TextView
+                android:id="@+id/tv_order_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="27/02/2022"
+                android:textColor="@color/grey_secondary"
+                android:textSize="11sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/tv_order_number_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="5 items"
+                android:textColor="@color/grey_secondary"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_order_date">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/tv_order_temp_total_cost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="90.000 VND"
+                android:textColor="@color/grey_secondary"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_order_number_item"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_order_number_item">
+
+            </TextView>
+
+            <ImageView
+                android:id="@+id/btn_collapse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_down"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_order_date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_order_date">
+
+            </ImageView>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/order_item_body"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_order_number_item">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_order_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="@id/order_item_body"
+                    app:layout_constraintStart_toStartOf="@id/order_item_body"
+                    app:layout_constraintTop_toTopOf="@id/order_item_body">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Sweet Latte"
+                    android:textColor="@color/grey_secondary"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_order_item">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_user_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="0365895412"
+                    android:textColor="@color/grey_secondary"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_user_name">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_user_address"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="12 Robusta Street, Frappe District, White City"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/grey_secondary"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_user_phone"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_user_phone">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_summary"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Summary"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/grey_secondary"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@+id/tv_user_address"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_user_address">
+
+                </TextView>
+
+
+                <TextView
+                    android:id="@+id/tv_subtotal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Subtotal"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/grey_secondary"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/tv_summary"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_summary">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_subtotal_cost"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="180.000 VND"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/grey_secondary"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_subtotal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_subtotal"
+                    app:layout_constraintTop_toTopOf="@+id/tv_subtotal">
+
+                </TextView>
+
+
+                <TextView
+                    android:id="@+id/tv_shipping"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Shipping fee"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/grey_secondary"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/tv_subtotal"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_subtotal">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_shipping_fee"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="0 VND"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/grey_secondary"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_shipping"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_shipping"
+                    app:layout_constraintTop_toTopOf="@+id/tv_shipping">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_total"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Total"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/tv_shipping"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_shipping">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_total_cost"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="180.000 VND"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_total"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_total"
+                    app:layout_constraintTop_toTopOf="@+id/tv_total">
+
+                </TextView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

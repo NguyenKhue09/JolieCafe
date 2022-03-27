@@ -2,6 +2,7 @@ package com.nt118.joliecafe.ui.activities.address_book
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ActivityAdressBookBinding
 
@@ -25,6 +26,19 @@ class AddressBookActivity : AppCompatActivity() {
         }
 
         binding.toolbarAddressBookActivity.setNavigationOnClickListener { onBackPressed() }
+
+        binding.btnAddNewAddress.setOnClickListener {
+            binding.tvAddAddress.visibility = View.GONE
+            it.visibility = View.GONE
+            binding.cardAddAddressBody.visibility = View.VISIBLE
+        }
+
+        binding.btnCancel.setOnClickListener {
+            binding.tvAddAddress.visibility = View.VISIBLE
+            binding.tvAddAddress.visibility = View.VISIBLE
+            binding.btnAddNewAddress.visibility = View.VISIBLE
+            binding.cardAddAddressBody.visibility = View.GONE
+        }
     }
 
     override fun onDestroy() {

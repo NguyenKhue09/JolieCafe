@@ -20,5 +20,10 @@
     <string name="choose_from_gallery">Choose from gallery</string>
     <string name="cancel">Cancel</string>
     <string name="address">Address</string>
-    <string name="save">Save</string>
+    <string name="set_as_default_address">Set as default address</string>
+    <string name="delete">Delete</string>
+    <string name="add">Add</string>
+    <string name="add_new_address">Add new address</string>
+    <string name="delete_address">Delete address?</string>
+    <string name="delete_address_item_text_body">Do you really want to delete this address?</string>
 </resources>
