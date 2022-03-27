@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingHorizontal="20dp"
     android:background="#291b11"
-    tools:context=".ui.activities.login.SignUpActivity">
+    tools:context=".ui.activities.signup.SignUpActivity">
 
     <TextView
         android:id="@+id/tvAppName"
@@ -24,12 +24,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tvAppName"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:fontFamily="@font/raleway_variable_font_wght"
         android:text="SIGN UP"
         android:textColor="#bc834b"
         android:textSize="24sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvUsername"
@@ -43,36 +43,59 @@
         android:textSize="16sp"
         />
 
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/etUserName"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@id/etUserNameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvUsername"
-        android:backgroundTint="#ffffff"
-        android:inputType="textPersonName"
-        android:textColor="#ffffff"
-        android:textSize="16sp" />
+        app:boxBackgroundColor="@color/grey_primary"
+        app:boxStrokeColor="@color/box_stroke_color_textinput"
+        app:errorEnabled="true"
+        android:theme="@style/TextInputLayoutAppearance">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            android:paddingTop="3dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <TextView
         android:id="@+id/tvEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/etUserNameLayout"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/raleway_variable_font_wght"
         android:text="Email"
         android:textColor="#e4e4e4"
-        android:fontFamily="@font/raleway_variable_font_wght"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/etUserName"
-        android:textSize="16sp"
-        />
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/etEmail"
+        android:textSize="16sp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etEmailLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvEmail"
-        android:backgroundTint="#ffffff"
-        android:textColor="#ffffff"
-        android:textSize="16sp"
-        android:inputType="textEmailAddress"/>
+        app:boxBackgroundColor="@color/grey_primary"
+        app:boxStrokeColor="@color/box_stroke_color_textinput"
+        app:errorEnabled="true"
+        android:theme="@style/TextInputLayoutAppearance">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            android:inputType="textEmailAddress"
+            android:paddingTop="3dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/tvPassword"
@@ -82,18 +105,31 @@
         android:textColor="#e4e4e4"
         android:fontFamily="@font/raleway_variable_font_wght"
         android:layout_marginTop="20dp"
-        android:layout_below="@id/etEmail"
+        android:layout_below="@id/etEmailLayout"
         android:textSize="16sp"
         />
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/etPassword"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etPasswordLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvPassword"
-        android:backgroundTint="#ffffff"
-        android:textColor="#ffffff"
-        android:textSize="16sp"
-        android:inputType="textPassword"/>
+        app:boxBackgroundColor="@color/grey_primary"
+        app:boxStrokeColor="@color/box_stroke_color_textinput"
+        app:errorEnabled="true"
+        android:theme="@style/TextInputLayoutAppearance">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            android:inputType="textPassword"
+            android:paddingTop="3dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <TextView
         android:id="@+id/tvConfirmPassword"
@@ -103,35 +139,46 @@
         android:textColor="#e4e4e4"
         android:fontFamily="@font/raleway_variable_font_wght"
         android:layout_marginTop="20dp"
-        android:layout_below="@id/etPassword"
+        android:layout_below="@id/etPasswordLayout"
         android:textSize="16sp"
         />
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/etConfirmPassword"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etConfirmPasswordLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvConfirmPassword"
-        android:backgroundTint="#ffffff"
-        android:textColor="#ffffff"
-        android:textSize="16sp"
-        android:inputType="textPassword"/>
+        app:boxBackgroundColor="@color/grey_primary"
+        app:boxStrokeColor="@color/box_stroke_color_textinput"
+        app:errorEnabled="true"
+        android:theme="@style/TextInputLayoutAppearance">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            android:inputType="textPassword"
+            android:paddingTop="3dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/etConfirmPasswordLayout"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
-        android:layout_below="@id/etConfirmPassword"
-        android:text="SIGN UP"
-        android:fontFamily="@font/raleway_variable_font_wght"
-        android:textSize="16sp"
+        android:layout_marginTop="25dp"
         android:width="150dp"
         android:height="40dp"
-        android:textColor="#ffffff"
         android:background="@drawable/rounded_shape"
-        />
+        android:fontFamily="@font/raleway_variable_font_wght"
+        android:text="SIGN UP"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
 
     <TextView
         android:fontFamily="@font/raleway_variable_font_wght"

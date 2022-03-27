@@ -41,7 +41,7 @@
         android:layout_below="@id/header1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/footer"
         android:layout_marginBottom="19dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -212,12 +212,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="58dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
@@ -237,19 +237,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/BigText"
+                style="@style/RegularText"
                 android:layout_gravity="center_vertical"
                 android:text=" VND"/>
 
         </LinearLayout>
 
         <Button
-            android:id="@+id/btn_order"
+            android:id="@+id/btn_checkout"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:background="@drawable/rounded_shape"
-            android:text="@string/order"
+            android:text="@string/checkout"
             app:backgroundTint="@color/grey_primary_variant" />
 
     </FrameLayout>
@@ -260,7 +260,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -291,7 +292,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
