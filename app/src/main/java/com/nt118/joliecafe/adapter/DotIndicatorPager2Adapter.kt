@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.nt118.joliecafe.R
 
 class DotIndicatorPager2Adapter : RecyclerView.Adapter<ViewHolder>() {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return object : ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.item_slide_home, parent, false)) {}

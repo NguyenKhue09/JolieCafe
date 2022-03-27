@@ -11,12 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
-import com.nt118.joliecafe.ui.activities.login.SignUpActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
+import com.nt118.joliecafe.ui.activities.signup.SignUpActivity
 
 class FirebaseGoogleAuthentication {
 

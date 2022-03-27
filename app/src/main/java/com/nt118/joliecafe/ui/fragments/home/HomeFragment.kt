@@ -1,5 +1,6 @@
 package com.nt118.joliecafe.ui.fragments.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,6 +19,7 @@ import com.nt118.joliecafe.adapter.BestSallerAdapter
 import com.nt118.joliecafe.adapter.CategorieAdapter
 import com.nt118.joliecafe.databinding.FragmentHomeBinding
 import com.nt118.joliecafe.models.CategorieModel
+import com.nt118.joliecafe.ui.activities.products.products
 import com.nt118.joliecafe.viewmodels.HomeViewModel
 import kotlin.math.abs
 
@@ -94,6 +96,13 @@ class HomeFragment : Fragment() {
         val categorieAdapter = CategorieAdapter(fetData())
         recyclerView.layoutManager = GridLayoutManager(context,4)
         recyclerView.adapter = categorieAdapter
+        categorieAdapter.setOnClickListener(object : CategorieAdapter.onItemClickListener{
+            override fun onItemClick(position: Int) {
+                val intent = Intent(getActivity(),products::class.java)
+                intent.putExtra("position",position)
+                startActivity(intent)
+            }
+        })
 
         // RecyclerView Best Saller
         val recyclerViewBS = binding.recyclerViewBestSeller

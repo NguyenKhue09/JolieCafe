@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="20dp"
     android:background="#291b11"
     tools:context=".ui.activities.login.LoginActivity">
@@ -41,15 +42,28 @@
         android:layout_below="@id/tvSignin"
         android:textSize="16sp"
         />
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/etUserName"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etUserNameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvUsername"
-        android:backgroundTint="#ffffff"
-        android:textColor="#ffffff"
-        android:textSize="16sp"
-        android:inputType="textEmailAddress"/>
+        android:theme="@style/TextInputLayoutAppearance"
+        app:boxBackgroundColor="@color/grey_primary"
+        app:boxStrokeColor="@color/box_stroke_color_textinput"
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etUserName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textEmailAddress"
+            android:paddingStart="0dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="0dp"
+            android:textColor="#ffffff"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/tvPassword"
@@ -59,18 +73,30 @@
         android:textColor="#e4e4e4"
         android:fontFamily="@font/raleway_variable_font_wght"
         android:layout_marginTop="24dp"
-        android:layout_below="@id/etUserName"
+        android:layout_below="@id/etUserNameLayout"
         android:textSize="16sp"
         />
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/etPassword"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/etPasswordLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvPassword"
-        android:backgroundTint="#ffffff"
-        android:textColor="#ffffff"
-        android:textSize="16sp"
-        android:inputType="textPassword"/>
+        app:boxBackgroundColor="@color/grey_primary"
+        app:boxStrokeColor="@color/box_stroke_color_textinput"
+        app:errorEnabled="true"
+        android:theme="@style/TextInputLayoutAppearance">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textPassword"
+            android:paddingTop="4dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:textColor="#ffffff"
+            android:textSize="16sp"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/tvForgotPassword"
@@ -80,7 +106,7 @@
         android:textColor="#e7a15c"
         android:fontFamily="@font/raleway_variable_font_wght"
         android:layout_marginTop="12dp"
-        android:layout_below="@id/etPassword"
+        android:layout_below="@id/etPasswordLayout"
         android:textSize="16sp"
         />
 
@@ -97,8 +123,7 @@
         android:width="150dp"
         android:height="40dp"
         android:textColor="#ffffff"
-        android:background="@drawable/rounded_shape"
-        />
+        android:background="@drawable/rounded_shape" />
 
     <TextView
         android:id="@+id/tvOr"
@@ -119,18 +144,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true">
-
-
-<!--        <com.facebook.login.widget.LoginButton-->
-<!--            android:id="@+id/imgFb"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:src="@drawable/fb"-->
-<!--            android:background="@null"-->
-<!--            android:maxWidth="40dp"-->
-<!--            android:maxHeight="41dp"-->
-<!--            android:layout_marginEnd="22dp"-->
-<!--            android:text="Face"/>-->
 
         <ImageButton
             android:id="@+id/imgFb"

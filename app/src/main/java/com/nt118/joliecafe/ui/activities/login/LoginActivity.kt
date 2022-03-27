@@ -1,13 +1,13 @@
 package com.nt118.joliecafe.ui.activities.login
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Patterns
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -21,12 +21,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.nt118.joliecafe.databinding.ActivityLoginBinding
+import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseEmailPasswordAuthentication
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseFacebookLogin
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseGoogleAuthentication
+import com.nt118.joliecafe.ui.activities.forgotpassword.ForgotPasswordActivity
+import com.nt118.joliecafe.ui.activities.signup.SignUpActivity
 import com.nt118.joliecafe.util.Constants
 import java.io.IOException
 
-val TAG = "Face"
 class LoginActivity : AppCompatActivity() {
 
     private var _binding: ActivityLoginBinding? = null
@@ -35,7 +37,6 @@ class LoginActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var callbackManager: CallbackManager
     private lateinit var auth: FirebaseAuth
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
         textSpanCreateAccount()
         // handle click open Forgot Password
         binding.tvForgotPassword.setOnClickListener {
-            startActivity(Intent(this,ForgotPasswordActivity::class.java))
+            startActivity(Intent(this, ForgotPasswordActivity::class.java))
         }
 
         // handle click open Sign Up
@@ -86,6 +87,10 @@ class LoginActivity : AppCompatActivity() {
             if (!FirebaseGoogleAuthentication().checkUser()) {
                 FirebaseGoogleAuthentication().loginGoogle(userSignIn, mGoogleSignInClient)
             }
+        }
+
+        binding.btnLogin.setOnClickListener {
+            loginUserWithEmailPassword()
         }
     }
 
@@ -121,6 +126,52 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
+    private fun loginUserWithEmailPassword() {
+        if(validateEmail() && validatePassword()) {
+            val email = binding.etUserName.text.toString().trim{it <= ' '}
+            val password = binding.etPassword.text.toString().trim{it <= ' '}
+
+            FirebaseEmailPasswordAuthentication()
+                .loginUser(email = email, password = password, loginActivity = this)
+        }
+    }
+
+    private fun validateEmail(): Boolean {
+        val email = binding.etUserName.text.toString().trim{it <= ' '}
+
+        if (email.isEmpty()) {
+            binding.etUserName.requestFocus()
+            binding.etUserNameLayout.error = "You must enter your email!"
+            return false
+        }
+        if (!isValidEmail(email)) {
+            binding.etUserName.requestFocus()
+            binding.etUserNameLayout.error = "Your email is wrong format!"
+            return false
+        }
+        return true
+    }
+
+    private fun validatePassword(): Boolean {
+        val password = binding.etPassword.text.toString().trim{it <= ' '}
+
+        if (password.isEmpty()) {
+            binding.etPassword.requestFocus()
+            binding.etPasswordLayout.error = "You must enter your password!"
+            return false
+        }
+        if (password.length < 6) {
+            binding.etPassword.requestFocus()
+            binding.etPasswordLayout.error = "Your password length less than 6 character!"
+            return false
+        }
+
+        return true
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
 
     fun navigateToMainScreen() {
         finish()
