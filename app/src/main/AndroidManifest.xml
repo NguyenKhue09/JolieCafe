@@ -20,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JolieCafe">
         <activity
+            android:name=".ui.activities.order_detail.OrderDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.order_history.OrderHistoryActivity"
             android:exported="false" />
         <activity
