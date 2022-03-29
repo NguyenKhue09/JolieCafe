@@ -16,6 +16,7 @@ import com.nt118.joliecafe.ui.activities.address_book.AddressBookActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.order_history.OrderHistoryActivity
 import com.nt118.joliecafe.ui.activities.profile.ProfileActivity
+import com.nt118.joliecafe.ui.activities.settings.SettingsActivity
 import com.nt118.joliecafe.util.Constants
 
 
@@ -61,6 +62,10 @@ class ProfileFragment : Fragment() {
 
         binding.btnOrderHistory.setOnClickListener {
             startActivity(Intent(requireContext(), OrderHistoryActivity::class.java))
+        }
+
+        binding.btnSettings.setOnClickListener {
+            startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
 
         return binding.root

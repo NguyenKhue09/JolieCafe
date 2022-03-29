@@ -19,18 +19,6 @@ class AddressBookActivity : AppCompatActivity() {
         _binding = ActivityAdressBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupActionBar()
-    }
-
-    private fun setupActionBar() {
-        setSupportActionBar(binding.toolbarAddressBookActivity)
-
-        val actionBar = supportActionBar
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true)
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
-        }
-
-        binding.toolbarAddressBookActivity.setNavigationOnClickListener { onBackPressed() }
 
         binding.btnAddNewAddress.setOnClickListener {
             setAddNewAddress()
@@ -49,6 +37,18 @@ class AddressBookActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupActionBar() {
+        setSupportActionBar(binding.toolbarAddressBookActivity)
+
+        val actionBar = supportActionBar
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+        }
+
+        binding.toolbarAddressBookActivity.setNavigationOnClickListener { onBackPressed() }
+    }
+
     private fun setAddNewAddress() {
         isAddNewAddress = !isAddNewAddress
     }
@@ -58,11 +58,17 @@ class AddressBookActivity : AppCompatActivity() {
             binding.tvAddAddress.visibility = View.GONE
             binding.btnAddNewAddress.visibility = View.GONE
             binding.cardAddAddressBody.visibility = View.VISIBLE
+            binding.etNameLayout.isEnabled = true
+            binding.etPhoneLayout.isEnabled = true
+            binding.etAddressLayout.isEnabled = true
         } else {
             binding.tvAddAddress.visibility = View.VISIBLE
             binding.tvAddAddress.visibility = View.VISIBLE
             binding.btnAddNewAddress.visibility = View.VISIBLE
             binding.cardAddAddressBody.visibility = View.GONE
+            binding.etNameLayout.isEnabled = false
+            binding.etPhoneLayout.isEnabled = false
+            binding.etAddressLayout.isEnabled = false
         }
     }
 

@@ -23,6 +23,10 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="switchColor">
+        <item name="colorControlActivated">@color/text_color_2</item>
+    </style>
+
     <style name="AppBottomSheetDialogTheme"
         parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
