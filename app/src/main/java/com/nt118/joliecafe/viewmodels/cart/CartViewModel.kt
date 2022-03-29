@@ -1,13 +1,13 @@
-package com.nt118.joliecafe.viewmodels
+package com.nt118.joliecafe.viewmodels.cart
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class FavoriteViewModel : ViewModel() {
+class CartViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is dashboard Fragment"
+        value = "This is notifications Fragment"
     }
     val text: LiveData<String> = _text
 }

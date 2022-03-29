@@ -1,4 +1,4 @@
-package com.nt118.joliecafe.viewmodels
+package com.nt118.joliecafe.viewmodels.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -10,13 +10,14 @@
     tools:context=".ui.fragments.profile.ProfileFragment">
 
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:layout_marginTop="50dp"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/circle_shape"
-        android:layout_gravity="center">
-    </ImageView>
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+        android:layout_gravity="center"
+        android:src="@drawable/image_logo">
+    </com.google.android.material.imageview.ShapeableImageView>
 
     <TextView
         android:layout_marginTop="18dp"

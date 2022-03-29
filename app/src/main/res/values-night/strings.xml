@@ -26,4 +26,6 @@
     <string name="add_new_address">Add new address</string>
     <string name="delete_address">Delete address?</string>
     <string name="delete_address_item_text_body">Do you really want to delete this address?</string>
+    <string name="current_password">Current password</string>
+    <string name="quantity">Quantity:</string>
 </resources>

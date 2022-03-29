@@ -20,7 +20,7 @@ import com.nt118.joliecafe.adapter.CategorieAdapter
 import com.nt118.joliecafe.databinding.FragmentHomeBinding
 import com.nt118.joliecafe.models.CategorieModel
 import com.nt118.joliecafe.ui.activities.products.products
-import com.nt118.joliecafe.viewmodels.HomeViewModel
+import com.nt118.joliecafe.viewmodels.home.HomeViewModel
 import kotlin.math.abs
 
 
