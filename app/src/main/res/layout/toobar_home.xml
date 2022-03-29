@@ -12,29 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/btnBackHome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            tools:ignore="ContentDescription" />
-
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/app_name"-->
-<!--            android:fontFamily="@font/festive_regular"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:layout_toEndOf="@id/btnBackHome"-->
-<!--            android:textSize="38sp"/>-->
-
-
-
         <androidx.cardview.widget.CardView
             android:id="@+id/carViewAvatar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/btnBackHome"
             app:cardCornerRadius="90dp">
 
             <ImageView
