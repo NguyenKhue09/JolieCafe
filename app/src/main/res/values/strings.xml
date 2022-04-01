@@ -31,6 +31,16 @@
     <string name="product">Product</string>
     <string name="voucher">Voucher</string>
     <string name="checkout">Checkout</string>
+    <string name="payment">Payment</string>
+    <string name="cash">Cash</string>
+    <string name="credit_card">Credit card</string>
+    <string name="summary">Summary</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="shipping_fee">Shipping fee</string>
+    <string name="discount">Discount</string>
+    <string name="total">Total</string>
+    <string name="cancel">Cancel</string>
+    <string name="jolie_coin">Jolie Coin</string>
     <string name="settings">Settings</string>
     <string name="order_history">Order history</string>
     <string name="address_book">Address book</string>
@@ -47,7 +57,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="action">Action</string>
     <string name="choose_from_gallery">Choose from gallery</string>
-    <string name="cancel">Cancel</string>
     <string name="address">Address</string>
     <string name="set_as_default_address">Set as default address</string>
     <string name="delete">Delete</string>
@@ -55,4 +64,9 @@
     <string name="add_new_address">Add new address</string>
     <string name="delete_address">Delete address?</string>
     <string name="delete_address_item_text_body">Do you really want to delete this address?</string>
+    <string name="use_jolie_coin">Use %1$d Jolie Coin</string>
+    <string name="your_order_is_on_the_way">Your order is on the way!</string>
+    <string name="enter_a_voucher">Enter a voucher...</string>
+    <string name="apply">APPLY</string>
+    <string name="free_ship">Freeship</string>
 </resources>
