@@ -20,6 +20,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.JolieCafe">
         <activity
+            android:name=".ui.activities.checkout.VoucherDialog"
+            android:theme="@style/Theme.JolieCafe.Dialog"
+            android:excludeFromRecents="true"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.order_detail.OrderDetailActivity"
             android:exported="false" />
         <activity

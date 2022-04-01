@@ -66,4 +66,7 @@
     <string name="delete_address_item_text_body">Do you really want to delete this address?</string>
     <string name="use_jolie_coin">Use %1$d Jolie Coin</string>
     <string name="your_order_is_on_the_way">Your order is on the way!</string>
+    <string name="enter_a_voucher">Enter a voucher...</string>
+    <string name="apply">APPLY</string>
+    <string name="free_ship">Freeship</string>
 </resources>
