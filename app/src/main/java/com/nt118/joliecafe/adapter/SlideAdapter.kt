@@ -1,4 +1,4 @@
-package com.nt118.joliecafe.ui.fragments.home
+package com.nt118.joliecafe.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.makeramen.roundedimageview.RoundedImageView
 import com.nt118.joliecafe.R
+import com.nt118.joliecafe.models.SliderItem
 
 class SlideAdapter internal constructor(
     sliderItems:MutableList<SliderItem>,

@@ -40,6 +40,9 @@
             android:name=".ui.activities.products.products"
             android:exported="false" />
         <activity
+            android:name=".ui.activities.notifications.Notification"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.checkout.CheckoutActivity"
             android:exported="false" />
         <activity

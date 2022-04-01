@@ -17,8 +17,12 @@ import androidx.viewpager2.widget.ViewPager2
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.BestSallerAdapter
 import com.nt118.joliecafe.adapter.CategorieAdapter
+import com.nt118.joliecafe.adapter.DotIndicatorPager2Adapter
+import com.nt118.joliecafe.adapter.SlideAdapter
 import com.nt118.joliecafe.databinding.FragmentHomeBinding
 import com.nt118.joliecafe.models.CategorieModel
+import com.nt118.joliecafe.models.SliderItem
+import com.nt118.joliecafe.ui.activities.notifications.Notification
 import com.nt118.joliecafe.ui.activities.products.products
 import com.nt118.joliecafe.viewmodels.HomeViewModel
 import kotlin.math.abs
@@ -86,6 +90,12 @@ class HomeFragment : Fragment() {
                 sliderHandle.postDelayed(sliderRunnable, 3000)
             }
         })
+
+        //open  notification
+        binding.toolbarHome.imgNotification.setOnClickListener {
+            val intent = Intent(getActivity(),Notification::class.java)
+            startActivity(intent)
+        }
 
 
         // change color search view

@@ -24,12 +24,8 @@ class products : AppCompatActivity() {
         val bundle : Bundle? = intent.extras
         val position = bundle!!.getInt("position")
 
-        //add icon back home
-        binding.toolbarHome.btnBackHome.setImageResource(R.drawable.ic_baseline_arrow_back_24)
-        binding.toolbarHome.btnBackHome.layoutParams.width = 100
-        binding.toolbarHome.btnBackHome.layoutParams.height = 100
-        binding.toolbarHome.btnBackHome.setMarginExtensionFunction(0,0,20,0)
-        binding.toolbarHome.btnBackHome.setOnClickListener {
+        // back home
+        binding.iconBackHome.setOnClickListener {
             onBackPressed()
         }
 
@@ -54,13 +50,6 @@ class products : AppCompatActivity() {
 
             }
         })
-    }
-
-    //set margin
-    fun View.setMarginExtensionFunction(left: Int, top: Int, right: Int, bottom: Int) {
-        val params = layoutParams as ViewGroup.MarginLayoutParams
-        params.setMargins(left, top, right, bottom)
-        layoutParams = params
     }
 
     override fun onDestroy() {

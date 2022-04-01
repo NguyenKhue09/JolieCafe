@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nt118.joliecafe.databinding.ItemRowLayoutBinding
 
-class FavoriteItemAdapter() : RecyclerView.Adapter<FavoriteItemAdapter.MyViewHolder>() {
+class FavoriteItemAdapter(private val item : ArrayList<String>) : RecyclerView.Adapter<FavoriteItemAdapter.MyViewHolder>() {
     class MyViewHolder(var binding: ItemRowLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -30,11 +30,11 @@ class FavoriteItemAdapter() : RecyclerView.Adapter<FavoriteItemAdapter.MyViewHol
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        holder.binding.itemFavorite.text = item[position]
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return item.size
     }
 
     fun setData() {
