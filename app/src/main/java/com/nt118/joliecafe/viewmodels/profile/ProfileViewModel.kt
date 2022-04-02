@@ -1,4 +1,4 @@
-package com.nt118.joliecafe.viewmodels
+package com.nt118.joliecafe.viewmodels.profile
 
 import androidx.lifecycle.ViewModel
 

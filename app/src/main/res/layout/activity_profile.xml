@@ -40,17 +40,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/user_img"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
                 android:layout_gravity="center"
-                android:src="@drawable/circle_shape"
+                android:src="@drawable/image_logo"
                 android:layout_marginTop="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-            </ImageView>
+            </com.google.android.material.imageview.ShapeableImageView>
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/btn_get_image"
@@ -58,8 +60,11 @@
                 android:layout_height="42dp"
                 android:background="@drawable/circle_button_bg"
                 android:src="@drawable/ic_camera"
+                android:translationY="15dp"
+                android:translationX="15dp"
                 app:layout_constraintBottom_toBottomOf="@+id/user_img"
                 app:layout_constraintEnd_toEndOf="@+id/user_img">
+
             </androidx.appcompat.widget.AppCompatImageButton>
 
             <com.google.android.material.card.MaterialCardView
@@ -100,7 +105,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="24dp"
                         android:layout_marginVertical="18dp"
-                        android:fontFamily="@font/raleway_regular"
+                        android:fontFamily="@font/montserrat_regular"
                         android:text="19521712@gm.uit.edu.vn"
                         android:textColor="@color/text_color"
                         android:textSize="16sp"
@@ -247,9 +252,11 @@
                 android:id="@+id/card_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="27dp"
                 android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="27dp"
+                android:visibility="visible"
                 app:cardCornerRadius="9dp"
+                app:layout_constraintBottom_toTopOf="@id/card_save_new_password"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/card_add_address">
@@ -322,15 +329,34 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_cancel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginHorizontal="18dp"
+                        android:layout_marginVertical="18dp"
+                        android:background="@null"
+                        android:fontFamily="@font/raleway_regular"
+                        android:text="@string/cancel"
+                        android:textAllCaps="false"
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@+id/btnConfirm"
+                        app:layout_constraintEnd_toStartOf="@+id/btnConfirm"
+                        app:layout_constraintTop_toTopOf="@+id/btnConfirm" />
+
+                    <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btnConfirm"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginHorizontal="21dp"
+                        android:layout_marginVertical="11dp"
                         android:layout_marginBottom="18dp"
                         android:background="@drawable/rounded_shape"
                         android:fontFamily="@font/raleway_regular"
-                        android:paddingHorizontal="21dp"
-                        android:paddingVertical="11dp"
                         android:text="@string/confirm"
                         android:textAllCaps="false"
                         android:textColor="#ffffff"
@@ -339,7 +365,6 @@
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/et_password_layout" />
 
 
@@ -353,6 +378,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="27dp"
+                android:layout_marginBottom="20dp"
                 android:visibility="gone"
                 app:cardCornerRadius="9dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -364,21 +390,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/profile_button_custom_bg">
-
-                    <TextView
-                        android:id="@+id/tv_save"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="18dp"
-                        android:fontFamily="@font/raleway_regular"
-                        android:text="@string/save"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="14sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_new_password"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tv_new_password">
-
-                    </TextView>
 
                     <TextView
                         android:id="@+id/tv_new_password"
@@ -451,7 +462,6 @@
                         app:boxBackgroundColor="@color/text_input_custom_bg"
                         app:boxStrokeColor="@color/box_stroke_color_textinput"
                         app:errorEnabled="true"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_confirm_password">
@@ -472,6 +482,43 @@
                         </com.google.android.material.textfield.TextInputEditText>
 
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_cancel_save_new_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginHorizontal="18dp"
+                        android:layout_marginVertical="18dp"
+                        android:background="@null"
+                        android:fontFamily="@font/raleway_regular"
+                        android:text="@string/cancel"
+                        android:textAllCaps="false"
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/btn_save_new_password"
+                        app:layout_constraintEnd_toStartOf="@+id/btn_save_new_password"
+                        app:layout_constraintTop_toTopOf="@+id/btn_save_new_password" />
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btn_save_new_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginHorizontal="21dp"
+                        android:layout_marginVertical="11dp"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/rounded_shape"
+                        android:fontFamily="@font/raleway_regular"
+                        android:text="@string/save"
+                        android:textAllCaps="false"
+                        android:textColor="#ffffff"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/et_confirm_password_layout" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

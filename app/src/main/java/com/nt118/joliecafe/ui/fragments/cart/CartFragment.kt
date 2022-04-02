@@ -6,13 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.nt118.joliecafe.databinding.FragmentCartBinding
 import com.nt118.joliecafe.ui.activities.checkout.CheckoutActivity
-import com.nt118.joliecafe.viewmodels.CartViewModel
+import com.nt118.joliecafe.viewmodels.cart.CartViewModel
 
 class CartFragment : Fragment() {
 

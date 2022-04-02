@@ -12,7 +12,7 @@ import com.nt118.joliecafe.adapter.BestSallerAdapter
 import com.nt118.joliecafe.adapter.FavoriteItemAdapter
 import com.nt118.joliecafe.databinding.FragmentFavoriteBinding
 import com.nt118.joliecafe.util.Constants.Companion.listTabContentFavorite
-import com.nt118.joliecafe.viewmodels.FavoriteViewModel
+import com.nt118.joliecafe.viewmodels.favorite.FavoriteViewModel
 
 class FavoriteFragment : Fragment() {
 

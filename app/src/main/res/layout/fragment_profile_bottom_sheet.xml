@@ -108,7 +108,7 @@
         android:layout_margin="20dp"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textColor="@color/title_text_color"
+        android:textColor="@color/button_grey_color"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

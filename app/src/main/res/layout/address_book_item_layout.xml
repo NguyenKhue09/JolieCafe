@@ -16,7 +16,9 @@
         app:cardCornerRadius="9dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,8 +30,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="18dp"
                 android:background="@null"
-                android:src="@drawable/ic_edit"
                 android:contentDescription="@string/edit"
+                android:src="@drawable/ic_edit"
                 app:layout_constraintBottom_toBottomOf="@+id/et_name_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/et_name_layout">
@@ -40,10 +42,10 @@
                 android:id="@+id/btn_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:src="@drawable/ic_trash"
-                android:contentDescription="@string/delete"
                 android:layout_marginEnd="4dp"
+                android:background="@null"
+                android:contentDescription="@string/delete"
+                android:src="@drawable/ic_trash"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_edit"
                 app:layout_constraintEnd_toStartOf="@+id/btn_edit"
                 app:layout_constraintTop_toTopOf="@+id/btn_edit">
@@ -70,8 +72,8 @@
                 android:id="@+id/et_name_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="4dp"
                 android:enabled="false"
                 android:theme="@style/TextInputLayoutAppearance"
                 app:boxBackgroundColor="@color/text_input_custom_bg"
