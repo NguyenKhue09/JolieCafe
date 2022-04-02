@@ -13,9 +13,11 @@
     <color name="grey_primary_variant">#BC834B</color>
     <color name="grey_secondary">#CBC1B5</color>
     <color name="text_color">#E4E4E4</color>
+    <color name="hint_color">#99E4E4E4</color>
     <color name="text_color_2">#E7A15C</color>
     <color name="dark_text_color">#707070</color>
     <color name="grey_opacity60_primary">#746860</color>
     <color name="title_text_color">#E7A15C</color>
     <color name="error_color">#F24E1E</color>
+    <color name="readed">#493b31</color>
 </resources>

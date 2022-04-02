@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.tabs.TabLayout
+import com.nt118.joliecafe.adapter.BestSallerAdapter
+import com.nt118.joliecafe.adapter.FavoriteItemAdapter
 import com.nt118.joliecafe.databinding.FragmentFavoriteBinding
 import com.nt118.joliecafe.util.Constants.Companion.listTabContentFavorite
 import com.nt118.joliecafe.viewmodels.favorite.FavoriteViewModel
@@ -31,6 +34,7 @@ class FavoriteFragment : Fragment() {
 
         addTabContent()
         onTabSelected()
+        recyclerViewLayout()
         return binding.root
     }
 
@@ -58,6 +62,22 @@ class FavoriteFragment : Fragment() {
                 text = it
             })
         }
+    }
+
+    //add layout
+
+    private fun recyclerViewLayout() {
+        val recyclerViewBS = binding.favoriteItemRecyclerView
+        val bestSallerAdapter = FavoriteItemAdapter(fetDataBestSaler())
+        recyclerViewBS.layoutManager = GridLayoutManager(context,1)
+        recyclerViewBS.adapter = bestSallerAdapter
+    }
+    private fun fetDataBestSaler() : ArrayList<String> {
+        val item = ArrayList<String>()
+        for (i in 0 until 9) {
+            item.add("$i")
+        }
+        return item
     }
 
     override fun onDestroyView() {
