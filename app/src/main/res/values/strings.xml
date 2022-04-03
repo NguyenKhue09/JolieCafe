@@ -74,4 +74,10 @@
     <string name="enter_a_voucher">Enter a voucher...</string>
     <string name="apply">APPLY</string>
     <string name="free_ship">Freeship</string>
+    <string name="back">Back</string>
+    <string name="distance">Distance</string>
+    <string name="distance_left">%1$dm left</string>
+    <string name="time_estimate">Time (estimate)</string>
+    <string name="time_left">%1$d minutes left</string>
+    <string name="suggestion">Suggestion</string>
 </resources>
