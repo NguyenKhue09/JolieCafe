@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -114,11 +115,12 @@ class HomeFragment : Fragment() {
             }
         })
 
-        // RecyclerView Best Saller
+        // RecyclerView Best Seller
         val recyclerViewBS = binding.recyclerViewBestSeller
-        val bestSallerAdapter = BestSallerAdapter(fetDataBestSaler())
-        recyclerViewBS.layoutManager = GridLayoutManager(context,1)
+        val bestSallerAdapter = BestSallerAdapter(fetDataBestSaler(), requireActivity())
+        recyclerViewBS.layoutManager = GridLayoutManager(requireContext(),1)
         recyclerViewBS.adapter = bestSallerAdapter
+
 
         return root
     }

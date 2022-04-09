@@ -18,7 +18,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // handle click open cancel
-        binding.btnCancle.setOnClickListener {
+        binding.btnCancel.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
