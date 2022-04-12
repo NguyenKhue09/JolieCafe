@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -93,7 +94,7 @@ class HomeFragment : Fragment() {
 
         //open  notification
         binding.toolbarHome.imgNotification.setOnClickListener {
-            val intent = Intent(getActivity(),Notification::class.java)
+            val intent = Intent(activity,Notification::class.java)
             startActivity(intent)
         }
 
@@ -108,7 +109,7 @@ class HomeFragment : Fragment() {
         recyclerView.adapter = categorieAdapter
         categorieAdapter.setOnClickListener(object : CategorieAdapter.onItemClickListener{
             override fun onItemClick(position: Int) {
-                val intent = Intent(getActivity(),products::class.java)
+                val intent = Intent(activity,products::class.java)
                 intent.putExtra("position",position)
                 startActivity(intent)
             }
