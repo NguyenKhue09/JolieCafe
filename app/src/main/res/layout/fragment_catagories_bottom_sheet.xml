@@ -1,14 +1,466 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.fragments.CatagoriesBottomSheetFragment">
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    android:background="@drawable/bottom_navigation_custom_bg"
+    tools:context=".ui.fragments.catagories.CatagoriesBottomSheetFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <ImageView
+        android:id="@+id/item_img_product"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:background="@drawable/item_image_custom_bg"
+        android:src="@drawable/e"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/raleway_regular"
+        android:text="Sweet Cappuccino"
+        android:textSize="16sp"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toEndOf="@+id/item_img_product"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tvCategories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/raleway_regular"
+        android:text="Coffee"
+        android:textSize="11sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toEndOf="@+id/item_img_product"
+        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+
+    <ImageView
+        android:id="@+id/btn_cancel_categories_bottom_sheet"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_clear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_marginTop="24dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/item_img_product">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/raleway_regular"
+                android:text="Size:"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvSize">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_size_s"
+                    style="@style/customChipStyle"
+                    android:layout_width="82dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="S"
+                    app:checkedIconVisible="false"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/raleway_regular" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_size_m"
+                    style="@style/customChipStyle"
+                    android:layout_width="82dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    app:checkedIconVisible="false"
+                    android:checked="true"
+                    android:text="M"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/raleway_regular" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_size_l"
+                    style="@style/customChipStyle"
+                    android:layout_width="82dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    app:checkedIconVisible="false"
+                    android:text="L"
+                    android:textSize="16sp"
+                    android:fontFamily="@font/raleway_regular" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/tv_sugar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/raleway_regular"
+                android:layout_marginTop="24dp"
+                android:text="Sugar:"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chip_group_size" />
+
+            <RadioGroup
+                android:id="@+id/radio_group_sugar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_sugar">
+
+                <RadioButton
+                    android:id="@+id/sugar_0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="0%"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/sugar_25"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="35dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="25%"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/sugar_50"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="35dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="50%"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/sugar_100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="100%"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/tv_ice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/raleway_regular"
+                android:text="Ice:"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_group_sugar" />
+            <RadioGroup
+                android:id="@+id/radio_group_ice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_ice">
+
+                <RadioButton
+                    android:id="@+id/ice_0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="0%"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/ice_25"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="25%"
+                    android:layout_marginHorizontal="35dp"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/ice_50"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="50%"
+                    android:layout_marginEnd="35dp"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+
+                <RadioButton
+                    android:id="@+id/ice_100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="100%"
+                    android:textColor="@color/text_color"
+                    android:textSize="14sp" />
+            </RadioGroup>
+            <TextView
+                android:id="@+id/tv_topping"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/raleway_regular"
+                android:text="Topping:"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_group_ice" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/bubble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/text_color"
+                android:fontFamily="@font/raleway_regular"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:layout_marginTop="12dp"
+                android:text="Bubble"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_topping">
+            </androidx.appcompat.widget.AppCompatCheckBox>
+            <TextView
+                android:id="@+id/price_bubble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="10.000 VND"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/bubble" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cheese"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/text_color"
+                android:fontFamily="@font/raleway_regular"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:layout_marginTop="12dp"
+                android:text="Cheese"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bubble">
+            </androidx.appcompat.widget.AppCompatCheckBox>
+            <TextView
+                android:id="@+id/price_cheese"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="15.000 VND"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/cheese" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/peach"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/text_color"
+                android:fontFamily="@font/raleway_regular"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:layout_marginTop="12dp"
+                android:text="Peach"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cheese">
+            </androidx.appcompat.widget.AppCompatCheckBox>
+            <TextView
+                android:id="@+id/price_peach"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="10.000 VND"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/peach" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/crunch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/text_color"
+                android:fontFamily="@font/raleway_regular"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:layout_marginTop="12dp"
+                android:text="Crunch"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/peach">
+            </androidx.appcompat.widget.AppCompatCheckBox>
+            <TextView
+                android:id="@+id/price_crunch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="15.000 VND"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/crunch" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/lychee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/text_color"
+                android:fontFamily="@font/raleway_regular"
+                android:minWidth="40dp"
+                android:minHeight="40dp"
+                android:layout_marginTop="12dp"
+                android:text="Lychee"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/crunch">
+            </androidx.appcompat.widget.AppCompatCheckBox>
+            <TextView
+                android:id="@+id/price_lychee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="10.000 VND"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/lychee" />
+
+            <TextView
+                android:layout_marginTop="24dp"
+                android:id="@+id/tv_note_for_mechanism"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/raleway_regular"
+                android:text="Note for mechanism"
+                android:textColor="@color/grey_primary_variant"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lychee" />
+
+            <EditText
+                android:id="@+id/edit_text_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/raleway_regular"
+                android:maxLines="4"
+                android:hint="Note for mechanism..."
+                android:textColor="@color/text_color"
+                android:textSize="12sp"
+                android:textColorHint="@color/text_color"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/text_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_note_for_mechanism" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/raleway_regular"
+        android:text="Price:"
+        android:layout_marginTop="24dp"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_view" />
+
+    <TextView
+        android:id="@+id/price_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_regular"
+        android:text="90.000 VND"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_price" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_purchase"
+        android:layout_marginTop="24dp"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:fontFamily="@font/raleway_regular"
+        android:background="@drawable/rounded_shape"
+        android:text="Purchase"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_view" />
+
+    <TextView
+        android:id="@+id/btn_add_to_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="34dp"
+        android:fontFamily="@font/raleway_regular"
+        android:text="Add To Cart"
+        android:textColor="@color/grey_primary_variant"
+        android:textSize="14sp"
+        android:layout_marginEnd="14dp"
+        app:layout_constraintEnd_toStartOf="@+id/btn_purchase"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

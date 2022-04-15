@@ -93,4 +93,10 @@
         <item name="textAllCaps">false</item>
         <item name="android:textSize">18sp</item>
     </style>
+
+    <style name="customChipStyle"  parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_background_color</item>
+        <item name="android:textColor">@color/chip_text_color</item>
+    </style>
+
 </resources>
