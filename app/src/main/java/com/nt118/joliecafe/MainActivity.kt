@@ -15,8 +15,9 @@ import com.google.firebase.ktx.Firebase
 import com.nt118.joliecafe.databinding.ActivityMainBinding
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseGoogleAuthentication
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding

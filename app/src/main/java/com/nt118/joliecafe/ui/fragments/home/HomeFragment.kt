@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,9 +27,10 @@ import com.nt118.joliecafe.models.SliderItem
 import com.nt118.joliecafe.ui.activities.notifications.Notification
 import com.nt118.joliecafe.ui.activities.products.products
 import com.nt118.joliecafe.viewmodels.home.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
-
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
@@ -45,16 +47,11 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        val homeViewModel by viewModels<HomeViewModel>()
+
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-//        val textView: TextView = binding.textHome
-//        homeViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
 
         viewPager2 = binding.viewpagerImageSlider
         val dotsIndicator = binding.dotsIndicator
