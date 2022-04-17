@@ -49,6 +49,9 @@ android {
 
 dependencies {
 
+    // MOMO SDK
+    implementation 'com.github.momo-wallet:mobile-sdk:1.0.7'
+
     // Google
     implementation("com.google.android.gms:play-services-auth:20.1.0")
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0'
