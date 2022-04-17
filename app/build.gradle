@@ -7,6 +7,7 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.gms.google-services'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'kotlinx-serialization'
 }
 
 android {
@@ -48,6 +49,8 @@ android {
 }
 
 dependencies {
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0"
 
     // MOMO SDK
     implementation 'com.github.momo-wallet:mobile-sdk:1.0.7'
@@ -103,11 +106,11 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil:1.4.0")
 
-    // Gson
-    implementation 'com.google.code.gson:gson:2.8.9'
-
-    // Jsoup
-    implementation 'org.jsoup:jsoup:1.14.2'
+    //    // Gson
+    //    implementation 'com.google.code.gson:gson:2.8.9'
+    //
+    //    // Jsoup
+    //    implementation 'org.jsoup:jsoup:1.14.2'
 
     // Navigation
     def nav_version = "2.4.2"
