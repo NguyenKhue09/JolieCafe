@@ -52,7 +52,7 @@ class FirebaseFacebookLogin {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
+                    // Sign in success, update UI with the signed-in User's information
                     println("signInWithCredential:success")
                     val user = auth.currentUser
                     println(user?.displayName)
@@ -62,7 +62,7 @@ class FirebaseFacebookLogin {
                         }
                     }
                 } else {
-                    // If sign in fails, display a message to the user.
+                    // If sign in fails, display a message to the User.
                     println("signInWithCredential:failure  ${task.exception}")
                     Toast.makeText(
                         activity.baseContext, "Authentication failed.",
