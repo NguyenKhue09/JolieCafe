@@ -2,18 +2,18 @@ package com.nt118.joliecafe.adapter
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ItemRvBestsallerBinding
+import com.nt118.joliecafe.ui.activities.detail.DetailActivity
 import com.nt118.joliecafe.ui.fragments.catagories.CatagoriesBottomSheetFragment
-import java.security.AccessController.getContext
 
 
-class BestSallerAdapter(private val item : ArrayList<String>, private val activity: Activity) : RecyclerView.Adapter<BestSallerAdapter.ViewHolder>() {
+class BestSallerAdapter(private val item : ArrayList<String>, private val activity: Activity,private val context: Context) : RecyclerView.Adapter<BestSallerAdapter.ViewHolder>() {
     class ViewHolder(var binding: ItemRvBestsallerBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -44,8 +44,8 @@ class BestSallerAdapter(private val item : ArrayList<String>, private val activi
         }
 
         holder.binding.itemCard.setOnClickListener {
-            Toast.makeText( activity, "Halo ${position}", Toast.LENGTH_SHORT).show()
-            println("Halo ${position}")
+            val intent = Intent(context, DetailActivity::class.java)
+            activity.startActivity(intent)
         }
     }
 

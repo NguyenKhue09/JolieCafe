@@ -114,7 +114,7 @@ class HomeFragment : Fragment() {
 
         // RecyclerView Best Seller
         val recyclerViewBS = binding.recyclerViewBestSeller
-        val bestSallerAdapter = BestSallerAdapter(fetDataBestSaler(), requireActivity())
+        val bestSallerAdapter = BestSallerAdapter(fetDataBestSaler(), requireActivity(),requireContext())
         recyclerViewBS.layoutManager = GridLayoutManager(requireContext(),1)
         recyclerViewBS.adapter = bestSallerAdapter
 
