@@ -8,7 +8,7 @@ import javax.inject.Inject
 class RemoteDataSource @Inject constructor(
     private val jolieCafeApi: JolieCafeApi
 ) {
-    suspend fun momoRequestPayment(data: HashMap<String, Any>): Response<SuspendUserMoneyResponse> {
-        return jolieCafeApi.momoRequestPayment(body = data)
+    suspend fun momoRequestPayment(data: HashMap<String, Any>, token: String): Response<SuspendUserMoneyResponse> {
+        return jolieCafeApi.momoRequestPayment(body = data, token = token)
     }
 }

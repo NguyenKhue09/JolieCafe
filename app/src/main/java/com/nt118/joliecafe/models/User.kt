@@ -12,8 +12,7 @@ data class User(
     val dob: String,
     val thumbnail: String,
     val token: String,
-    val defaultAddress: String,
-    val addresses: List<String>,
+    val defaultAddress: Address,
     val coins: Int,
     val scores: Int,
 )
