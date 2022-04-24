@@ -15,29 +15,30 @@ import com.google.firebase.ktx.Firebase
 import com.nt118.joliecafe.databinding.ActivityMainBinding
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseGoogleAuthentication
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var mNavController: NavController
 
-    // check user login
+    // check User login
     public override fun onStart() {
         super.onStart()
 
         auth = Firebase.auth
 
-        // Check if user is signed in (non-null) and update UI accordingly.
+        // Check if User is signed in (non-null) and update UI accordingly.
         val currentUser = auth.currentUser
         println(FirebaseAuth.getInstance().currentUser?.displayName)
         println(currentUser?.displayName)
         if (!FirebaseGoogleAuthentication().checkUser()) {
-            println("Không user")
+            println("Không User")
             startActivity(Intent(this, LoginActivity::class.java))
         } else {
-            println("Có user")
+            println("Có User")
         }
     }
 
@@ -53,13 +54,13 @@ class MainActivity : AppCompatActivity() {
         mNavController = navHostFragment.navController
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home,
-                R.id.navigation_favorite,
-                R.id.navigation_cart
-            )
-        )
+//        val appBarConfiguration = AppBarConfiguration(
+//            setOf(
+//                R.id.navigation_home,
+//                R.id.navigation_favorite,
+//                R.id.navigation_cart
+//            )
+//        )
 
         //setupActionBarWithNavController(mNavController, appBarConfiguration) remove actionbar
         navView.setupWithNavController(mNavController)

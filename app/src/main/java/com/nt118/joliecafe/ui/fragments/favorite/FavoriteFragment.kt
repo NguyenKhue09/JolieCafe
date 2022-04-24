@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.tabs.TabLayout
@@ -13,7 +14,10 @@ import com.nt118.joliecafe.adapter.FavoriteItemAdapter
 import com.nt118.joliecafe.databinding.FragmentFavoriteBinding
 import com.nt118.joliecafe.util.Constants.Companion.listTabContentFavorite
 import com.nt118.joliecafe.viewmodels.favorite.FavoriteViewModel
+import com.nt118.joliecafe.viewmodels.home.HomeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
@@ -27,8 +31,7 @@ class FavoriteFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val dashboardViewModel =
-            ViewModelProvider(this)[FavoriteViewModel::class.java]
+        val favoriteViewModel by viewModels<FavoriteViewModel>()
 
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 

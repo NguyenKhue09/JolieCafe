@@ -9,5 +9,6 @@ class Constants {
         const val IS_CHANGE_PASSWORD = "isChangePassword"
         const val IS_SAVE_CHANGE_PASSWORD = "isSaveChangePassword"
         const val IS_ADD_NEW_ADDRESS = "isAddNewAddress"
+        const val BASE_URL = "https://joliecafe.herokuapp.com/"
     }
 }       

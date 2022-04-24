@@ -18,10 +18,10 @@ class FirebaseEmailPasswordAuthentication {
                 if(task.isSuccessful) {
                     val firebaseUser: FirebaseUser? = task.result!!.user!!
 
-                    Toast.makeText(signUpActivity, "Register user successful!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(signUpActivity, "Register User successful!", Toast.LENGTH_SHORT).show()
                     signUpActivity.navigateToMainScreen()
                 } else {
-                    Toast.makeText(signUpActivity, "Register user failed!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(signUpActivity, "Register User failed!", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener {
