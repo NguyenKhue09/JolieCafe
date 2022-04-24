@@ -94,7 +94,7 @@ class HomeFragment : Fragment() {
 
         //open  notification
         binding.toolbarHome.imgNotification.setOnClickListener {
-            val intent = Intent(getActivity(),Notification::class.java)
+            val intent = Intent(activity,Notification::class.java)
             startActivity(intent)
         }
 
@@ -109,7 +109,7 @@ class HomeFragment : Fragment() {
         recyclerView.adapter = categorieAdapter
         categorieAdapter.setOnClickListener(object : CategorieAdapter.onItemClickListener{
             override fun onItemClick(position: Int) {
-                val intent = Intent(getActivity(),products::class.java)
+                val intent = Intent(activity,products::class.java)
                 intent.putExtra("position",position)
                 startActivity(intent)
             }
@@ -117,7 +117,7 @@ class HomeFragment : Fragment() {
 
         // RecyclerView Best Seller
         val recyclerViewBS = binding.recyclerViewBestSeller
-        val bestSallerAdapter = BestSallerAdapter(fetDataBestSaler(), requireActivity())
+        val bestSallerAdapter = BestSallerAdapter(fetDataBestSaler(), requireActivity(),requireContext())
         recyclerViewBS.layoutManager = GridLayoutManager(requireContext(),1)
         recyclerViewBS.adapter = bestSallerAdapter
 

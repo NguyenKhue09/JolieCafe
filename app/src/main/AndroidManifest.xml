@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <queries>
         <provider
@@ -20,20 +20,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JolieCafe">
+        <activity
+            android:name=".ui.activities.detail.DetailActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
+
         <activity
             android:name=".ui.activities.settings.SettingsActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".ui.activities.checkout.VoucherDialog"
-            android:theme="@style/Theme.JolieCafe.Dialog"
             android:excludeFromRecents="true"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.JolieCafe.Dialog" />
         <activity
             android:name=".ui.activities.order_detail.OrderDetailActivity"
             android:exported="false" />
