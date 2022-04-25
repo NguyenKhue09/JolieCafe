@@ -7,10 +7,16 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.util.Patterns
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.facebook.CallbackManager
 import com.facebook.FacebookSdk.setAdvertiserIDCollectionEnabled
 import com.facebook.FacebookSdk.setAutoLogAppEventsEnabled
@@ -26,9 +32,14 @@ import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseFacebookLogin
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseGoogleAuthentication
 import com.nt118.joliecafe.ui.activities.forgotpassword.ForgotPasswordActivity
 import com.nt118.joliecafe.ui.activities.signup.SignUpActivity
+import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants
+import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.viewmodels.login.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private var _binding: ActivityLoginBinding? = null
@@ -37,6 +48,8 @@ class LoginActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var callbackManager: CallbackManager
     private lateinit var auth: FirebaseAuth
+    private val loginViewModel: LoginViewModel by viewModels()
+    private lateinit var networkListener: NetworkListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,13 +72,42 @@ class LoginActivity : AppCompatActivity() {
         _binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        loginViewModel.createUserResponse.observe(this) { result ->
+            when(result) {
+                is ApiResult.Success -> {
+                    navigateToMainScreen()
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(this, "${result.message}", Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
+        }
+
+        loginViewModel.readBackOnline.asLiveData().observe(this) {
+            loginViewModel.backOnline = it
+        }
+
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(this@LoginActivity)
+                .collect { status ->
+                    loginViewModel.networkStatus = status
+                    loginViewModel.showNetworkStatus()
+                }
+        }
+
         onClick()
     }
 
     private fun onClick() {
         // FaceBook Login
         binding.imgFb.setOnClickListener {
-            facebookLogin.facebookLogin(callbackManager, auth, this)
+            if(loginViewModel.networkStatus) {
+                facebookLogin.facebookLogin(callbackManager, auth, this)
+            } else {
+                loginViewModel.showNetworkStatus()
+            }
         }
 
 
@@ -84,13 +126,21 @@ class LoginActivity : AppCompatActivity() {
 
         // Google Signin
         binding.imgGg.setOnClickListener {
-            if (!FirebaseGoogleAuthentication().checkUser()) {
-                FirebaseGoogleAuthentication().loginGoogle(userSignIn, mGoogleSignInClient)
+            if(loginViewModel.networkStatus) {
+                if (!FirebaseGoogleAuthentication().checkUser()) {
+                    FirebaseGoogleAuthentication().loginGoogle(userSignIn, mGoogleSignInClient)
+                }
+            } else {
+                loginViewModel.showNetworkStatus()
             }
         }
 
         binding.btnLogin.setOnClickListener {
-            loginUserWithEmailPassword()
+            if(loginViewModel.networkStatus) {
+                loginUserWithEmailPassword()
+            } else {
+                loginViewModel.showNetworkStatus()
+            }
         }
     }
 
@@ -136,6 +186,10 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    fun createUser(data: HashMap<String, Any>) {
+        loginViewModel.createUser(data = data)
+    }
+
     private fun validateEmail(): Boolean {
         val email = binding.etUserName.text.toString().trim{it <= ' '}
 
@@ -173,7 +227,7 @@ class LoginActivity : AppCompatActivity() {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
-    fun navigateToMainScreen() {
+    private fun navigateToMainScreen() {
         finish()
     }
 

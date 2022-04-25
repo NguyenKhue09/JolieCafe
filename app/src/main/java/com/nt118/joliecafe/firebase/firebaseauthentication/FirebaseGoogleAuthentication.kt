@@ -25,6 +25,8 @@ class FirebaseGoogleAuthentication {
 
     fun googleAuthForFirebase(account: GoogleSignInAccount, activity: Activity) {
         val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
+        val data: HashMap<String, Any> = hashMapOf()
+
         try {
             mAuth.signInWithCredential(credentials).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -32,7 +34,10 @@ class FirebaseGoogleAuthentication {
                         .show()
                     when(activity) {
                         is LoginActivity -> {
-                            activity.navigateToMainScreen()
+                            data["_id"] = task.result.user!!.uid
+                            data["fullname"] = task.result.user!!.displayName ?: ""
+                            data["email"] = task.result.user!!.email ?: ""
+                            activity.createUser(data = data)
                         }
                         is SignUpActivity -> {
                             activity.navigateToMainScreen()

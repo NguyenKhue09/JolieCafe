@@ -47,8 +47,9 @@ class FirebaseFacebookLogin {
 
     private fun handleFacebookAccessToken(token: AccessToken, activity: Activity, auth: FirebaseAuth) {
         println("handleFacebookAccessToken:$token")
-
         val credential = FacebookAuthProvider.getCredential(token.token)
+        val data: HashMap<String, Any> = hashMapOf()
+
         auth.signInWithCredential(credential)
             .addOnCompleteListener(activity) { task ->
                 if (task.isSuccessful) {
@@ -58,7 +59,10 @@ class FirebaseFacebookLogin {
                     println(user?.displayName)
                     when(activity) {
                         is LoginActivity -> {
-                            activity.navigateToMainScreen()
+                            data["_id"] = task.result.user!!.uid
+                            data["fullname"] = task.result.user!!.displayName ?: ""
+                            data["email"] = task.result.user!!.email ?: ""
+                            activity.createUser(data = data)
                         }
                     }
                 } else {

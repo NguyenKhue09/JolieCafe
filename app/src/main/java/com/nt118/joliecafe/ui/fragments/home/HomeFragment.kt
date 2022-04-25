@@ -11,12 +11,14 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.nt118.joliecafe.MainActivity
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.BestSallerAdapter
 import com.nt118.joliecafe.adapter.CategorieAdapter
@@ -51,19 +53,9 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-
-
-
-        //homeViewModel.getMomo()
-
-        lifecycleScope.launch {
-            homeViewModel.momo.collect {
-
-            }
+        homeViewModel.readUserToken.asLiveData().observe(viewLifecycleOwner) {
+            homeViewModel.userToken = it
         }
-
-
-
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -83,10 +75,12 @@ class HomeFragment : Fragment() {
 
         viewPager2.adapter = SlideAdapter(silderItems, viewPager2)
 
-        viewPager2.clipToPadding = false
-        viewPager2.clipChildren = false
-        viewPager2.offscreenPageLimit = 3
-        viewPager2.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        viewPager2.apply {
+            clipToPadding = false
+            clipChildren = false
+            offscreenPageLimit = 3
+            getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        }
 
         val compositePageTransformer = CompositePageTransformer()
         compositePageTransformer.addTransformer(MarginPageTransformer(30))
@@ -133,6 +127,11 @@ class HomeFragment : Fragment() {
         recyclerViewBS.layoutManager = GridLayoutManager(requireContext(),1)
         recyclerViewBS.adapter = bestSallerAdapter
 
+        homeViewModel.getProducts(productQuery = mapOf("currentPage" to 1.toString(), "productPerPage" to 10.toString(), "type" to "Coffee" ), token = homeViewModel.userToken)
+
+        homeViewModel.getProductsResponse.observe(viewLifecycleOwner) {
+            println("data ${it.data}")
+        }
 
         return root
     }
