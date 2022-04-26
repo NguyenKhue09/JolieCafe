@@ -57,7 +57,7 @@ class BestSellerAdapter(private val activity: Activity) : RecyclerView.Adapter<B
 
         holder.binding.itemImg.load(product.thumbnail) {
             crossfade(600)
-            error(R.drawable.ic_coffee)
+            error(R.drawable.placeholder_image)
         }
 
         holder.binding.itemName.text = product.name

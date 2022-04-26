@@ -7,6 +7,8 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -28,10 +30,12 @@ import com.nt118.joliecafe.models.SliderItem
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.notifications.Notification
 import com.nt118.joliecafe.ui.activities.products.products
+import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.viewmodels.home.HomeViewModel
 import com.nt118.joliecafe.viewmodels.login.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlin.math.abs
 
 @AndroidEntryPoint
@@ -50,35 +54,23 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {
             startActivity(Intent(requireContext(), LoginActivity::class.java))
-        } else {
-            lifecycleScope.launchWhenStarted {
-                homeViewModel.readUserToken.collect { token ->
-                    homeViewModel.userToken = token
-                    if (token.isEmpty() && homeViewModel.networkStatus) {
-                        val data = hashMapOf<String, Any>()
-                        val user = FirebaseAuth.getInstance().currentUser
-                        data["_id"] = user!!.uid
-                        data["fullname"] = user.displayName ?: ""
-                        data["email"] = user.email ?: ""
-                        loginViewModel.createUser(data = data)
-                    } else if(homeViewModel.networkStatus) {
-                        homeViewModel.getProducts(
-                            productQuery = mapOf(
-                                "currentPage" to 0.toString(),
-                                "productPerPage" to 10.toString(),
-                                "type" to "Coffee"
-                            ),
-                            token = homeViewModel.userToken
-                        )
-                    }
-                }
-            }
         }
 
+        lifecycleScope.launchWhenStarted {
+            homeViewModel.readUserToken.collectLatest { token ->
+                homeViewModel.getProducts(
+                    productQuery = mapOf(
+                        "currentPage" to 0.toString(),
+                        "productPerPage" to 10.toString(),
+                        "type" to "Coffee"
+                    ),
+                    token = token
+                )
+            }
+        }
     }
 
     override fun onCreateView(
@@ -182,9 +174,20 @@ class HomeFragment : Fragment() {
 
         homeViewModel.getProductsResponse.observe(viewLifecycleOwner) { data ->
             println("data ${data.data}")
-            data.data?.let {
-                bestSallerAdapter.setData(it)
+            when(data)  {
+                is ApiResult.Success -> {
+                    data.data?.let {
+                        bestSallerAdapter.setData(it)
+                    }
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(requireContext(), data.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+
+                }
             }
+
         }
 
         return root
