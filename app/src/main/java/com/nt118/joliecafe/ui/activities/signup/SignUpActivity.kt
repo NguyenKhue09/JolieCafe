@@ -204,4 +204,8 @@ class SignUpActivity : AppCompatActivity() {
 
         tvCreateAccount.text = spannableString
     }
+
+    fun createUser(data: HashMap<String, Any>) {
+
+    }
 }

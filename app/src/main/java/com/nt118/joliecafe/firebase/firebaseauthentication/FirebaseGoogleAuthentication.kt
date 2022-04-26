@@ -18,13 +18,15 @@ class FirebaseGoogleAuthentication {
     var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     fun signOut(activity: Activity, mGoogleSignInClient: GoogleSignInClient) {
-        mAuth.signOut()
         mGoogleSignInClient.signOut().addOnCompleteListener(activity,
             OnCompleteListener<Void?> { })
+        Toast.makeText(activity, "Google sign out: ${mAuth.currentUser}", Toast.LENGTH_LONG).show()
     }
 
     fun googleAuthForFirebase(account: GoogleSignInAccount, activity: Activity) {
         val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
+        val data: HashMap<String, Any> = hashMapOf()
+
         try {
             mAuth.signInWithCredential(credentials).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -32,7 +34,10 @@ class FirebaseGoogleAuthentication {
                         .show()
                     when(activity) {
                         is LoginActivity -> {
-                            activity.navigateToMainScreen()
+                            data["_id"] = task.result.user!!.uid
+                            data["fullname"] = task.result.user!!.displayName ?: ""
+                            data["email"] = task.result.user!!.email ?: ""
+                            activity.createUser(data = data)
                         }
                         is SignUpActivity -> {
                             activity.navigateToMainScreen()

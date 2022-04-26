@@ -7,26 +7,30 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.R
-import com.nt118.joliecafe.adapter.BestSallerAdapter
+import com.nt118.joliecafe.adapter.BestSellerAdapter
 import com.nt118.joliecafe.adapter.CategorieAdapter
 import com.nt118.joliecafe.adapter.DotIndicatorPager2Adapter
 import com.nt118.joliecafe.adapter.SlideAdapter
 import com.nt118.joliecafe.databinding.FragmentHomeBinding
 import com.nt118.joliecafe.models.CategorieModel
 import com.nt118.joliecafe.models.SliderItem
+import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.notifications.Notification
 import com.nt118.joliecafe.ui.activities.products.products
+import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.viewmodels.home.HomeViewModel
+import com.nt118.joliecafe.viewmodels.login.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.math.abs
 
@@ -34,24 +38,80 @@ import kotlin.math.abs
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
+    private val homeViewModel by viewModels<HomeViewModel>()
+    private val loginViewModel by viewModels<LoginViewModel>()
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var networkListener: NetworkListener
 
     private lateinit var viewPager2: ViewPager2
     private val sliderHandle = Handler(Looper.getMainLooper())
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser == null) {
+            startActivity(Intent(requireContext(), LoginActivity::class.java))
+        } else {
+            lifecycleScope.launchWhenStarted {
+                homeViewModel.readUserToken.collect { token ->
+                    homeViewModel.userToken = token
+                    if (token.isEmpty() && homeViewModel.networkStatus) {
+                        val data = hashMapOf<String, Any>()
+                        val user = FirebaseAuth.getInstance().currentUser
+                        data["_id"] = user!!.uid
+                        data["fullname"] = user.displayName ?: ""
+                        data["email"] = user.email ?: ""
+                        loginViewModel.createUser(data = data)
+                    } else if(homeViewModel.networkStatus) {
+                        homeViewModel.getProducts(
+                            productQuery = mapOf(
+                                "currentPage" to 0.toString(),
+                                "productPerPage" to 10.toString(),
+                                "type" to "Coffee"
+                            ),
+                            token = homeViewModel.userToken
+                        )
+                    }
+                }
+            }
+        }
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel by viewModels<HomeViewModel>()
-
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        homeViewModel.readBackOnline.asLiveData().observe(viewLifecycleOwner) {
+            homeViewModel.backOnline = it
+        }
+
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(requireContext())
+                .collect { status ->
+                    homeViewModel.networkStatus = status
+                    homeViewModel.showNetworkStatus()
+                    if(status) {
+                        homeViewModel.getProducts(
+                            productQuery = mapOf(
+                                "currentPage" to 0.toString(),
+                                "productPerPage" to 10.toString(),
+                                "type" to "Coffee"
+                            ),
+                            token = homeViewModel.userToken
+                        )
+                    }
+                }
+        }
 
         viewPager2 = binding.viewpagerImageSlider
         val dotsIndicator = binding.dotsIndicator
@@ -68,10 +128,12 @@ class HomeFragment : Fragment() {
 
         viewPager2.adapter = SlideAdapter(silderItems, viewPager2)
 
-        viewPager2.clipToPadding = false
-        viewPager2.clipChildren = false
-        viewPager2.offscreenPageLimit = 3
-        viewPager2.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        viewPager2.apply {
+            clipToPadding = false
+            clipChildren = false
+            offscreenPageLimit = 3
+            getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+        }
 
         val compositePageTransformer = CompositePageTransformer()
         compositePageTransformer.addTransformer(MarginPageTransformer(30))
@@ -114,10 +176,16 @@ class HomeFragment : Fragment() {
 
         // RecyclerView Best Seller
         val recyclerViewBS = binding.recyclerViewBestSeller
-        val bestSallerAdapter = BestSallerAdapter(fetDataBestSaler(), requireActivity(),requireContext())
+        val bestSallerAdapter = BestSellerAdapter(requireActivity())
         recyclerViewBS.layoutManager = GridLayoutManager(requireContext(),1)
         recyclerViewBS.adapter = bestSallerAdapter
 
+        homeViewModel.getProductsResponse.observe(viewLifecycleOwner) { data ->
+            println("data ${data.data}")
+            data.data?.let {
+                bestSallerAdapter.setData(it)
+            }
+        }
 
         return root
     }

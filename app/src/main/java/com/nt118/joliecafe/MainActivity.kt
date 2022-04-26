@@ -21,26 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var auth: FirebaseAuth
     private lateinit var mNavController: NavController
-
-    // check User login
-    public override fun onStart() {
-        super.onStart()
-
-        auth = Firebase.auth
-
-        // Check if User is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        println(FirebaseAuth.getInstance().currentUser?.displayName)
-        println(currentUser?.displayName)
-        if (!FirebaseGoogleAuthentication().checkUser()) {
-            println("Không User")
-            startActivity(Intent(this, LoginActivity::class.java))
-        } else {
-            println("Có User")
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

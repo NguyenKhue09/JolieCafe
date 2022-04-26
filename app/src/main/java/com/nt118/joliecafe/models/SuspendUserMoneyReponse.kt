@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SuspendUserMoneyResponse(
     val status: Int,
-    val message: String,
+    var message: String,
     val amount: Long,
     val transid: String,
     val signature: String

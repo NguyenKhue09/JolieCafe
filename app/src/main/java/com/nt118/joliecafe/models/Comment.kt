@@ -10,3 +10,5 @@ data class Comment(
     val rating: Int,
     val createdAt: String?
 )
+
+
