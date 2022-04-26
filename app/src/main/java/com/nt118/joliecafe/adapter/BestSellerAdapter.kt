@@ -1,9 +1,9 @@
 package com.nt118.joliecafe.adapter
 
 import android.app.Activity
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +11,7 @@ import coil.load
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ItemRvBestsallerBinding
 import com.nt118.joliecafe.models.Product
+import com.nt118.joliecafe.ui.activities.detail.DetailActivity
 import com.nt118.joliecafe.ui.fragments.catagories.CatagoriesBottomSheetFragment
 import com.nt118.joliecafe.util.ItemDiffUtil
 
@@ -18,6 +19,7 @@ import com.nt118.joliecafe.util.ItemDiffUtil
 class BestSellerAdapter(private val activity: Activity) : RecyclerView.Adapter<BestSellerAdapter.ViewHolder>() {
 
     private var products = emptyList<Product>()
+
 
     class ViewHolder(var binding: ItemRvBestsallerBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -47,8 +49,8 @@ class BestSellerAdapter(private val activity: Activity) : RecyclerView.Adapter<B
         }
 
         holder.binding.itemCard.setOnClickListener {
-            Toast.makeText( activity, "Halo ${position}", Toast.LENGTH_SHORT).show()
-            println("Halo ${position}")
+            val intent = Intent(activity, DetailActivity::class.java)
+            activity.startActivity(intent)
         }
 
         val product = products[position]

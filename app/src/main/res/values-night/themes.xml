@@ -98,5 +98,10 @@
         <item name="chipBackgroundColor">@color/chip_background_color</item>
         <item name="android:textColor">@color/chip_text_color</item>
     </style>
-
+    <style name="customChipStyleDetail"  parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_bg_detail</item>
+    </style>
+    <style name="customChipStyleDetailRank"  parent="Widget.MaterialComponents.Chip.Entry">
+        <item name="chipBackgroundColor">@color/chip_bg_detail</item>
+    </style>
 </resources>
