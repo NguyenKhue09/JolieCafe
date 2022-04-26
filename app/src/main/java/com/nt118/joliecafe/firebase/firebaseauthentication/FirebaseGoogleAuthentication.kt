@@ -18,9 +18,9 @@ class FirebaseGoogleAuthentication {
     var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     fun signOut(activity: Activity, mGoogleSignInClient: GoogleSignInClient) {
-        mAuth.signOut()
         mGoogleSignInClient.signOut().addOnCompleteListener(activity,
             OnCompleteListener<Void?> { })
+        Toast.makeText(activity, "Google sign out: ${mAuth.currentUser}", Toast.LENGTH_LONG).show()
     }
 
     fun googleAuthForFirebase(account: GoogleSignInAccount, activity: Activity) {

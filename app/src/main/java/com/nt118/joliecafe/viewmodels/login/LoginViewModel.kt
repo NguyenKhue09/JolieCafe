@@ -45,7 +45,7 @@ class LoginViewModel @Inject constructor(
             dataStoreRepository.saveBackOnline(backOnline)
         }
 
-    private fun saveUserToken(userToken: String) =
+    fun saveUserToken(userToken: String) =
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveUserToken(userToken = userToken)
         }
@@ -60,6 +60,7 @@ class LoginViewModel @Inject constructor(
                 ApiResult.Error(response.message())
             }
             response.isSuccessful -> {
+                println(result!!.data!!.token)
                 saveUserToken(result!!.data!!.token)
                 ApiResult.Success(result.data!!)
             }

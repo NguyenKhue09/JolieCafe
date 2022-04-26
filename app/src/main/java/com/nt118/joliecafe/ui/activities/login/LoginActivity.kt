@@ -57,7 +57,7 @@ class LoginActivity : AppCompatActivity() {
         setAutoLogAppEventsEnabled(true)
         setAdvertiserIDCollectionEnabled(true)
         facebookLogin = FirebaseFacebookLogin()
-        auth = Firebase.auth
+        auth = FirebaseAuth.getInstance()
         callbackManager = CallbackManager.Factory.create()
 
         // google

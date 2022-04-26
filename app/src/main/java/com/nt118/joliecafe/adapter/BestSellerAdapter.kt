@@ -1,19 +1,24 @@
 package com.nt118.joliecafe.adapter
 
 import android.app.Activity
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ItemRvBestsallerBinding
+import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.ui.fragments.catagories.CatagoriesBottomSheetFragment
-import java.security.AccessController.getContext
+import com.nt118.joliecafe.util.ItemDiffUtil
 
 
-class BestSallerAdapter(private val item : ArrayList<String>, private val activity: Activity) : RecyclerView.Adapter<BestSallerAdapter.ViewHolder>() {
+class BestSellerAdapter(private val activity: Activity) : RecyclerView.Adapter<BestSellerAdapter.ViewHolder>() {
+
+    private var products = emptyList<Product>()
+
     class ViewHolder(var binding: ItemRvBestsallerBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -35,8 +40,6 @@ class BestSallerAdapter(private val item : ArrayList<String>, private val activi
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.itemBestsaller.text = item[position]
-
         holder.binding.btnAddCard.setOnClickListener {
             val ft = (activity as AppCompatActivity).supportFragmentManager.beginTransaction()
             val bottomSheet = CatagoriesBottomSheetFragment()
@@ -47,9 +50,27 @@ class BestSallerAdapter(private val item : ArrayList<String>, private val activi
             Toast.makeText( activity, "Halo ${position}", Toast.LENGTH_SHORT).show()
             println("Halo ${position}")
         }
+
+        val product = products[position]
+
+        holder.binding.itemImg.load(product.thumbnail) {
+            crossfade(600)
+            error(R.drawable.ic_coffee)
+        }
+
+        holder.binding.itemName.text = product.name
+        holder.binding.itemPrice.text = product.originPrice.toString()
     }
 
     override fun getItemCount(): Int {
-        return item.size
+        return products.size
+    }
+
+    fun setData(newProducts: List<Product>) {
+        val productsDiffUtil =
+            ItemDiffUtil(products, newProducts)
+        val diffUtilResult = DiffUtil.calculateDiff(productsDiffUtil)
+        products = newProducts
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }
