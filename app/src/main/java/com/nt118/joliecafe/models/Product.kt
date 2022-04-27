@@ -5,6 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(
+    @SerialName("_id")
+    val id: String,
     val name: String,
     val status: String,
     val type: String,

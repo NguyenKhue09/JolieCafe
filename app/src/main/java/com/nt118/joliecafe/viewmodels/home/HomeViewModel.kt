@@ -1,28 +1,17 @@
 package com.nt118.joliecafe.viewmodels.home
 
 import android.app.Application
-import android.content.Intent
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.*
+import androidx.paging.PagingData
 import com.google.firebase.auth.FirebaseAuth
-import com.google.protobuf.Api
 import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
 import com.nt118.joliecafe.models.*
-import com.nt118.joliecafe.ui.activities.login.LoginActivity
-import com.nt118.joliecafe.util.ApiResult.Success
-import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import okhttp3.Request
-import okhttp3.Response
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -35,7 +24,6 @@ class HomeViewModel @Inject constructor(
 
     var readBackOnline = dataStoreRepository.readBackOnline
     var readUserToken = dataStoreRepository.readUserToken
-    var getProductsResponse: MutableLiveData<ApiResult<List<Product>>> = MutableLiveData()
 
     var userToken = ""
 
@@ -43,26 +31,22 @@ class HomeViewModel @Inject constructor(
     var backOnline = false
 
 
-    fun getProducts(productQuery: Map<String, String>, token: String) {
-        println("Token $token")
-        if (token.isNotEmpty()) {
-            viewModelScope.launch {
-                getProductsResponse.value = ApiResult.Loading()
-                try {
-                    val response = repository.remote.getProduct(
-                        productQuery = productQuery,
-                        token = "Bearer $token"
-                    )
-                    getProductsResponse.value = handleApiResponse(response)
-                } catch (e: Exception) {
-                    getProductsResponse.value = ApiResult.Error("Product not found.")
-                    println(e.message)
-                }
+    fun getProducts(productQuery: Map<String, String>, token: String): Flow<PagingData<Product>> {
+        return if (token.isNotEmpty()) {
+            try {
+                repository.remote.getProducts(
+                    productQuery = productQuery,
+                    token = "Bearer $token"
+                )
+            } catch (e: Exception) {
+                println(e.message)
+                flowOf()
             }
         } else {
+            println("Token empty")
             handleTokenEmpty()
+            flowOf()
         }
-
     }
 
     private fun handleTokenEmpty() {
@@ -81,24 +65,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun handleApiResponse(response: retrofit2.Response<ApiResponseMultiData<Product>>): ApiResult<List<Product>> {
-        val result = response.body()
-        return when {
-            response.message().toString().contains("timeout") -> {
-                ApiResult.Error("Timeout")
-            }
-            response.code() == 500 -> {
-                ApiResult.Error(response.message())
-            }
-            response.isSuccessful -> {
-                ApiResult.Success(result!!.data)
-            }
-            else -> {
-                ApiResult.Error(response.message())
-            }
-        }
-    }
-
     private fun handleGetTokenResponse(response: retrofit2.Response<ApiResponseSingleData<User>>) {
         val result = response.body()
         when {
@@ -106,7 +72,6 @@ class HomeViewModel @Inject constructor(
                 saveUserToken(userToken = result!!.data!!.token)
             }
             else -> {
-                getProductsResponse.value = ApiResult.Error("Unauthorized. Please try login again.")
                 saveUserToken("")
             }
         }

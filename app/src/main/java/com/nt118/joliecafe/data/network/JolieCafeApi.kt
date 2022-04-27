@@ -23,7 +23,7 @@ interface JolieCafeApi {
     suspend fun getProducts(
         @QueryMap productQuery: Map<String, String>,
         @Header("Authorization") token: String
-    ): Response<ApiResponseMultiData<Product>>
+    ): ApiResponseMultiData<Product>
 
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 
