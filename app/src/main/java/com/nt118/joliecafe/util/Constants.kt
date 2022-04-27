@@ -14,5 +14,6 @@ class Constants {
         const val PREFERENCES_NAME = "jolie_preferences"
         const val PREFERENCES_BACK_ONLINE = "backOnline"
         const val PREFERENCES_USER_TOKEN = "userToken"
+        const val PAGE_SIZE = 10
     }
 }       

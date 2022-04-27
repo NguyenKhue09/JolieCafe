@@ -74,7 +74,6 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_below="@id/tvBestSellers"
                 android:id="@+id/recyclerViewBestSeller"
-                tools:itemCount="5"
                 android:layout_marginBottom="15dp"
                 tools:listitem="@layout/item_rv_bestsaller"
                 android:layout_width="match_parent"

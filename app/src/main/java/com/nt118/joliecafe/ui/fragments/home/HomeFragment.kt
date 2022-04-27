@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
@@ -32,10 +33,12 @@ import com.nt118.joliecafe.ui.activities.notifications.Notification
 import com.nt118.joliecafe.ui.activities.products.products
 import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.util.ProductComparator
 import com.nt118.joliecafe.viewmodels.home.HomeViewModel
 import com.nt118.joliecafe.viewmodels.login.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 @AndroidEntryPoint
@@ -58,19 +61,6 @@ class HomeFragment : Fragment() {
         if (currentUser == null) {
             startActivity(Intent(requireContext(), LoginActivity::class.java))
         }
-
-        lifecycleScope.launchWhenStarted {
-            homeViewModel.readUserToken.collectLatest { token ->
-                homeViewModel.getProducts(
-                    productQuery = mapOf(
-                        "currentPage" to 0.toString(),
-                        "productPerPage" to 10.toString(),
-                        "type" to "Coffee"
-                    ),
-                    token = token
-                )
-            }
-        }
     }
 
     override fun onCreateView(
@@ -86,24 +76,6 @@ class HomeFragment : Fragment() {
             homeViewModel.backOnline = it
         }
 
-        lifecycleScope.launchWhenStarted {
-            networkListener = NetworkListener()
-            networkListener.checkNetworkAvailability(requireContext())
-                .collect { status ->
-                    homeViewModel.networkStatus = status
-                    homeViewModel.showNetworkStatus()
-                    if(status) {
-                        homeViewModel.getProducts(
-                            productQuery = mapOf(
-                                "currentPage" to 0.toString(),
-                                "productPerPage" to 10.toString(),
-                                "type" to "Coffee"
-                            ),
-                            token = homeViewModel.userToken
-                        )
-                    }
-                }
-        }
 
         viewPager2 = binding.viewpagerImageSlider
         val dotsIndicator = binding.dotsIndicator
@@ -167,28 +139,70 @@ class HomeFragment : Fragment() {
         })
 
         // RecyclerView Best Seller
+        val diffCallBack = ProductComparator
         val recyclerViewBS = binding.recyclerViewBestSeller
-        val bestSallerAdapter = BestSellerAdapter(requireActivity())
+        val bestSallerAdapter = BestSellerAdapter(requireActivity(), diffCallBack = diffCallBack)
         recyclerViewBS.layoutManager = GridLayoutManager(requireContext(),1)
         recyclerViewBS.adapter = bestSallerAdapter
 
-        homeViewModel.getProductsResponse.observe(viewLifecycleOwner) { data ->
-            println("data ${data.data}")
-            when(data)  {
-                is ApiResult.Success -> {
-                    data.data?.let {
-                        bestSallerAdapter.setData(it)
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(requireContext())
+                .collect { status ->
+                    homeViewModel.networkStatus = status
+                    homeViewModel.showNetworkStatus()
+                    if(homeViewModel.backOnline) {
+                        homeViewModel.getProducts(
+                            productQuery = mapOf(
+                                "type" to "Coffee"
+                            ),
+                            token = homeViewModel.userToken
+                        ).collectLatest { data ->
+                            bestSallerAdapter.submitData(data)
+                        }
                     }
                 }
-                is ApiResult.Error -> {
-                    Toast.makeText(requireContext(), data.message, Toast.LENGTH_SHORT).show()
-                }
-                else -> {
+        }
 
+
+        lifecycleScope.launchWhenStarted {
+            homeViewModel.readUserToken.collectLatest { token ->
+                homeViewModel.userToken = token
+                homeViewModel.getProducts(
+                    productQuery = mapOf(
+                        "type" to "Coffee"
+                    ),
+                    token = token
+                ).collectLatest { data ->
+                    bestSallerAdapter.submitData(data)
                 }
             }
-
         }
+
+        lifecycleScope.launch {
+            bestSallerAdapter.loadStateFlow.collectLatest { loadStates ->
+            }
+        }
+
+        bestSallerAdapter.addLoadStateListener { loadState ->
+            if (loadState.refresh is LoadState.Loading){
+
+            }
+            else{
+
+                // getting the error
+                val error = when {
+                    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+                    else -> null
+                }
+                error?.let {
+                    Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
 
         return root
     }
