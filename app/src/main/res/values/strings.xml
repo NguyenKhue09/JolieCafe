@@ -81,4 +81,6 @@
     <string name="time_left">%1$d minutes left</string>
     <string name="suggestion">Suggestion</string>
     <string name="test_description">Typically composed of a single espresso shot and hot milk, with the surface topped with foamed milk. The top third of the drink consists of milk foam; this foam can be decorated with artistic drawings made...</string>
+    <string name="juice">Juice</string>
+    <string name="milk_tea">Milk tea</string>
 </resources>

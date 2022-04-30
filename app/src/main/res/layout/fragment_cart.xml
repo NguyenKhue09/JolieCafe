@@ -66,6 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/footer"
         android:layout_marginBottom="19dp"
+        android:scrollbars="none"
         android:visibility="visible">
 
         <LinearLayout
@@ -96,6 +97,7 @@
                         android:text="@string/tea"/>
 
                     <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_tea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -129,6 +131,7 @@
                         android:text="@string/coffee"/>
 
                     <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_coffee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -157,9 +160,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/RegularCheckBox"
-                        android:text="@string/tea"/>
+                        android:text="@string/juice"/>
 
                     <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_juice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -188,9 +192,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/RegularCheckBox"
-                        android:text="@string/tea"/>
+                        android:text="@string/milk_tea"/>
 
                     <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_milk_tea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
