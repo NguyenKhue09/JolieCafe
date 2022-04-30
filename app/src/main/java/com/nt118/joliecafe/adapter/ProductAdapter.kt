@@ -1,44 +1,63 @@
 package com.nt118.joliecafe.adapter
 
+import android.app.Activity
+import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.nt118.joliecafe.R
+import com.nt118.joliecafe.databinding.ItemRvBestsallerBinding
+import com.nt118.joliecafe.databinding.ItemRvProductBinding
+import com.nt118.joliecafe.models.Product
+import com.nt118.joliecafe.ui.activities.detail.DetailActivity
 
-class ProductAdapter(private val item : ArrayList<String>) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
-    class ViewHolder(itemView: View, listener: onItemClickListener) : RecyclerView.ViewHolder(itemView){
-        val tvCart: TextView = itemView.findViewById(R.id.tv_categories_product)
-        init {
-            itemView.setOnClickListener {
-                listener.onItemClick(absoluteAdapterPosition)
+class ProductAdapter(
+        private val activity: Activity,
+        diffCallBack: DiffUtil.ItemCallback<Product>
+    ) : PagingDataAdapter<Product, ProductAdapter.ViewHolder>(diffCallBack) {
+    class ViewHolder(var binding: ItemRvProductBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        companion object {
+            fun from(parent: ViewGroup): ProductAdapter.ViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ItemRvProductBinding.inflate(layoutInflater)
+                return ProductAdapter.ViewHolder(binding)
             }
         }
     }
 
 
-    private lateinit var mlistener: onItemClickListener
-
-    interface onItemClickListener{
-        fun onItemClick(position: Int)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ProductAdapter.ViewHolder {
+        return ProductAdapter.ViewHolder.from(parent)
     }
 
-    fun setOnClickListener(listener: onItemClickListener){
-        mlistener = listener
+    override fun onBindViewHolder(holder: ProductAdapter.ViewHolder, position: Int) {
+
+
+        holder.binding.itemCard.setOnClickListener {
+            val intent = Intent(activity, DetailActivity::class.java)
+            activity.startActivity(intent)
+        }
+
+        val product = getItem(position)
+        product?.let {
+            holder.binding.itemImgProduct.load(product.thumbnail) {
+                crossfade(600)
+                error(R.drawable.placeholder_image)
+            }
+
+            holder.binding.tvNameProduct.text = product.name
+            holder.binding.itemPriceProduct.text = product.originPrice.toString()
+            holder.binding.tvCategoriesProduct.text = product.type
+        }
     }
 
 
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_rv_product,parent,false),mlistener)
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.tvCart.text = item[position]
-    }
-
-    override fun getItemCount(): Int {
-        return item.size
-    }
 }
