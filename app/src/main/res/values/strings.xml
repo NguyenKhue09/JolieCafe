@@ -84,4 +84,6 @@
     <string name="juice">Juice</string>
     <string name="milk_tea">Milk tea</string>
     <string name="camera">Camera</string>
+    <string name="voucher_name">OFF 50% - HAPPY FRIYAY!</string>
+    <string name="voucher_description">Orders from 100.000 VND</string>
 </resources>

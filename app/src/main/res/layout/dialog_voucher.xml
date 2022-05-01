@@ -64,7 +64,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
         android:layout_marginStart="18dp"
+        tools:listitem="@layout/item_voucher"
         tools:itemCount="3"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/tv_discount_label"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -94,7 +96,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
         android:layout_marginStart="18dp"
+        tools:listitem="@layout/item_voucher"
         tools:itemCount="3"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/tv_free_ship_label"
         app:layout_constraintStart_toStartOf="parent"/>
 
