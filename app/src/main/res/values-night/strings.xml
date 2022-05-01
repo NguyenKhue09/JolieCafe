@@ -30,4 +30,5 @@
     <string name="quantity">Quantity:</string>
     <string name="notifications">Notifications</string>
     <string name="language">Language</string>
+    <string name="camera">Camera</string>
 </resources>

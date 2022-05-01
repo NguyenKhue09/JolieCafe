@@ -13,10 +13,12 @@ interface JolieCafeApi {
         @Header("Authorization") token: String
     ): Response<SuspendUserMoneyResponse>
 
+
     @Headers("Content-Type: application/json")
     @POST("/api/v1/jolie-cafe/user/create-new-user")
+
     suspend fun createUser(
-        @Body body: HashMap<String, Any>,
+        @Body body: MutableMap<String, String>,
     ): Response<ApiResponseSingleData<User>>
 
     @GET("/api/v1/jolie-cafe/product/get-products")
@@ -24,6 +26,11 @@ interface JolieCafeApi {
         @QueryMap productQuery: Map<String, String>,
         @Header("Authorization") token: String
     ): ApiResponseMultiData<Product>
+
+    @GET("/api/v1/jolie-cafe/user/get-user-info")
+    suspend fun getUserInfos(
+        @Header("Authorization") token: String
+    ): Response<ApiResponseSingleData<User>>
 
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 

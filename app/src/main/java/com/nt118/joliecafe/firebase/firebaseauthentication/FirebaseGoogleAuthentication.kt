@@ -25,7 +25,7 @@ class FirebaseGoogleAuthentication {
 
     fun googleAuthForFirebase(account: GoogleSignInAccount, activity: Activity) {
         val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
-        val data: HashMap<String, Any> = hashMapOf()
+        val data: MutableMap<String, String> = mutableMapOf()
 
         try {
             mAuth.signInWithCredential(credentials).addOnCompleteListener { task ->

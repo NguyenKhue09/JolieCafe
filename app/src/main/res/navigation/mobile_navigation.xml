@@ -27,5 +27,22 @@
         android:id="@+id/navigation_profile"
         android:name="com.nt118.joliecafe.ui.fragments.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_navigation_profile_to_profileActivity"
+            app:destination="@id/profileActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/profileActivity"
+        android:name="com.nt118.joliecafe.ui.activities.profile.ProfileActivity"
+        android:label="activity_profile"
+        tools:layout="@layout/activity_profile" >
+        <argument
+            android:name="user"
+            app:argType="com.nt118.joliecafe.models.User" />
+        <argument
+            android:name="isFaceOrGGLogin"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </activity>
 </navigation>

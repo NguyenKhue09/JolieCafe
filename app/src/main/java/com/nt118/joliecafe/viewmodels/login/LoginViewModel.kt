@@ -27,27 +27,37 @@ class LoginViewModel @Inject constructor(
 
     var readBackOnline = dataStoreRepository.readBackOnline
 
+
     var createUserResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
+
 
     var networkStatus = false
     var backOnline = false
 
 
-    fun createUser(data: HashMap<String, Any>) =
+
+    fun createUser(data: MutableMap<String, String>) =
         viewModelScope.launch {
             createUserResponse.value = ApiResult.Loading()
             val response = repository.remote.createUser(data = data)
             createUserResponse.value = handleApiResponse(response = response)
         }
 
+
+
     private fun saveBackOnline(backOnline: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveBackOnline(backOnline)
         }
 
-    fun saveUserToken(userToken: String) =
+    private fun saveUserToken(userToken: String) =
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveUserToken(userToken = userToken)
+        }
+
+    fun saveIsUserFaceOrGGLogin(isUserFaceOrGGLogin: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveIsUserFaceOrGGLogin(isUserFaceOrGGLogin)
         }
 
     private fun handleApiResponse(response: Response<ApiResponseSingleData<User>>): ApiResult<User> {
@@ -60,7 +70,6 @@ class LoginViewModel @Inject constructor(
                 ApiResult.Error(response.message())
             }
             response.isSuccessful -> {
-                println(result!!.data!!.token)
                 saveUserToken(result!!.data!!.token)
                 ApiResult.Success(result.data!!)
             }
