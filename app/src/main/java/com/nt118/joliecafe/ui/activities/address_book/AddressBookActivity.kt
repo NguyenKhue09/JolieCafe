@@ -187,14 +187,17 @@ class AddressBookActivity : AppCompatActivity() {
         }
 
         addressViewModel.updateAddressResponse.observe(this) { response ->
-            when (response) {
+            updateAddressStatus.value =  when (response) {
                 is ApiResult.Loading -> {
+                    false
                 }
                 is ApiResult.Success -> {
                     Toast.makeText(this, "Updated address successful", Toast.LENGTH_SHORT).show()
+                    true
                 }
                 is ApiResult.Error -> {
                     Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                    false
                 }
             }
         }

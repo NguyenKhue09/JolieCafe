@@ -3,6 +3,7 @@ package com.nt118.joliecafe.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,9 @@ class AddressBookAdapter(
     differCallback: DiffUtil.ItemCallback<Address>,
     private val addressBookActivity: AddressBookActivity
 ) : PagingDataAdapter<Address, AddressBookAdapter.ViewHolder>(differCallback) {
+
+    private lateinit var nameObserver: Observer<Boolean>
+    private var error = false
 
     class ViewHolder(var binding: AddressBookItemLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -48,11 +52,19 @@ class AddressBookAdapter(
             }
             holder.binding.btnSave.setOnClickListener {
                 validateAddressNewData(holder = holder, addressId = addressItem.id)
-                setActiveElementForUpdateAddress(
-                    holder = holder,
-                    isEnable = false,
-                    isVisible = View.GONE
-                )
+
+                nameObserver = Observer<Boolean> {
+                    if(it) {
+                        setActiveElementForUpdateAddress(
+                            holder = holder,
+                            isEnable = false,
+                            isVisible = View.GONE
+                        )
+                    }
+                }
+
+
+                addressBookActivity.updateAddressStatus.observeForever(nameObserver)
             }
         }
     }
@@ -77,6 +89,8 @@ class AddressBookAdapter(
         holder.binding.etNameLayout.isEnabled = isEnable
         holder.binding.etPhoneLayout.isEnabled = isEnable
         holder.binding.etAddressLayout.isEnabled = isEnable
+
+        if(!isEnable) addressBookActivity.updateAddressStatus.removeObserver(nameObserver)
     }
 
     private fun setAddressData(holder: ViewHolder, addressItem: Address) {
@@ -97,7 +111,7 @@ class AddressBookAdapter(
         val phoneErr = addressBookActivity.validatePhone(phone = phone)
         val addressErr = addressBookActivity.validateAddress(address = address)
 
-        val error = listOf(nameErr, phoneErr, addressErr).any { it != null }
+        error = listOf(nameErr, phoneErr, addressErr).any { it != null }
 
         if (!error) {
             val newAddressData = mapOf(
@@ -107,6 +121,7 @@ class AddressBookAdapter(
                 "addressId" to addressId,
             )
             addressBookActivity.updateAddress(newAddressData = newAddressData)
+            clearError(holder)
         } else {
             if (nameErr != null) {
                 holder.binding.etNameLayout.error = nameErr
@@ -127,6 +142,11 @@ class AddressBookAdapter(
                 holder.binding.etAddressLayout.error = null
             }
         }
+    }
 
+    private fun clearError(holder: ViewHolder) {
+        holder.binding.etNameLayout.error = null
+        holder.binding.etPhoneLayout.error = null
+        holder.binding.etAddressLayout.error = null
     }
 }

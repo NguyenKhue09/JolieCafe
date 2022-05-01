@@ -35,6 +35,7 @@ class AddressBookViewModel@Inject constructor(
     var addNewDefaultAddressResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
     var deleteAddressResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
     var updateAddressResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
+    var updateAddressStatus: MutableLiveData<Boolean> = MutableLiveData()
 
     var userToken = ""
     var networkStatus = false
