@@ -7,7 +7,9 @@ import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ActivityAdressBookBinding
 import com.nt118.joliecafe.util.Constants
 import com.nt118.joliecafe.util.Constants.Companion.IS_ADD_NEW_ADDRESS
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddressBookActivity : AppCompatActivity() {
     private var _binding: ActivityAdressBookBinding? = null
     private val binding get() = _binding!!

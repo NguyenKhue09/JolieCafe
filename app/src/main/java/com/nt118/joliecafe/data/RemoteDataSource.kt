@@ -14,7 +14,10 @@ import javax.inject.Inject
 class RemoteDataSource @Inject constructor(
     private val jolieCafeApi: JolieCafeApi
 ) {
-    suspend fun momoRequestPayment(data: HashMap<String, Any>, token: String): Response<SuspendUserMoneyResponse> {
+    suspend fun momoRequestPayment(
+        data: HashMap<String, Any>,
+        token: String
+    ): Response<SuspendUserMoneyResponse> {
         return jolieCafeApi.momoRequestPayment(body = data, token = token)
     }
 
@@ -33,5 +36,12 @@ class RemoteDataSource @Inject constructor(
                 ProductPagingSource(jolieCafeApi, token, productQuery)
             }
         ).flow
+    }
+
+    suspend fun addNewAddress(
+        data: Map<String, String>,
+        token: String
+    ): Response<ApiResponseSingleData<Address>> {
+        return jolieCafeApi.addNewAddress(body = data, token = "Bearer $token")
     }
 }
