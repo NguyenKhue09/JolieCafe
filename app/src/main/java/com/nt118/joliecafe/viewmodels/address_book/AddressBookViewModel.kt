@@ -9,7 +9,6 @@ import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
 import com.nt118.joliecafe.models.Address
 import com.nt118.joliecafe.models.ApiResponseSingleData
-import com.nt118.joliecafe.models.User
 import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -37,8 +36,13 @@ class AddressBookViewModel@Inject constructor(
     fun addNewAddress(data: Map<String, String>, token: String)  =
         viewModelScope.launch {
             addNewAddressResponse.value = ApiResult.Loading()
-            val response = repository.remote.addNewAddress(data = data, token = token)
-            addNewAddressResponse.value = handleApiResponse(response = response)
+            try {
+                val response = repository.remote.addNewAddress(data = data, token = token)
+                addNewAddressResponse.value = handleApiResponse(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                addNewAddressResponse.value = ApiResult.Error(e.message)
+            }
         }
 
     private fun handleApiResponse(response: Response<ApiResponseSingleData<Address>>): ApiResult<Address>? {
