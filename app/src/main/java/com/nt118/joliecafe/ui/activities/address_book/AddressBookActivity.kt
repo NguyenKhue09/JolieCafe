@@ -8,10 +8,14 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.R
+import com.nt118.joliecafe.adapter.AddressBookAdapter
 import com.nt118.joliecafe.databinding.ActivityAdressBookBinding
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
+import com.nt118.joliecafe.util.AddressItemComparator
 import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants.Companion.IS_ADD_NEW_ADDRESS
 import com.nt118.joliecafe.util.NetworkListener
@@ -42,9 +46,18 @@ class AddressBookActivity : AppCompatActivity() {
             addressViewModel.backOnline = it
         }
 
+        val diffCallBack = AddressItemComparator
+        val addressesRecyclerView = binding.addressRecyclerView
+        val addressesAdapter = AddressBookAdapter(diffCallBack)
+        addressesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
+        addressesRecyclerView.adapter = addressesAdapter
+
         lifecycleScope.launchWhenStarted {
             addressViewModel.readUserToken.collectLatest { token ->
                 addressViewModel.userToken = token
+                addressViewModel.getAddresses(addressViewModel.userToken).collectLatest {  data ->
+                    addressesAdapter.submitData(data)
+                }
             }
         }
 
@@ -54,6 +67,11 @@ class AddressBookActivity : AppCompatActivity() {
                 .collect { status ->
                     addressViewModel.networkStatus = status
                     addressViewModel.showNetworkStatus()
+                    if(addressViewModel.backOnline) {
+                        addressViewModel.getAddresses(addressViewModel.userToken).collectLatest {  data ->
+                            addressesAdapter.submitData(data)
+                        }
+                    }
                 }
         }
 
@@ -80,16 +98,27 @@ class AddressBookActivity : AppCompatActivity() {
             val phoneErr = validatePhone(phone = phone)
             val addressErr = validateAddress(address = address)
 
-            val error = listOf(nameErr, phoneErr, addressErr).any { it != null  }
+            val error = listOf(nameErr, phoneErr, addressErr).any { it != null }
 
             if (!error) {
-                if(addressViewModel.networkStatus) {
+                if (addressViewModel.networkStatus) {
                     val addressData = mapOf(
                         "phone" to phone,
                         "userName" to name,
                         "address" to address
                     )
-                    addressViewModel.addNewAddress(data = addressData, token = addressViewModel.userToken)
+                    if (binding.isDefaultAddress.isChecked) {
+                        addressViewModel.addNewDefaultAddress(
+                            data = addressData,
+                            token = addressViewModel.userToken
+                        )
+                    } else {
+                        addressViewModel.addNewAddress(
+                            data = addressData,
+                            token = addressViewModel.userToken
+                        )
+                    }
+
                 } else {
                     addressViewModel.showNetworkStatus()
                 }
@@ -113,7 +142,7 @@ class AddressBookActivity : AppCompatActivity() {
         }
 
         addressViewModel.addNewAddressResponse.observe(this) { response ->
-            when(response) {
+            when (response) {
                 is ApiResult.Loading -> {
 
                 }
@@ -125,6 +154,22 @@ class AddressBookActivity : AppCompatActivity() {
                 }
             }
         }
+
+        addressViewModel.addNewDefaultAddressResponse.observe(this) { response ->
+            when (response) {
+                is ApiResult.Loading -> {
+
+                }
+                is ApiResult.Success -> {
+                    Toast.makeText(this, "Add new default address successful", Toast.LENGTH_SHORT).show()
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+
     }
 
     private fun setupActionBar() {
@@ -168,7 +213,6 @@ class AddressBookActivity : AppCompatActivity() {
 
     }
 
-
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         isAddNewAddress = savedInstanceState.getBoolean(IS_ADD_NEW_ADDRESS, false)
@@ -177,28 +221,28 @@ class AddressBookActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        _binding  = null
+        _binding = null
     }
 
     private fun validateUserName(name: String): String? {
-        if(name.isBlank()) {
+        if (name.isBlank()) {
             return "Name is blank!"
         }
         return null
     }
 
     private fun validateAddress(address: String): String? {
-        if(address.isBlank()) {
+        if (address.isBlank()) {
             return "Address is blank!"
         }
         return null
     }
 
     private fun validatePhone(phone: String): String? {
-        if(phone.isBlank()) {
+        if (phone.isBlank()) {
             return "Phone is blank!"
         }
-        if(phone.length < 10) {
+        if (phone.length < 10) {
             return "This is a valid phone number!"
         }
         return null
