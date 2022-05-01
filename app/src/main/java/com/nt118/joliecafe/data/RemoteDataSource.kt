@@ -62,4 +62,18 @@ class RemoteDataSource @Inject constructor(
             }
         ).flow
     }
+
+    suspend fun deleteAddress(
+        addressId: String,
+        token: String
+    ): Response<ApiResponseSingleData<Address>> {
+        return jolieCafeApi.deleteAddress(addressId = addressId, token = "Bearer $token")
+    }
+
+    suspend fun updateAddress(
+        newAddressData: Map<String, String>,
+        token: String
+    ): Response<ApiResponseSingleData<Address>> {
+        return jolieCafeApi.updateAddress(body = newAddressData, token = "Bearer $token")
+    }
 }

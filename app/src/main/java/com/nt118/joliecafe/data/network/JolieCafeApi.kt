@@ -53,6 +53,21 @@ interface JolieCafeApi {
         @QueryMap addressQuery: Map<String, String>,
     ): ApiResponseMultiData<Address>
 
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @POST("$API_GATEWAY/address/delete")
+    @FormUrlEncoded
+    suspend fun deleteAddress(
+        @Field("addressId") addressId: String,
+        @Header("Authorization") token: String
+    ): Response<ApiResponseSingleData<Address>>
+
+    @Headers("Content-Type: application/json")
+    @POST("$API_GATEWAY/address/update")
+    suspend fun updateAddress(
+        @Body body: Map<String, String>,
+        @Header("Authorization") token: String
+    ): Response<ApiResponseSingleData<Address>>
+
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 
 }
