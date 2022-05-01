@@ -33,6 +33,8 @@ class AddressBookViewModel@Inject constructor(
 
     var addNewAddressResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
     var addNewDefaultAddressResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
+    var deleteAddressResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
+    var updateAddressResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
 
     var userToken = ""
     var networkStatus = false
@@ -58,11 +60,38 @@ class AddressBookViewModel@Inject constructor(
         viewModelScope.launch {
             addNewAddressResponse.value = ApiResult.Loading()
             try {
+                if (token.isEmpty()) Throwable("Unauthorized")
                 val response = repository.remote.addNewAddress(data = data, token = token)
                 addNewAddressResponse.value = handleApiResponse(response = response)
             } catch (e: Exception) {
                 e.printStackTrace()
                 addNewAddressResponse.value = ApiResult.Error(e.message)
+            }
+        }
+
+    fun deleteAddress(addressId: String, token: String)  =
+        viewModelScope.launch {
+            deleteAddressResponse.value = ApiResult.Loading()
+            try {
+                if (token.isEmpty()) Throwable("Unauthorized")
+                val response = repository.remote.deleteAddress(addressId = addressId, token = token)
+                deleteAddressResponse.value = handleApiResponse(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                deleteAddressResponse.value = ApiResult.Error(e.message)
+            }
+        }
+
+    fun updateAddress(newAddressData: Map<String, String>, token: String)  =
+        viewModelScope.launch {
+            updateAddressResponse.value = ApiResult.Loading()
+            try {
+                if (token.isEmpty()) Throwable("Unauthorized")
+                val response = repository.remote.updateAddress(newAddressData = newAddressData, token = token)
+                updateAddressResponse.value = handleApiResponse(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                updateAddressResponse.value = ApiResult.Error(e.message)
             }
         }
 

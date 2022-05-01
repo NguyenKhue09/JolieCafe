@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,6 +33,8 @@ class AddressBookActivity : AppCompatActivity() {
     private lateinit var networkListener: NetworkListener
     private val addressViewModel by viewModels<AddressBookViewModel>()
     private var isAddNewAddress = false
+    private lateinit var addressBookAdapter: AddressBookAdapter
+    var updateAddressStatus = MutableLiveData<Boolean>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,15 +51,15 @@ class AddressBookActivity : AppCompatActivity() {
 
         val diffCallBack = AddressItemComparator
         val addressesRecyclerView = binding.addressRecyclerView
-        val addressesAdapter = AddressBookAdapter(diffCallBack)
-        addressesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
-        addressesRecyclerView.adapter = addressesAdapter
+        addressBookAdapter = AddressBookAdapter(differCallback = diffCallBack, addressBookActivity = this)
+        addressesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        addressesRecyclerView.adapter = addressBookAdapter
 
         lifecycleScope.launchWhenStarted {
             addressViewModel.readUserToken.collectLatest { token ->
                 addressViewModel.userToken = token
                 addressViewModel.getAddresses(addressViewModel.userToken).collectLatest {  data ->
-                    addressesAdapter.submitData(data)
+                    addressBookAdapter.submitData(data)
                 }
             }
         }
@@ -69,7 +72,7 @@ class AddressBookActivity : AppCompatActivity() {
                     addressViewModel.showNetworkStatus()
                     if(addressViewModel.backOnline) {
                         addressViewModel.getAddresses(addressViewModel.userToken).collectLatest {  data ->
-                            addressesAdapter.submitData(data)
+                            addressBookAdapter.submitData(data)
                         }
                     }
                 }
@@ -107,18 +110,7 @@ class AddressBookActivity : AppCompatActivity() {
                         "userName" to name,
                         "address" to address
                     )
-                    if (binding.isDefaultAddress.isChecked) {
-                        addressViewModel.addNewDefaultAddress(
-                            data = addressData,
-                            token = addressViewModel.userToken
-                        )
-                    } else {
-                        addressViewModel.addNewAddress(
-                            data = addressData,
-                            token = addressViewModel.userToken
-                        )
-                    }
-
+                    addNewAddress(addressData = addressData)
                 } else {
                     addressViewModel.showNetworkStatus()
                 }
@@ -126,14 +118,20 @@ class AddressBookActivity : AppCompatActivity() {
                 if (nameErr != null) {
                     binding.etNameLayout.error = nameErr
                     binding.etName.requestFocus()
+                } else {
+                    binding.etNameLayout.error = null
                 }
                 if (phoneErr != null) {
                     binding.etPhoneLayout.error = phoneErr
                     binding.etPhone.requestFocus()
+                } else {
+                    binding.etPhoneLayout.error = null
                 }
                 if (addressErr != null) {
                     binding.etAddressLayout.error = addressErr
                     binding.etAddress.requestFocus()
+                }else {
+                    binding.etAddressLayout.error = null
                 }
             }
 
@@ -141,6 +139,10 @@ class AddressBookActivity : AppCompatActivity() {
             setAddNewAddressState()
         }
 
+        handleApiResponse()
+    }
+
+    private fun handleApiResponse() {
         addressViewModel.addNewAddressResponse.observe(this) { response ->
             when (response) {
                 is ApiResult.Loading -> {
@@ -169,7 +171,70 @@ class AddressBookActivity : AppCompatActivity() {
             }
         }
 
+        addressViewModel.deleteAddressResponse.observe(this) { response ->
+            when (response) {
+                is ApiResult.Loading -> {
 
+                }
+                is ApiResult.Success -> {
+                    Toast.makeText(this, "Delete address successful", Toast.LENGTH_SHORT).show()
+                    addressBookAdapter.refresh()
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        addressViewModel.updateAddressResponse.observe(this) { response ->
+            when (response) {
+                is ApiResult.Loading -> {
+                }
+                is ApiResult.Success -> {
+                    Toast.makeText(this, "Updated address successful", Toast.LENGTH_SHORT).show()
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    fun deleteAddress(addressId: String) {
+        if(addressViewModel.networkStatus) {
+            addressViewModel.deleteAddress(
+                addressId = addressId,
+                token = addressViewModel.userToken
+            )
+        } else {
+            addressViewModel.showNetworkStatus()
+        }
+
+    }
+
+    private fun addNewAddress(addressData: Map<String, String>) {
+        if (binding.isDefaultAddress.isChecked) {
+            addressViewModel.addNewDefaultAddress(
+                data = addressData,
+                token = addressViewModel.userToken
+            )
+        } else {
+            addressViewModel.addNewAddress(
+                data = addressData,
+                token = addressViewModel.userToken
+            )
+        }
+    }
+
+    fun updateAddress(newAddressData: Map<String, String>) {
+        if (addressViewModel.networkStatus) {
+            addressViewModel.updateAddress(
+                newAddressData = newAddressData,
+                token = addressViewModel.userToken
+            )
+        } else {
+            addressViewModel.showNetworkStatus()
+        }
     }
 
     private fun setupActionBar() {
@@ -224,21 +289,21 @@ class AddressBookActivity : AppCompatActivity() {
         _binding = null
     }
 
-    private fun validateUserName(name: String): String? {
+    fun validateUserName(name: String): String? {
         if (name.isBlank()) {
             return "Name is blank!"
         }
         return null
     }
 
-    private fun validateAddress(address: String): String? {
+    fun validateAddress(address: String): String? {
         if (address.isBlank()) {
             return "Address is blank!"
         }
         return null
     }
 
-    private fun validatePhone(phone: String): String? {
+    fun validatePhone(phone: String): String? {
         if (phone.isBlank()) {
             return "Phone is blank!"
         }
