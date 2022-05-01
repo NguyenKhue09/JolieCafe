@@ -1,17 +1,25 @@
 package com.nt118.joliecafe.adapter
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ItemRowLayoutBinding
+import com.nt118.joliecafe.models.Product
+import com.nt118.joliecafe.ui.activities.detail.DetailActivity
 
-class FavoriteItemAdapter(private val item : ArrayList<String>) : RecyclerView.Adapter<FavoriteItemAdapter.MyViewHolder>() {
+class FavoriteItemAdapter(
+    private val context: Context,
+    diffUtil: DiffUtil.ItemCallback<Product>
+) : PagingDataAdapter<Product, FavoriteItemAdapter.MyViewHolder>(diffCallback = diffUtil) {
+
     class MyViewHolder(var binding: ItemRowLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
-        fun bind() {
-
-        }
 
         companion object {
             fun from(parent: ViewGroup): MyViewHolder {
@@ -30,19 +38,22 @@ class FavoriteItemAdapter(private val item : ArrayList<String>) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.binding.itemFavorite.text = item[position]
-    }
+        val favoriteProduct = getItem(position)
 
-    override fun getItemCount(): Int {
-        return item.size
-    }
+        holder.binding.itemCard.setOnClickListener {
+            val intent = Intent(context, DetailActivity::class.java)
+            context.startActivity(intent)
+        }
 
-    fun setData() {
-//        val recipesDiffUtil = RecipesDiffUtil(recipes, newData.results)
-//        val diffUtilResult = DiffUtil.calculateDiff(recipesDiffUtil)
-//        recipes = newData.results
-//        diffUtilResult.dispatchUpdatesTo(this)
-    }
+        favoriteProduct?.let {
+            holder.binding.itemImg.load(favoriteProduct.thumbnail) {
+                crossfade(600)
+                error(R.drawable.placeholder_image)
+            }
 
+            holder.binding.itemName.text = favoriteProduct.name
+            holder.binding.itemPrice.text = favoriteProduct.originPrice.toString()
+        }
+    }
 
 }

@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -31,14 +30,11 @@ import com.nt118.joliecafe.models.SliderItem
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.notifications.Notification
 import com.nt118.joliecafe.ui.activities.products.products
-import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
 import com.nt118.joliecafe.viewmodels.home.HomeViewModel
-import com.nt118.joliecafe.viewmodels.login.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 @AndroidEntryPoint
@@ -46,7 +42,7 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val homeViewModel by viewModels<HomeViewModel>()
-    private val loginViewModel by viewModels<LoginViewModel>()
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -141,9 +137,9 @@ class HomeFragment : Fragment() {
         // RecyclerView Best Seller
         val diffCallBack = ProductComparator
         val recyclerViewBS = binding.recyclerViewBestSeller
-        val bestSallerAdapter = BestSellerAdapter(requireActivity(), diffCallBack = diffCallBack)
+        val bestSellerAdapter = BestSellerAdapter(requireActivity(), diffCallBack = diffCallBack)
         recyclerViewBS.layoutManager = GridLayoutManager(requireContext(),1)
-        recyclerViewBS.adapter = bestSallerAdapter
+        recyclerViewBS.adapter = bestSellerAdapter
 
         lifecycleScope.launchWhenStarted {
             networkListener = NetworkListener()
@@ -158,12 +154,11 @@ class HomeFragment : Fragment() {
                             ),
                             token = homeViewModel.userToken
                         ).collectLatest { data ->
-                            bestSallerAdapter.submitData(data)
+                            bestSellerAdapter.submitData(data)
                         }
                     }
                 }
         }
-
 
         lifecycleScope.launchWhenStarted {
             homeViewModel.readUserToken.collectLatest { token ->
@@ -174,17 +169,12 @@ class HomeFragment : Fragment() {
                     ),
                     token = token
                 ).collectLatest { data ->
-                    bestSallerAdapter.submitData(data)
+                    bestSellerAdapter.submitData(data)
                 }
             }
         }
 
-        lifecycleScope.launch {
-            bestSallerAdapter.loadStateFlow.collectLatest { loadStates ->
-            }
-        }
-
-        bestSallerAdapter.addLoadStateListener { loadState ->
+        bestSellerAdapter.addLoadStateListener { loadState ->
             if (loadState.refresh is LoadState.Loading){
 
             }

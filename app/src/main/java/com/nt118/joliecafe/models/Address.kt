@@ -1,12 +1,15 @@
 package com.nt118.joliecafe.models
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Address(
-    val houseNumber: String,
-    val street: String,
-    val district: String,
-    val province: String,
-    val country: String
+    @SerialName("_id")
+    val id: String,
+    val userId: String,
+    val userName: String,
+    val phone: String,
+    val address: String,
+    val __v: Int
 )

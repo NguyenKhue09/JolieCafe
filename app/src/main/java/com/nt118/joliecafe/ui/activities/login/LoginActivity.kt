@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.util.Patterns
 import android.widget.TextView
 import android.widget.Toast
@@ -16,7 +15,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.facebook.CallbackManager
 import com.facebook.FacebookSdk.setAdvertiserIDCollectionEnabled
 import com.facebook.FacebookSdk.setAutoLogAppEventsEnabled
@@ -24,8 +22,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.nt118.joliecafe.databinding.ActivityLoginBinding
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseEmailPasswordAuthentication
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseFacebookLogin
@@ -103,6 +99,7 @@ class LoginActivity : AppCompatActivity() {
     private fun onClick() {
         // FaceBook Login
         binding.imgFb.setOnClickListener {
+            loginViewModel.saveIsUserFaceOrGGLogin(true)
             if(loginViewModel.networkStatus) {
                 facebookLogin.facebookLogin(callbackManager, auth, this)
             } else {
@@ -126,6 +123,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Google Signin
         binding.imgGg.setOnClickListener {
+            loginViewModel.saveIsUserFaceOrGGLogin(true)
             if(loginViewModel.networkStatus) {
                 if (!FirebaseGoogleAuthentication().checkUser()) {
                     FirebaseGoogleAuthentication().loginGoogle(userSignIn, mGoogleSignInClient)
@@ -136,6 +134,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnLogin.setOnClickListener {
+            loginViewModel.saveIsUserFaceOrGGLogin(false)
             if(loginViewModel.networkStatus) {
                 loginUserWithEmailPassword()
             } else {
@@ -186,7 +185,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun createUser(data: HashMap<String, Any>) {
+    fun createUser(data: MutableMap<String, String>) {
         loginViewModel.createUser(data = data)
     }
 

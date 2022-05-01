@@ -1,23 +1,62 @@
 package com.nt118.joliecafe.ui.activities.address_book
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ActivityAdressBookBinding
-import com.nt118.joliecafe.util.Constants
+import com.nt118.joliecafe.ui.activities.login.LoginActivity
+import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants.Companion.IS_ADD_NEW_ADDRESS
+import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.viewmodels.address_book.AddressBookViewModel
+import com.nt118.joliecafe.viewmodels.profile.ProfileViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
+@AndroidEntryPoint
 class AddressBookActivity : AppCompatActivity() {
     private var _binding: ActivityAdressBookBinding? = null
     private val binding get() = _binding!!
-
+    private val currentUser = FirebaseAuth.getInstance().currentUser
+    private lateinit var networkListener: NetworkListener
+    private val addressViewModel by viewModels<AddressBookViewModel>()
     private var isAddNewAddress = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityAdressBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (currentUser == null) {
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
+
+        addressViewModel.readBackOnline.asLiveData().observe(this) {
+            addressViewModel.backOnline = it
+        }
+
+        lifecycleScope.launchWhenStarted {
+            addressViewModel.readUserToken.collectLatest { token ->
+                addressViewModel.userToken = token
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(this@AddressBookActivity)
+                .collect { status ->
+                    addressViewModel.networkStatus = status
+                    addressViewModel.showNetworkStatus()
+                }
+        }
+
         setupActionBar()
 
         binding.btnAddNewAddress.setOnClickListener {
@@ -32,8 +71,59 @@ class AddressBookActivity : AppCompatActivity() {
 
         binding.btnSave.setOnClickListener {
             // function save new address here
+
+            val name = binding.etName.text.toString()
+            val phone = binding.etPhone.text.toString()
+            val address = binding.etAddress.text.toString()
+
+            val nameErr = validateUserName(name = name)
+            val phoneErr = validatePhone(phone = phone)
+            val addressErr = validateAddress(address = address)
+
+            val error = listOf(nameErr, phoneErr, addressErr).any { it != null  }
+
+            if (!error) {
+                if(addressViewModel.networkStatus) {
+                    val addressData = mapOf(
+                        "phone" to phone,
+                        "userName" to name,
+                        "address" to address
+                    )
+                    addressViewModel.addNewAddress(data = addressData, token = addressViewModel.userToken)
+                } else {
+                    addressViewModel.showNetworkStatus()
+                }
+            } else {
+                if (nameErr != null) {
+                    binding.etNameLayout.error = nameErr
+                    binding.etName.requestFocus()
+                }
+                if (phoneErr != null) {
+                    binding.etPhoneLayout.error = phoneErr
+                    binding.etPhone.requestFocus()
+                }
+                if (addressErr != null) {
+                    binding.etAddressLayout.error = addressErr
+                    binding.etAddress.requestFocus()
+                }
+            }
+
             setAddNewAddress()
             setAddNewAddressState()
+        }
+
+        addressViewModel.addNewAddressResponse.observe(this) { response ->
+            when(response) {
+                is ApiResult.Loading -> {
+
+                }
+                is ApiResult.Success -> {
+                    Toast.makeText(this, "Add new address successful", Toast.LENGTH_SHORT).show()
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -88,5 +178,29 @@ class AddressBookActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding  = null
+    }
+
+    private fun validateUserName(name: String): String? {
+        if(name.isBlank()) {
+            return "Name is blank!"
+        }
+        return null
+    }
+
+    private fun validateAddress(address: String): String? {
+        if(address.isBlank()) {
+            return "Address is blank!"
+        }
+        return null
+    }
+
+    private fun validatePhone(phone: String): String? {
+        if(phone.isBlank()) {
+            return "Phone is blank!"
+        }
+        if(phone.length < 10) {
+            return "This is a valid phone number!"
+        }
+        return null
     }
 }

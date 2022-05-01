@@ -30,6 +30,7 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 app:cardCornerRadius="9dp"
+                android:layout_marginStart="15dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -46,76 +47,112 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:id="@+id/item_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:fontFamily="@font/montserrat_regular"
-                android:text="@string/item_name"
-                android:textColor="@color/text_color"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginTop="25dp"
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_favorite"
                 app:layout_constraintStart_toEndOf="@+id/img_card"
-                app:layout_constraintTop_toTopOf="parent">
-            </TextView>
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginVertical="15dp"
+                android:layout_marginHorizontal="8dp">
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/raleway_variable_font_wght"
-                android:text="@string/dot_center_vertical"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_color"
-                android:layout_marginStart="3dp"
-                app:layout_constraintBottom_toBottomOf="@+id/item_name"
-                app:layout_constraintStart_toEndOf="@+id/item_name"
-                app:layout_constraintTop_toTopOf="@+id/item_name">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/item_name_fav_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            </TextView>
+                    <TextView
+                        android:id="@+id/item_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/raleway_regular"
+                        android:maxLines="2"
+                        android:text="@string/item_name"
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/textView"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintWidth_default="wrap"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/item_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/item_price"
-                android:textColor="@color/text_color"
-                android:textSize="11sp"
-                android:fontFamily="@font/montserrat_regular"
-                app:layout_constraintStart_toEndOf="@+id/img_card"
-                app:layout_constraintTop_toBottomOf="@+id/item_name"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="7dp">
-            </TextView>
+                    </TextView>
 
-            <TextView
-                android:id="@+id/item_favorite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_regular"
-                android:paddingBottom="0dp"
-                android:text="@string/item_favorite"
-                android:textColor="@color/text_color"
-                android:textSize="16sp"
-                android:layout_marginStart="3dp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
-                app:layout_constraintStart_toEndOf="@+id/textView"
-                app:layout_constraintTop_toTopOf="@+id/textView" />
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:fontFamily="@font/raleway_variable_font_wght"
+                        android:text="@string/dot_center_vertical"
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/item_name"
+                        app:layout_constraintStart_toEndOf="@+id/item_name"
+                        app:layout_constraintTop_toTopOf="@+id/item_name"
+                        app:layout_constraintEnd_toStartOf="@+id/item_favorite">
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginStart="3dp"
-                android:src="@drawable/ic_favorite"
-                app:layout_constraintBottom_toBottomOf="@+id/item_favorite"
-                app:layout_constraintStart_toEndOf="@+id/item_favorite"
-                app:layout_constraintTop_toTopOf="@+id/item_favorite">
+                    </TextView>
 
-            </ImageView>
+                    <TextView
+                        android:id="@+id/item_favorite"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/montserrat_regular"
+                        android:maxLines="2"
+                        android:paddingBottom="0dp"
+                        android:text="@string/item_favorite"
+                        android:textColor="@color/text_color"
+                        android:textSize="16sp"
+                        app:layout_constraintWidth_default="wrap"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintBottom_toBottomOf="@+id/textView"
+                        app:layout_constraintStart_toEndOf="@+id/textView"
+                        app:layout_constraintTop_toTopOf="@+id/textView"
+                        app:layout_constraintEnd_toStartOf="@+id/imageView"/>
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginStart="3dp"
+                        android:src="@drawable/ic_favorite"
+                        app:layout_constraintBottom_toBottomOf="@+id/item_favorite"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/item_favorite"
+                        app:layout_constraintTop_toTopOf="@+id/item_favorite">
+
+                    </ImageView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/item_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="@string/item_price"
+                    android:textColor="@color/text_color"
+                    android:textSize="11sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/item_name_fav_section">
+
+                </TextView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <ImageView
                 android:id="@+id/btn_favorite"

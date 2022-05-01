@@ -3,8 +3,11 @@ package com.nt118.joliecafe.ui.activities.profile
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
+import androidx.navigation.navArgs
+import coil.load
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ActivityProfileBinding
 import com.nt118.joliecafe.ui.fragments.profile_bottom_sheet.ProfileBottomSheetFragment
@@ -20,6 +23,7 @@ class ProfileActivity: AppCompatActivity() {
     private var _binding: ActivityProfileBinding? = null
     private val binding get() = _binding!!
     private val profileActivityViewModel: ProfileActivityViewModel by viewModels()
+    private val args by navArgs<ProfileActivityArgs>()
     private var isEditProfile = false
     private var isChangePassword = false
     private var isSaveChangePassword = false
@@ -32,8 +36,12 @@ class ProfileActivity: AppCompatActivity() {
         setupActionBar()
 
         binding.btnGetImage.setOnClickListener {
-            val bottomSheet = ProfileBottomSheetFragment()
-            bottomSheet.show(supportFragmentManager, "TAG")
+            if(!args.isFaceOrGGLogin) {
+                val bottomSheet = ProfileBottomSheetFragment()
+                bottomSheet.show(supportFragmentManager, "TAG")
+            } else {
+                Toast.makeText(this, "Login by Google or Facebook can't change avatar!", Toast.LENGTH_LONG).show()
+            }
         }
 
 
@@ -44,8 +52,12 @@ class ProfileActivity: AppCompatActivity() {
         }
 
         binding.tvChange.setOnClickListener {
-            setChangePassword()
-            setChangePasswordState()
+            if(!args.isFaceOrGGLogin) {
+                setChangePassword()
+                setChangePasswordState()
+            } else {
+                Toast.makeText(this, "Login by Google or Facebook can't change password!", Toast.LENGTH_LONG).show()
+            }
         }
 
         binding.btnCancel.setOnClickListener {
@@ -78,6 +90,21 @@ class ProfileActivity: AppCompatActivity() {
             }
         }
 
+        setUserData()
+    }
+
+    private fun setUserData() {
+        val user = args.user
+        binding.userImg.load(
+            user.thumbnail
+        ) {
+            crossfade(600)
+            error(R.drawable.placeholder_image)
+        }
+        println(user)
+        binding.tvEmail.text = user.email
+        binding.etName.setText(user.fullName)
+        binding.etPhone.setText(user.phone)
     }
 
     private fun setEditProfile() {

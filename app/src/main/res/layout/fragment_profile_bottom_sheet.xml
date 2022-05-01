@@ -89,7 +89,7 @@
         android:paddingVertical="16dp"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
-        android:text="@string/cancel"
+        android:text="@string/camera"
         android:textAlignment="textStart"
         android:textAllCaps="false"
         android:textColor="@color/text_color"

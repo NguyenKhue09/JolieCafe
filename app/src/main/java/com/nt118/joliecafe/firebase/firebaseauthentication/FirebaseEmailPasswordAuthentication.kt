@@ -33,7 +33,7 @@ class FirebaseEmailPasswordAuthentication {
     }
 
     fun loginUser(email: String, password: String, loginActivity: LoginActivity) {
-        val data: HashMap<String, Any> = hashMapOf()
+        val data: MutableMap<String, String> = mutableMapOf()
         mAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
