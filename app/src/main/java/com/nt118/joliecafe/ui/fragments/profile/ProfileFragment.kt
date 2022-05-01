@@ -6,22 +6,33 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import coil.load
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.FragmentProfileBinding
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseFacebookLogin
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseGoogleAuthentication
+import com.nt118.joliecafe.models.User
 import com.nt118.joliecafe.ui.activities.address_book.AddressBookActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.order_history.OrderHistoryActivity
 import com.nt118.joliecafe.ui.activities.profile.ProfileActivity
 import com.nt118.joliecafe.ui.activities.settings.SettingsActivity
+import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants
+import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.viewmodels.login.LoginViewModel
+import com.nt118.joliecafe.viewmodels.profile.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
@@ -29,10 +40,26 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     lateinit var mGoogleSignInClient: GoogleSignInClient
-    private val loginViewModel by viewModels<LoginViewModel>()
+    private val profileViewModel by viewModels<ProfileViewModel>()
+    private lateinit var networkListener: NetworkListener
+    private val currentUser = FirebaseAuth.getInstance().currentUser
+
+    private var preventNavigateToProfileActivity = true
+    private lateinit var user: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (currentUser == null) {
+            startActivity(Intent(requireContext(), LoginActivity::class.java))
+        }
+
+        lifecycleScope.launchWhenStarted {
+            profileViewModel.readIsUserFaceOrGGLogin.collectLatest {
+                profileViewModel.isFaceOrGGLogin = it
+            }
+        }
+
     }
 
     override fun onCreateView(
@@ -52,27 +79,116 @@ class ProfileFragment : Fragment() {
         _binding = FragmentProfileBinding.inflate(layoutInflater)
 
         binding.btnLogout.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            FirebaseGoogleAuthentication().signOut(requireActivity(), mGoogleSignInClient)
-            FirebaseFacebookLogin().facebookLoginSignOut()
-            loginViewModel.saveUserToken(userToken = "")
-            startActivity(Intent(requireContext(), LoginActivity::class.java))
+            if (profileViewModel.networkStatus) {
+                FirebaseAuth.getInstance().signOut()
+                FirebaseGoogleAuthentication().signOut(requireActivity(), mGoogleSignInClient)
+                FirebaseFacebookLogin().facebookLoginSignOut()
+                profileViewModel.saveUserToken(userToken = "")
+                startActivity(Intent(requireContext(), LoginActivity::class.java))
+            } else {
+                Toast.makeText(requireContext(), "No internet access", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.btnProfile.setOnClickListener {
-            startActivity(Intent(requireContext(), ProfileActivity::class.java))
+            if(!preventNavigateToProfileActivity && profileViewModel.networkStatus) {
+                val action = ProfileFragmentDirections.actionNavigationProfileToProfileActivity(
+                    user = user,
+                    isFaceOrGGLogin = profileViewModel.isFaceOrGGLogin
+                )
+                findNavController().navigate(action)
+            } else {
+                if (!profileViewModel.networkStatus) {
+                    Toast.makeText(requireContext(), "No internet access", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Can't get your profile", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         binding.btnAddressBook.setOnClickListener {
-            startActivity(Intent(requireContext(), AddressBookActivity::class.java))
+            if (profileViewModel.networkStatus) {
+                startActivity(Intent(requireContext(), AddressBookActivity::class.java))
+            } else {
+                Toast.makeText(requireContext(), "No internet access", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.btnOrderHistory.setOnClickListener {
-            startActivity(Intent(requireContext(), OrderHistoryActivity::class.java))
+            if (profileViewModel.networkStatus) {
+                startActivity(Intent(requireContext(), OrderHistoryActivity::class.java))
+            } else {
+                Toast.makeText(requireContext(), "No internet access", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.btnSettings.setOnClickListener {
-            startActivity(Intent(requireContext(), SettingsActivity::class.java))
+            if (profileViewModel.networkStatus) {
+                startActivity(Intent(requireContext(), SettingsActivity::class.java))
+            } else {
+                Toast.makeText(requireContext(), "No internet access", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        profileViewModel.readBackOnline.asLiveData().observe(viewLifecycleOwner) {
+            profileViewModel.backOnline = it
+        }
+
+
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(requireContext())
+                .collect { status ->
+                    profileViewModel.networkStatus = status
+                    profileViewModel.showNetworkStatus()
+                    if(profileViewModel.backOnline) {
+                        profileViewModel.getUserInfos(
+                            token = profileViewModel.userToken
+                        )
+                    }
+                }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            profileViewModel.readUserToken.collectLatest { token ->
+                profileViewModel.userToken = token
+                profileViewModel.getUserInfos(
+                    token = profileViewModel.userToken
+                )
+            }
+        }
+
+        profileViewModel.getUserInfosResponse.observe(viewLifecycleOwner) { userInfos ->
+            when(userInfos) {
+                is ApiResult.Loading -> {
+                    preventNavigateToProfileActivity = true
+                }
+                is ApiResult.Success -> {
+                    preventNavigateToProfileActivity = false
+                    user = userInfos.data!!
+                    if(profileViewModel.isFaceOrGGLogin) {
+                        binding.userName.text = currentUser?.displayName ?: "You"
+                        binding.userImg.load(
+                            uri = currentUser?.photoUrl
+                        ) {
+                            crossfade(600)
+                            error(R.drawable.placeholder_image)
+                        }
+                    } else {
+                        binding.userName.text = userInfos.data.fullName ?: "You"
+                        binding.userImg.load(
+                            uri = userInfos.data.thumbnail
+                        ) {
+                            crossfade(600)
+                            error(R.drawable.placeholder_image)
+                        }
+                    }
+                }
+                is ApiResult.Error -> {
+                    preventNavigateToProfileActivity = false
+                    Toast.makeText(requireContext(), userInfos.message, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         return binding.root

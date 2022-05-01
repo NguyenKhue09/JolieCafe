@@ -54,7 +54,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             if (currentUser != null && networkStatus) {
                 println("Token empty")
-                val data = hashMapOf<String, Any>()
+                val data = mutableMapOf<String, String>()
                 val user = FirebaseAuth.getInstance().currentUser
                 data["_id"] = user!!.uid
                 data["fullname"] = user.displayName ?: ""

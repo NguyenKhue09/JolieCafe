@@ -103,6 +103,7 @@ class LoginActivity : AppCompatActivity() {
     private fun onClick() {
         // FaceBook Login
         binding.imgFb.setOnClickListener {
+            loginViewModel.saveIsUserFaceOrGGLogin(true)
             if(loginViewModel.networkStatus) {
                 facebookLogin.facebookLogin(callbackManager, auth, this)
             } else {
@@ -126,6 +127,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Google Signin
         binding.imgGg.setOnClickListener {
+            loginViewModel.saveIsUserFaceOrGGLogin(true)
             if(loginViewModel.networkStatus) {
                 if (!FirebaseGoogleAuthentication().checkUser()) {
                     FirebaseGoogleAuthentication().loginGoogle(userSignIn, mGoogleSignInClient)
@@ -136,6 +138,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnLogin.setOnClickListener {
+            loginViewModel.saveIsUserFaceOrGGLogin(false)
             if(loginViewModel.networkStatus) {
                 loginUserWithEmailPassword()
             } else {
@@ -186,7 +189,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun createUser(data: HashMap<String, Any>) {
+    fun createUser(data: MutableMap<String, String>) {
         loginViewModel.createUser(data = data)
     }
 

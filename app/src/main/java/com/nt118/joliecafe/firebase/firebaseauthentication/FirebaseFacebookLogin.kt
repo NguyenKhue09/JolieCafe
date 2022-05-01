@@ -48,7 +48,7 @@ class FirebaseFacebookLogin {
     private fun handleFacebookAccessToken(token: AccessToken, activity: Activity, auth: FirebaseAuth) {
         println("handleFacebookAccessToken:$token")
         val credential = FacebookAuthProvider.getCredential(token.token)
-        val data: HashMap<String, Any> = hashMapOf()
+        val data: MutableMap<String, String> = mutableMapOf()
 
         auth.signInWithCredential(credential)
             .addOnCompleteListener(activity) { task ->
