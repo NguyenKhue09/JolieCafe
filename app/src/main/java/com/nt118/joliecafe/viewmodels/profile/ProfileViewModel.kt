@@ -32,7 +32,6 @@ class ProfileViewModel @Inject constructor(
     var getUserInfosResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
 
     var userToken = ""
-
     var networkStatus = false
     var backOnline = false
     var isFaceOrGGLogin = false
@@ -41,8 +40,13 @@ class ProfileViewModel @Inject constructor(
     fun getUserInfos(token: String) =
         viewModelScope.launch {
             getUserInfosResponse.value = ApiResult.Loading()
-            val response = repository.remote.getUserInfos(token = "Bearer $token")
-            getUserInfosResponse.value = handleApiResponse(response = response)
+            try {
+                val response = repository.remote.getUserInfos(token = "Bearer $token")
+                getUserInfosResponse.value = handleApiResponse(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                getUserInfosResponse.value = ApiResult.Error(e.message)
+            }
         }
 
     private fun handleApiResponse(response: Response<ApiResponseSingleData<User>>): ApiResult<User> {

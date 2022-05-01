@@ -24,12 +24,10 @@ import com.nt118.joliecafe.models.User
 import com.nt118.joliecafe.ui.activities.address_book.AddressBookActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.order_history.OrderHistoryActivity
-import com.nt118.joliecafe.ui.activities.profile.ProfileActivity
 import com.nt118.joliecafe.ui.activities.settings.SettingsActivity
 import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants
 import com.nt118.joliecafe.util.NetworkListener
-import com.nt118.joliecafe.viewmodels.login.LoginViewModel
 import com.nt118.joliecafe.viewmodels.profile.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest

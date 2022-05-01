@@ -36,10 +36,8 @@ import com.nt118.joliecafe.ui.activities.products.products
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
 import com.nt118.joliecafe.viewmodels.home.HomeViewModel
-import com.nt118.joliecafe.viewmodels.login.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 

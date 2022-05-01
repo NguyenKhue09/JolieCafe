@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.nt118.joliecafe.data.network.JolieCafeApi
+import com.nt118.joliecafe.data.paging_source.AddressPagingSource
 import com.nt118.joliecafe.data.paging_source.ProductPagingSource
 import com.nt118.joliecafe.models.*
 import com.nt118.joliecafe.util.Constants.Companion.PAGE_SIZE
@@ -14,7 +15,10 @@ import javax.inject.Inject
 class RemoteDataSource @Inject constructor(
     private val jolieCafeApi: JolieCafeApi
 ) {
-    suspend fun momoRequestPayment(data: HashMap<String, Any>, token: String): Response<SuspendUserMoneyResponse> {
+    suspend fun momoRequestPayment(
+        data: HashMap<String, Any>,
+        token: String
+    ): Response<SuspendUserMoneyResponse> {
         return jolieCafeApi.momoRequestPayment(body = data, token = token)
     }
 
@@ -31,6 +35,30 @@ class RemoteDataSource @Inject constructor(
             config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {
                 ProductPagingSource(jolieCafeApi, token, productQuery)
+            }
+        ).flow
+    }
+
+    suspend fun addNewAddress(
+        data: Map<String, String>,
+        token: String
+    ): Response<ApiResponseSingleData<Address>> {
+        return jolieCafeApi.addNewAddress(body = data, token = "Bearer $token")
+    }
+
+
+    suspend fun addNewDefaultAddress(
+        data: Map<String, String>,
+        token: String
+    ): Response<ApiResponseSingleData<User>> {
+        return jolieCafeApi.addNewDefaultAddress(body = data, token = "Bearer $token")
+    }
+
+    fun getAddresses(token: String): Flow<PagingData<Address>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
+            pagingSourceFactory = {
+                AddressPagingSource(jolieCafeApi, "Bearer $token")
             }
         ).flow
     }
