@@ -1,11 +1,11 @@
 package com.nt118.joliecafe.ui.activities.products
 
-import android.content.Intent
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -17,19 +17,28 @@ import com.nt118.joliecafe.databinding.ActivityProductsBinding
 import com.nt118.joliecafe.models.CategorieModel
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
-import com.nt118.joliecafe.viewmodels.home.HomeViewModel
+import com.nt118.joliecafe.viewmodels.products.ProductsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
+
+@AndroidEntryPoint
 class products : AppCompatActivity() {
+    private val productsViewModel by viewModels<ProductsViewModel>()
+
     private var _binding: ActivityProductsBinding? = null
     private val  binding get() = _binding!!
+
+    private lateinit var networkListener: NetworkListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityProductsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        productsViewModel.readBackOnline.asLiveData().observe(this) {
+            productsViewModel.backOnline = it
+        }
 
         val bundle : Bundle? = intent.extras
         val position = bundle!!.getInt("position")
@@ -57,6 +66,38 @@ class products : AppCompatActivity() {
         recyclerViewProduct.layoutManager = GridLayoutManager(this,2)
         recyclerViewProduct.adapter = productAdapter
 
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(this@products)
+                .collect { status ->
+                    productsViewModel.networkStatus = status
+                    productsViewModel.showNetworkStatus()
+                    if(productsViewModel.backOnline) {
+                        productsViewModel.getProducts(
+                            productQuery = mapOf(
+                                "type" to "Coffee"
+                            ),
+                            token = productsViewModel.userToken
+                        ).collectLatest { data ->
+                            productAdapter.submitData(data)
+                        }
+                    }
+                }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            productsViewModel.readUserToken.collectLatest { token ->
+                productsViewModel.userToken = token
+                productsViewModel.getProducts(
+                    productQuery = mapOf(
+                        "type" to "Coffee"
+                    ),
+                    token = token
+                ).collectLatest { data ->
+                    productAdapter.submitData(data)
+                }
+            }
+        }
 
         productAdapter.addLoadStateListener { loadState ->
             if (loadState.refresh is LoadState.Loading){
@@ -76,6 +117,7 @@ class products : AppCompatActivity() {
                 }
             }
         }
+
     }
 
     override fun onDestroy() {
