@@ -19,7 +19,7 @@ class CartAdapter: RecyclerView.Adapter<CartAdapter.ViewHolder>() {
         return
     }
 
-    override fun getItemCount() = 5
+    override fun getItemCount() = 3
 
 
 }

@@ -40,6 +40,10 @@ class CartFragment : Fragment() {
 //        }
 
         val rvCartSuggestion: RecyclerView = binding.rvCartSuggestion
+        val rvCoffee: RecyclerView = binding.rvCoffee
+        val rvTea: RecyclerView = binding.rvTea
+        val rvJuice: RecyclerView = binding.rvJuice
+        val rvMilkTea: RecyclerView = binding.rvMilkTea
         val btnCheckout: Button = binding.btnCheckout
 
         btnCheckout.setOnClickListener {
@@ -47,6 +51,10 @@ class CartFragment : Fragment() {
         }
 
         rvCartSuggestion.adapter = CartSuggestionAdapter()
+        rvCoffee.adapter = CartAdapter()
+        rvTea.adapter = CartAdapter()
+        rvJuice.adapter = CartAdapter()
+        rvMilkTea.adapter = CartAdapter()
         return root
     }
 
