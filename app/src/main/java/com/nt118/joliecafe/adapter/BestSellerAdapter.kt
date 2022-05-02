@@ -28,7 +28,7 @@ class BestSellerAdapter(
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemRvBestsallerBinding.inflate(layoutInflater)
+                val binding = ItemRvBestsallerBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }

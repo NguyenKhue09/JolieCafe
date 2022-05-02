@@ -104,4 +104,11 @@
     <style name="customChipStyleDetailRank"  parent="Widget.MaterialComponents.Chip.Entry">
         <item name="chipBackgroundColor">@color/chip_bg_detail</item>
     </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:editTextColor">@color/white</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="fontFamily">@font/raleway_regular</item>
+    </style>
 </resources>

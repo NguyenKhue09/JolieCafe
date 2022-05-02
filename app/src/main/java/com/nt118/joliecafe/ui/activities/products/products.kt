@@ -1,16 +1,25 @@
 package com.nt118.joliecafe.ui.activities.products
 
 import android.content.Intent
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.CategorieAdapter
 import com.nt118.joliecafe.adapter.ProductAdapter
 import com.nt118.joliecafe.databinding.ActivityProductsBinding
 import com.nt118.joliecafe.models.CategorieModel
+import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.util.ProductComparator
+import com.nt118.joliecafe.viewmodels.home.HomeViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class products : AppCompatActivity() {
     private var _binding: ActivityProductsBinding? = null
@@ -20,6 +29,7 @@ class products : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityProductsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         val bundle : Bundle? = intent.extras
         val position = bundle!!.getInt("position")
@@ -41,15 +51,31 @@ class products : AppCompatActivity() {
         })
 
         // RecyclerView product
+        val diffCallBack = ProductComparator
         val recyclerViewProduct = binding.recyclerViewProduct
-        val productAdapter = ProductAdapter(fetDataBestSaler())
+        val productAdapter = ProductAdapter( this, diffCallBack = diffCallBack)
         recyclerViewProduct.layoutManager = GridLayoutManager(this,2)
         recyclerViewProduct.adapter = productAdapter
-        productAdapter.setOnClickListener(object : ProductAdapter.onItemClickListener{
-            override fun onItemClick(position: Int) {
+
+
+        productAdapter.addLoadStateListener { loadState ->
+            if (loadState.refresh is LoadState.Loading){
 
             }
-        })
+            else{
+
+                // getting the error
+                val error = when {
+                    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+                    else -> null
+                }
+                error?.let {
+                    Toast.makeText(this, it.error.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -71,12 +97,4 @@ class products : AppCompatActivity() {
         return  item
     }
 
-    // test product
-    private fun fetDataBestSaler() : ArrayList<String> {
-        val item = ArrayList<String>()
-        for (i in 0 until 15) {
-            item.add("$i")
-        }
-        return item
-    }
 }
