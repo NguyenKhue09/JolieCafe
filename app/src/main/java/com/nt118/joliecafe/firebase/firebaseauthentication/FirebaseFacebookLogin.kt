@@ -3,7 +3,6 @@ package com.nt118.joliecafe.firebase.firebaseauthentication
 import android.app.Activity
 import android.content.Context
 import android.widget.Toast
-import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.ActivityResultRegistryOwner
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -14,6 +13,7 @@ import com.facebook.login.LoginResult
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
+import com.nt118.joliecafe.ui.activities.signup.SignUpActivity
 
 
 class FirebaseFacebookLogin {
@@ -62,7 +62,10 @@ class FirebaseFacebookLogin {
                             data["_id"] = task.result.user!!.uid
                             data["fullname"] = task.result.user!!.displayName ?: ""
                             data["email"] = task.result.user!!.email ?: ""
-                            activity.createUser(data = data)
+                            activity.userLogin(userId = task.result.user!!.uid)
+                        }
+                        is SignUpActivity -> {
+                            activity.userLogin(userId = task.result.user!!.uid)
                         }
                     }
                 } else {
