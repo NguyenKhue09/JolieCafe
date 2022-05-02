@@ -37,10 +37,10 @@ class FirebaseGoogleAuthentication {
                             data["_id"] = task.result.user!!.uid
                             data["fullname"] = task.result.user!!.displayName ?: ""
                             data["email"] = task.result.user!!.email ?: ""
-                            activity.createUser(data = data)
+                            activity.userLogin(userId = task.result.user!!.uid)
                         }
                         is SignUpActivity -> {
-                            activity.navigateToMainScreen()
+                            activity.userLogin(userId = task.result.user!!.uid)
                         }
                     }
                 } else {

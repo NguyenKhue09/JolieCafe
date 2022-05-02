@@ -18,7 +18,12 @@ interface JolieCafeApi {
     @Headers("Content-Type: application/json")
     @POST("$API_GATEWAY/user/create-new-user")
     suspend fun createUser(
-        @Body body: MutableMap<String, String>,
+        @Body body: Map<String, String>,
+    ): Response<ApiResponseSingleData<User>>
+
+    @GET("$API_GATEWAY/user/login")
+    suspend fun userLogin(
+        @Query("userId") userId: String
     ): Response<ApiResponseSingleData<User>>
 
     @GET("$API_GATEWAY/product/get-products")

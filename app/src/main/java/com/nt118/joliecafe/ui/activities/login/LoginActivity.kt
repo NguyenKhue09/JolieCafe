@@ -22,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.nt118.joliecafe.MainActivity
 import com.nt118.joliecafe.databinding.ActivityLoginBinding
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseEmailPasswordAuthentication
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseFacebookLogin
@@ -68,7 +69,7 @@ class LoginActivity : AppCompatActivity() {
         _binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loginViewModel.createUserResponse.observe(this) { result ->
+        loginViewModel.userLoginResponse.observe(this) { result ->
             when(result) {
                 is ApiResult.Success -> {
                     navigateToMainScreen()
@@ -185,8 +186,8 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun createUser(data: MutableMap<String, String>) {
-        loginViewModel.createUser(data = data)
+    fun userLogin(userId: String) {
+        loginViewModel.userLogin(userId = userId)
     }
 
     private fun validateEmail(): Boolean {
@@ -227,6 +228,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun navigateToMainScreen() {
+        startActivity(Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        })
         finish()
     }
 

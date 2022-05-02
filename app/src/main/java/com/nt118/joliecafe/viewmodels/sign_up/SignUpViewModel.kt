@@ -1,4 +1,4 @@
-package com.nt118.joliecafe.viewmodels.login
+package com.nt118.joliecafe.viewmodels.sign_up
 
 import android.app.Application
 import android.widget.Toast
@@ -16,53 +16,59 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
 
-
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class SignUpViewModel@Inject constructor(
     application: Application,
     private val repository: Repository,
     private val dataStoreRepository: DataStoreRepository
 ) : AndroidViewModel(application) {
 
-
     var readBackOnline = dataStoreRepository.readBackOnline
 
-
-    var userLoginResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
-
+    var createUserResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
+    var userLoginGGOrFaceResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
 
     var networkStatus = false
     var backOnline = false
 
+    fun createUser(userData: Map<String, String>) =
+        viewModelScope.launch {
+            createUserResponse.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.createUser(data = userData)
+                createUserResponse.value = handleApiResponse(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                createUserResponse.value = ApiResult.Error(e.message)
+            }
 
+        }
 
     fun userLogin(userId: String) =
         viewModelScope.launch {
-            userLoginResponse.value = ApiResult.Loading()
+            userLoginGGOrFaceResponse.value = ApiResult.Loading()
             try {
                 val response = repository.remote.userLogin(userId = userId)
-                userLoginResponse.value = handleApiResponse(response = response)
+                userLoginGGOrFaceResponse.value = handleApiResponse(response = response)
             } catch (e: Exception) {
                 e.printStackTrace()
-                userLoginResponse.value = ApiResult.Error(e.message)
+                userLoginGGOrFaceResponse.value = ApiResult.Error(e.message)
             }
         }
-
-
 
     private fun saveBackOnline(backOnline: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveBackOnline(backOnline)
         }
 
-    private fun saveUserToken(userToken: String) =
-        viewModelScope.launch(Dispatchers.IO) {
-            dataStoreRepository.saveUserToken(userToken = userToken)
-        }
-
     fun saveIsUserFaceOrGGLogin(isUserFaceOrGGLogin: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveIsUserFaceOrGGLogin(isUserFaceOrGGLogin)
+        }
+
+    private fun saveUserToken(userToken: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveUserToken(userToken = userToken)
         }
 
     private fun handleApiResponse(response: Response<ApiResponseSingleData<User>>): ApiResult<User> {

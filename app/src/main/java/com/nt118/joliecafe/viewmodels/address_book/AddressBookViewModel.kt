@@ -3,6 +3,7 @@ package com.nt118.joliecafe.viewmodels.address_book
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -35,7 +36,8 @@ class AddressBookViewModel@Inject constructor(
     var addNewDefaultAddressResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
     var deleteAddressResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
     var updateAddressResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
-    var updateAddressStatus: MutableLiveData<Boolean> = MutableLiveData()
+    private var _updateAddressStatus: MutableLiveData<Boolean> = MutableLiveData()
+    val updateAddressStatus: LiveData<Boolean> = _updateAddressStatus
 
     var userToken = ""
     var networkStatus = false
@@ -108,6 +110,9 @@ class AddressBookViewModel@Inject constructor(
             }
         }
 
+    fun setUpdateAddressStatus(status: Boolean) {
+        _updateAddressStatus.value = status
+    }
     private fun <T> handleApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
         return when {
             response.message().toString().contains("timeout") -> {
