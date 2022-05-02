@@ -80,4 +80,11 @@ class RemoteDataSource @Inject constructor(
     ): Response<ApiResponseSingleData<Address>> {
         return jolieCafeApi.updateAddress(body = newAddressData, token = "Bearer $token")
     }
+
+    suspend fun updateUserInfos(
+        newUserData: Map<String, String>,
+        token: String
+    ): Response<ApiResponseSingleData<User>> {
+        return jolieCafeApi.updateUserInfos(token = "Bearer $token", body = newUserData)
+    }
 }
