@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -34,12 +35,14 @@ class AddressBookActivity : AppCompatActivity() {
     private val addressViewModel by viewModels<AddressBookViewModel>()
     private var isAddNewAddress = false
     private lateinit var addressBookAdapter: AddressBookAdapter
-    var updateAddressStatus = MutableLiveData<Boolean>()
+    lateinit var updateAddressStatus: LiveData<Boolean>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityAdressBookBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        updateAddressStatus = addressViewModel.updateAddressStatus
 
         if (currentUser == null) {
             startActivity(Intent(this, LoginActivity::class.java))
@@ -187,7 +190,7 @@ class AddressBookActivity : AppCompatActivity() {
         }
 
         addressViewModel.updateAddressResponse.observe(this) { response ->
-            updateAddressStatus.value =  when (response) {
+            val status =  when (response) {
                 is ApiResult.Loading -> {
                     false
                 }
@@ -200,6 +203,7 @@ class AddressBookActivity : AppCompatActivity() {
                     false
                 }
             }
+            addressViewModel.setUpdateAddressStatus(status = status)
         }
     }
 
