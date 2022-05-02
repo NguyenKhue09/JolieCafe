@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
@@ -37,7 +38,7 @@ class HomeViewModel @Inject constructor(
                 repository.remote.getProducts(
                     productQuery = productQuery,
                     token = "Bearer $token"
-                )
+                ).cachedIn(viewModelScope)
             } catch (e: Exception) {
                 println(e.message)
                 flowOf()
