@@ -22,6 +22,7 @@ import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.BestSellerAdapter
 import com.nt118.joliecafe.adapter.CategorieAdapter

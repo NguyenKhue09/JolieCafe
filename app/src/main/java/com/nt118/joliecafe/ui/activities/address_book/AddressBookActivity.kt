@@ -153,6 +153,7 @@ class AddressBookActivity : AppCompatActivity() {
                 }
                 is ApiResult.Success -> {
                     Toast.makeText(this, "Add new address successful", Toast.LENGTH_SHORT).show()
+                    addressBookAdapter.refresh()
                 }
                 is ApiResult.Error -> {
                     Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
@@ -314,7 +315,7 @@ class AddressBookActivity : AppCompatActivity() {
         if (phone.isBlank()) {
             return "Phone is blank!"
         }
-        if (phone.length < 10) {
+        if (phone.length != 10) {
             return "This is a valid phone number!"
         }
         return null
