@@ -73,6 +73,17 @@ interface JolieCafeApi {
         @Header("Authorization") token: String
     ): Response<ApiResponseSingleData<Address>>
 
+    // Cart API
+
+    @Headers("Content-Type: application/json")
+    @GET("$API_GATEWAY/cart")
+    suspend fun getCartItems(
+        @Header("Authorization") token: String,
+        @QueryMap cartQuery: Map<String, String>,
+    ): ApiResponseMultiData<CartItem>
+
+    // End of Cart API
+
 //    @Headers("Content-Type: application/json")
 //    @GET("$API_GATEWAY/address/get")
 //    suspend fun getFavoriteUserProduct(
