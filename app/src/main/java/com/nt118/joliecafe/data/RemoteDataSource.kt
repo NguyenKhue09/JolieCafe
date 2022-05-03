@@ -85,7 +85,7 @@ class RemoteDataSource @Inject constructor(
     fun getCartItems(token: String): Flow<PagingData<CartItem>> {
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
-            pagingSourceFactory = { CartItemPagingSource(jolieCafeApi, token) }
+            pagingSourceFactory = { CartItemPagingSource(jolieCafeApi, token = "Bearer $token") }
         ).flow
     }
 
