@@ -33,12 +33,12 @@ class CartAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cartItem = getItem(position)
         cartItem?.let {
-            holder.binding.ivThumbnail.load(cartItem.product.thumbnail) {
+            holder.binding.ivThumbnail.load(cartItem.thumbnail) {
                 crossfade(600)
                 error(R.drawable.placeholder_image)
             }
-            holder.binding.tvProductName.text = cartItem.product.name
-            holder.binding.tvProductDescription.text = cartItem.product.description
+            holder.binding.tvProductName.text = cartItem.name
+            holder.binding.tvProductDescription.text = cartItem.description
             holder.binding.tvAmount.text = cartItem.quantity.toString()
         }
     }

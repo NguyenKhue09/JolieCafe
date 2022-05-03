@@ -1,5 +1,6 @@
 package com.nt118.joliecafe.data.paging_source
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.nt118.joliecafe.data.network.JolieCafeApi
@@ -30,6 +31,7 @@ class CartItemPagingSource(
             val response = jolieCafeApi.getCartItems(token, query)
 
             return if (response.success) {
+                Log.d("Cart API", "load: thanh cong")
                 LoadResult.Page(
                     data = if (response.data.isNullOrEmpty()) emptyList() else response.data,
                     prevKey = if (response.data.isNullOrEmpty()) null else response.prevPage,
@@ -39,8 +41,10 @@ class CartItemPagingSource(
                 LoadResult.Error(throwable = Throwable(response.message))
             }
         } catch (e: IOException) {
+            e.printStackTrace()
             return LoadResult.Error(throwable = e)
         } catch (e: HttpException) {
+            e.printStackTrace()
             return LoadResult.Error(throwable = e)
         }
     }

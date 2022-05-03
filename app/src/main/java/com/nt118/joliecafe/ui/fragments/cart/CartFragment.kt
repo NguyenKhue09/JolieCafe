@@ -12,6 +12,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.nt118.joliecafe.adapter.CartAdapter
 import com.nt118.joliecafe.databinding.FragmentCartBinding
 import com.nt118.joliecafe.ui.activities.checkout.CheckoutActivity
@@ -28,24 +29,25 @@ class CartFragment : Fragment() {
 
     private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
-    private val currentUser = FirebaseAuth.getInstance().currentUser
+    private val currentUser: FirebaseUser? by lazy { FirebaseAuth.getInstance().currentUser }
     private lateinit var networkListener: NetworkListener
     private val cartViewModel by viewModels<CartViewModel>()
     private lateinit var cartAdapter: CartAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (currentUser == null) {
+            startActivity(Intent(requireContext(), LoginActivity::class.java))
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel by viewModels<CartViewModel>()
-
         _binding = FragmentCartBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-        if (currentUser == null) {
-            startActivity(Intent(requireContext(), LoginActivity::class.java))
-        }
 
         cartViewModel.readBackOnline.asLiveData().observe(viewLifecycleOwner) {
             cartViewModel.backOnline = it
@@ -58,6 +60,11 @@ class CartFragment : Fragment() {
         val rvJuice: RecyclerView = binding.rvJuice
         val rvMilkTea: RecyclerView = binding.rvMilkTea
         val btnCheckout: Button = binding.btnCheckout
+        cartAdapter = CartAdapter(requireActivity(), diffCallback)
+        rvCoffee.adapter = cartAdapter
+        //        rvTea.adapter = CartAdapter()
+//        rvJuice.adapter = CartAdapter()
+//        rvMilkTea.adapter = CartAdapter()
 
         lifecycleScope.launchWhenStarted {
             cartViewModel.readUserToken.collectLatest { token ->
@@ -85,13 +92,8 @@ class CartFragment : Fragment() {
             startActivity(Intent(context, CheckoutActivity::class.java))
         }
 
-        cartViewModel
-
         rvCartSuggestion.adapter = CartSuggestionAdapter()
-//        rvCoffee.adapter = CartAdapter()
-//        rvTea.adapter = CartAdapter()
-//        rvJuice.adapter = CartAdapter()
-//        rvMilkTea.adapter = CartAdapter()
+
         return root
     }
 

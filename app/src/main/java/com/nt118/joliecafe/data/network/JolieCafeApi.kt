@@ -75,7 +75,8 @@ interface JolieCafeApi {
 
     // Cart API
 
-    @GET("$API_GATEWAY/cart/{UserId}")
+    @Headers("Content-Type: application/json")
+    @GET("$API_GATEWAY/cart")
     suspend fun getCartItems(
         @Header("Authorization") token: String,
         @QueryMap cartQuery: Map<String, String>,
