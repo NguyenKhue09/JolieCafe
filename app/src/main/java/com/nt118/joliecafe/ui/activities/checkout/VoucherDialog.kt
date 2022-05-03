@@ -23,6 +23,14 @@ class VoucherDialog : AppCompatActivity() {
         setContentView(binding.root)
         window.setLayout(dpToPx(350), ViewGroup.LayoutParams.WRAP_CONTENT)
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val rvDiscount = binding.rvDiscount
+        val rvFreeShip = binding.rvFreeShip
+
+        rvDiscount.adapter = VoucherAdapter()
+        rvFreeShip.adapter = VoucherAdapter()
+        rvDiscount.itemAnimator = null
+        rvFreeShip.itemAnimator = null
     }
 
     override fun onDestroy() {

@@ -8,5 +8,5 @@ data class ApiResponseMultiData<T>(
     val message: String,
     val prevPage: Int? = null,
     val nextPage: Int? = null,
-    val data: List<T> = emptyList()
+    val data: List<T>? = null
 )

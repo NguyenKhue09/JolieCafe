@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import coil.load
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -31,6 +33,7 @@ import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.viewmodels.profile.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
@@ -132,6 +135,21 @@ class ProfileFragment : Fragment() {
             profileViewModel.backOnline = it
         }
 
+        lifecycleScope.launchWhenResumed {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                profileViewModel.readIsUserDataChange.collectLatest {
+                    if (it && profileViewModel.networkStatus) {
+                        profileViewModel.getUserInfos(
+                            token = profileViewModel.userToken
+                        )
+                        profileViewModel.saveIsUserDataChange(false)
+                    } else if(!profileViewModel.networkStatus) {
+                        profileViewModel.showNetworkStatus()
+                    }
+                }
+            }
+        }
+
 
         lifecycleScope.launchWhenStarted {
             networkListener = NetworkListener()
@@ -150,9 +168,14 @@ class ProfileFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             profileViewModel.readUserToken.collectLatest { token ->
                 profileViewModel.userToken = token
-                profileViewModel.getUserInfos(
-                    token = profileViewModel.userToken
-                )
+                if(profileViewModel.networkStatus) {
+                    profileViewModel.getUserInfos(
+                        token = profileViewModel.userToken
+                    )
+                } else {
+                    profileViewModel.showNetworkStatus()
+                }
+
             }
         }
 
@@ -173,7 +196,7 @@ class ProfileFragment : Fragment() {
                             error(R.drawable.placeholder_image)
                         }
                     } else {
-                        binding.userName.text = userInfos.data.fullName ?: "You"
+                        binding.userName.text = userInfos.data.fullName
                         binding.userImg.load(
                             uri = userInfos.data.thumbnail
                         ) {

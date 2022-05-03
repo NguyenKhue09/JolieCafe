@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_BACK_ONLINE
+import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_IS_USER_DATA_CHANGE
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_NAME
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_USER_AUTH_TYPE
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_USER_TOKEN
@@ -27,6 +28,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         val backOnline = booleanPreferencesKey(PREFERENCES_BACK_ONLINE)
         val userToken = stringPreferencesKey(PREFERENCES_USER_TOKEN)
         val isFaceOrGGLogin = booleanPreferencesKey(PREFERENCES_USER_AUTH_TYPE)
+        val isUserDataChange = booleanPreferencesKey(PREFERENCES_IS_USER_DATA_CHANGE)
     }
 
     private val dataStore: DataStore<Preferences> = context.dataStore
@@ -46,6 +48,12 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
     suspend fun saveIsUserFaceOrGGLogin(isFaceOrGGLogin: Boolean) {
         dataStore.edit { preferences ->
             preferences[PreferenceKeys.isFaceOrGGLogin] = isFaceOrGGLogin
+        }
+    }
+
+    suspend fun saveIsUserDataChange(isDataChange: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferenceKeys.isUserDataChange] = isDataChange
         }
     }
 
@@ -85,6 +93,19 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         }
         .map { preferences ->
             val isFaceOrGGLogin = preferences[PreferenceKeys.isFaceOrGGLogin] ?: false
+            isFaceOrGGLogin
+        }
+
+    val readIsUserDataChange: Flow<Boolean> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw  exception
+            }
+        }
+        .map { preferences ->
+            val isFaceOrGGLogin = preferences[PreferenceKeys.isUserDataChange] ?: false
             isFaceOrGGLogin
         }
 }

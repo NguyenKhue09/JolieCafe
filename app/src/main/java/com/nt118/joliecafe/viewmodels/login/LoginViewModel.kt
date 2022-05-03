@@ -28,7 +28,7 @@ class LoginViewModel @Inject constructor(
     var readBackOnline = dataStoreRepository.readBackOnline
 
 
-    var createUserResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
+    var userLoginResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
 
 
     var networkStatus = false
@@ -36,11 +36,16 @@ class LoginViewModel @Inject constructor(
 
 
 
-    fun createUser(data: MutableMap<String, String>) =
+    fun userLogin(userId: String) =
         viewModelScope.launch {
-            createUserResponse.value = ApiResult.Loading()
-            val response = repository.remote.createUser(data = data)
-            createUserResponse.value = handleApiResponse(response = response)
+            userLoginResponse.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.userLogin(userId = userId)
+                userLoginResponse.value = handleApiResponse(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                userLoginResponse.value = ApiResult.Error(e.message)
+            }
         }
 
 

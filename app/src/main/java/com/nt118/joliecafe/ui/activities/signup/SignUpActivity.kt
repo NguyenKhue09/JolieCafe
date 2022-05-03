@@ -10,7 +10,11 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Patterns
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,9 +28,14 @@ import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseEmailPassword
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseFacebookLogin
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseGoogleAuthentication
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
+import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants
+import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.viewmodels.sign_up.SignUpViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 
+@AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
@@ -34,6 +43,8 @@ class SignUpActivity : AppCompatActivity() {
     lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var callbackManager: CallbackManager
     private lateinit var auth: FirebaseAuth
+    private val signUpViewModel: SignUpViewModel by viewModels()
+    private lateinit var networkListener: NetworkListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,23 +74,63 @@ class SignUpActivity : AppCompatActivity() {
             finish()
         }
 
+        signUpViewModel.readBackOnline.asLiveData().observe(this) {
+            signUpViewModel.backOnline = it
+        }
+
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(this@SignUpActivity)
+                .collect { status ->
+                    signUpViewModel.networkStatus = status
+                    signUpViewModel.showNetworkStatus()
+                }
+        }
+
+        signUpViewModel.createUserResponse.observe(this) { result ->
+            when(result) {
+                is ApiResult.Success -> {
+                    navigateToMainScreen()
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(this, "${result.message}", Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
+        }
+
+        signUpViewModel.userLoginGGOrFaceResponse.observe(this) { result ->
+            when(result) {
+                is ApiResult.Success -> {
+                    navigateToMainScreen()
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(this, "${result.message}", Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
+        }
+
         onClick()
     }
 
     private fun onClick() {
         // FaceBook Login
         binding.imgFb.setOnClickListener {
+            signUpViewModel.saveIsUserFaceOrGGLogin(true)
             facebookLogin.facebookLogin(callbackManager, auth, this)
         }
 
         // Google Signin
         binding.imgGg.setOnClickListener {
+            signUpViewModel.saveIsUserFaceOrGGLogin(true)
             if (!FirebaseGoogleAuthentication().checkUser()) {
                 FirebaseGoogleAuthentication().loginGoogle(userSignIn, mGoogleSignInClient)
             }
         }
 
         binding.btnSignUp.setOnClickListener {
+            signUpViewModel.saveIsUserFaceOrGGLogin(false)
             registerUserWithEmailPassword()
         }
     }
@@ -104,11 +155,12 @@ class SignUpActivity : AppCompatActivity() {
         if(validateUserName() && validateEmail() && validatePassword() && validateConfirmPassword()) {
             val email = binding.etEmail.text.toString().trim{it <= ' '}
             val password = binding.etPassword.text.toString().trim{it <= ' '}
-            println(email)
+            val userName = binding.etUserName.text.toString().trim{it <= ' '}
 
             FirebaseEmailPasswordAuthentication().registerUser(
                 email = email,
                 password= password,
+                fullName = userName,
                 signUpActivity = this
             )
         }
@@ -185,8 +237,10 @@ class SignUpActivity : AppCompatActivity() {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
-    fun navigateToMainScreen() {
-        startActivity(Intent(this, MainActivity::class.java))
+    private fun navigateToMainScreen() {
+        startActivity(Intent(this, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        })
         finish()
     }
 
@@ -205,7 +259,11 @@ class SignUpActivity : AppCompatActivity() {
         tvCreateAccount.text = spannableString
     }
 
-    fun createUser(data: HashMap<String, Any>) {
+    fun createUser(userData: Map<String, String>) {
+        signUpViewModel.createUser(userData = userData)
+    }
 
+    fun userLogin(userId: String) {
+        signUpViewModel.userLogin(userId = userId)
     }
 }

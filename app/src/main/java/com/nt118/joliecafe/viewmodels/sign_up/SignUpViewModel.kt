@@ -1,10 +1,9 @@
-package com.nt118.joliecafe.viewmodels.profile_activity
+package com.nt118.joliecafe.viewmodels.sign_up
 
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
@@ -13,38 +12,63 @@ import com.nt118.joliecafe.models.User
 import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileActivityViewModel@Inject constructor(
+class SignUpViewModel@Inject constructor(
     application: Application,
     private val repository: Repository,
     private val dataStoreRepository: DataStoreRepository
-): AndroidViewModel(application) {
+) : AndroidViewModel(application) {
 
     var readBackOnline = dataStoreRepository.readBackOnline
-    var readUserToken = dataStoreRepository.readUserToken
 
-    var updateUserDataResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
+    var createUserResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
+    var userLoginGGOrFaceResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
 
-    var userToken = ""
     var networkStatus = false
     var backOnline = false
 
-    fun updateUserInfos(token: String, newUserData: Map<String, String>) =
+    fun createUser(userData: Map<String, String>) =
         viewModelScope.launch {
-            updateUserDataResponse.value = ApiResult.Loading()
+            createUserResponse.value = ApiResult.Loading()
             try {
-                val response = repository.remote.updateUserInfos(token = token, newUserData = newUserData)
-                updateUserDataResponse.value = handleApiResponse(response = response)
+                val response = repository.remote.createUser(data = userData)
+                createUserResponse.value = handleApiResponse(response = response)
             } catch (e: Exception) {
                 e.printStackTrace()
-                updateUserDataResponse.value = ApiResult.Error(e.message)
+                createUserResponse.value = ApiResult.Error(e.message)
             }
+
+        }
+
+    fun userLogin(userId: String) =
+        viewModelScope.launch {
+            userLoginGGOrFaceResponse.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.userLogin(userId = userId)
+                userLoginGGOrFaceResponse.value = handleApiResponse(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                userLoginGGOrFaceResponse.value = ApiResult.Error(e.message)
+            }
+        }
+
+    private fun saveBackOnline(backOnline: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveBackOnline(backOnline)
+        }
+
+    fun saveIsUserFaceOrGGLogin(isUserFaceOrGGLogin: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveIsUserFaceOrGGLogin(isUserFaceOrGGLogin)
+        }
+
+    private fun saveUserToken(userToken: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveUserToken(userToken = userToken)
         }
 
     private fun handleApiResponse(response: Response<ApiResponseSingleData<User>>): ApiResult<User> {
@@ -57,28 +81,14 @@ class ProfileActivityViewModel@Inject constructor(
                 ApiResult.Error(response.message())
             }
             response.isSuccessful -> {
-                ApiResult.Success(result!!.data!!)
+                saveUserToken(result!!.data!!.token)
+                ApiResult.Success(result.data!!)
             }
             else -> {
                 ApiResult.Error(response.message())
             }
         }
     }
-
-    private fun saveBackOnline(backOnline: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
-            dataStoreRepository.saveBackOnline(backOnline)
-        }
-
-    fun saveIsUserDataChange(isDataChange: Boolean) =
-        viewModelScope.launch(Dispatchers.IO) {
-            dataStoreRepository.saveIsUserDataChange(isDataChange)
-        }
-
-    fun saveUserToken(userToken: String) =
-        viewModelScope.launch(Dispatchers.IO) {
-            dataStoreRepository.saveUserToken(userToken = userToken)
-        }
 
     fun showNetworkStatus() {
         if (!networkStatus) {
@@ -91,5 +101,4 @@ class ProfileActivityViewModel@Inject constructor(
             }
         }
     }
-
 }

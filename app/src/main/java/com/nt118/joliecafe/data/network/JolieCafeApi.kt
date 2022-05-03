@@ -18,7 +18,12 @@ interface JolieCafeApi {
     @Headers("Content-Type: application/json")
     @POST("$API_GATEWAY/user/create-new-user")
     suspend fun createUser(
-        @Body body: MutableMap<String, String>,
+        @Body body: Map<String, String>,
+    ): Response<ApiResponseSingleData<User>>
+
+    @GET("$API_GATEWAY/user/login")
+    suspend fun userLogin(
+        @Query("userId") userId: String
     ): Response<ApiResponseSingleData<User>>
 
     @GET("$API_GATEWAY/product/get-products")
@@ -67,6 +72,18 @@ interface JolieCafeApi {
         @Body body: Map<String, String>,
         @Header("Authorization") token: String
     ): Response<ApiResponseSingleData<Address>>
+
+//    @Headers("Content-Type: application/json")
+//    @GET("$API_GATEWAY/address/get")
+//    suspend fun getFavoriteUserProduct(
+//        @Header("Authorization") token: String
+//    ): ApiResponseMultiData<Product>
+
+    @PUT("$API_GATEWAY/user/update-user-info")
+    suspend fun updateUserInfos(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, String>,
+    ): Response<ApiResponseSingleData<User>>
 
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 

@@ -12,17 +12,21 @@ class FirebaseEmailPasswordAuthentication {
     var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
 
-    fun registerUser(email: String, password: String, signUpActivity: SignUpActivity) {
-        val data: HashMap<String, Any> = hashMapOf()
+    fun registerUser(email: String, password: String, fullName: String,signUpActivity: SignUpActivity) {
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if(task.isSuccessful) {
                     val firebaseUser: FirebaseUser? = task.result!!.user!!
                     Toast.makeText(signUpActivity, "Register User successful!", Toast.LENGTH_SHORT).show()
-                    data["_id"] = task.result.user!!.uid
-                    data["fullname"] = task.result.user!!.displayName ?: ""
-                    data["email"] = task.result.user!!.email ?: ""
-                    signUpActivity.createUser(data = data)
+
+
+                    val data: Map<String, String> = mapOf(
+                        "_id" to firebaseUser!!.uid,
+                        "fullname" to fullName,
+                        "email" to email
+                    )
+
+                    signUpActivity.createUser(userData = data)
                 } else {
                     Toast.makeText(signUpActivity, "Register User failed!", Toast.LENGTH_SHORT).show()
                 }
@@ -41,7 +45,7 @@ class FirebaseEmailPasswordAuthentication {
                     data["_id"] = task.result.user!!.uid
                     data["fullname"] = task.result.user!!.displayName ?: ""
                     data["email"] = task.result.user!!.email ?: ""
-                    loginActivity.createUser(data = data)
+                    loginActivity.userLogin(userId = task.result.user!!.uid)
                 } else {
                     Toast.makeText(loginActivity, "Login failed!", Toast.LENGTH_SHORT).show()
                 }

@@ -22,8 +22,12 @@ class RemoteDataSource @Inject constructor(
         return jolieCafeApi.momoRequestPayment(body = data, token = token)
     }
 
-    suspend fun createUser(data: MutableMap<String, String>): Response<ApiResponseSingleData<User>> {
+    suspend fun createUser(data: Map<String, String>): Response<ApiResponseSingleData<User>> {
         return jolieCafeApi.createUser(body = data)
+    }
+
+    suspend fun userLogin(userId: String): Response<ApiResponseSingleData<User>> {
+        return jolieCafeApi.userLogin(userId = userId)
     }
 
     suspend fun getUserInfos(token: String): Response<ApiResponseSingleData<User>> {
@@ -75,5 +79,12 @@ class RemoteDataSource @Inject constructor(
         token: String
     ): Response<ApiResponseSingleData<Address>> {
         return jolieCafeApi.updateAddress(body = newAddressData, token = "Bearer $token")
+    }
+
+    suspend fun updateUserInfos(
+        newUserData: Map<String, String>,
+        token: String
+    ): Response<ApiResponseSingleData<User>> {
+        return jolieCafeApi.updateUserInfos(token = "Bearer $token", body = newUserData)
     }
 }

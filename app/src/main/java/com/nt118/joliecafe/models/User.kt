@@ -11,7 +11,7 @@ data class User(
     @SerialName("fullname")
     val fullName: String,
     val email: String,
-    val phone: String,
+    val phone: String? = null,
     val dob: String ? = null,
     val thumbnail: String ?= "",
     val token: String,
