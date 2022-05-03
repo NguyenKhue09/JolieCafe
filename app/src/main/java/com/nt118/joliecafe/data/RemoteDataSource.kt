@@ -88,4 +88,11 @@ class RemoteDataSource @Inject constructor(
             pagingSourceFactory = { CartItemPagingSource(jolieCafeApi, token) }
         ).flow
     }
+
+    suspend fun updateUserInfos(
+        newUserData: Map<String, String>,
+        token: String
+    ): Response<ApiResponseSingleData<User>> {
+        return jolieCafeApi.updateUserInfos(token = "Bearer $token", body = newUserData)
+    }
 }

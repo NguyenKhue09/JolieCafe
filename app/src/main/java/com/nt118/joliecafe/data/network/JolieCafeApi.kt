@@ -84,6 +84,18 @@ interface JolieCafeApi {
 
     // End of Cart API
 
+//    @Headers("Content-Type: application/json")
+//    @GET("$API_GATEWAY/address/get")
+//    suspend fun getFavoriteUserProduct(
+//        @Header("Authorization") token: String
+//    ): ApiResponseMultiData<Product>
+
+    @PUT("$API_GATEWAY/user/update-user-info")
+    suspend fun updateUserInfos(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, String>,
+    ): Response<ApiResponseSingleData<User>>
+
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 
 }

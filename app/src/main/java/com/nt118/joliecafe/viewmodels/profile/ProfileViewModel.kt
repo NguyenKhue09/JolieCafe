@@ -26,6 +26,7 @@ class ProfileViewModel @Inject constructor(
 
     var readBackOnline = dataStoreRepository.readBackOnline
     var readUserToken = dataStoreRepository.readUserToken
+    var readIsUserDataChange = dataStoreRepository.readIsUserDataChange
     var readIsUserFaceOrGGLogin = dataStoreRepository.readIsUserFaceOrGGLogin
 
 
@@ -105,6 +106,11 @@ class ProfileViewModel @Inject constructor(
     private fun saveBackOnline(backOnline: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveBackOnline(backOnline)
+        }
+
+    fun saveIsUserDataChange(isDataChange: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveIsUserDataChange(isDataChange)
         }
 
     fun showNetworkStatus() {
