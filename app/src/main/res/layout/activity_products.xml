@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.products.products"
+    tools:context=".ui.activities.products.ProductsActivity"
     android:paddingTop="20dp"
     android:background="@color/grey_primary">
 

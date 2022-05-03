@@ -1,15 +1,12 @@
 package com.nt118.joliecafe.ui.fragments.home
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,7 +19,6 @@ import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.BestSellerAdapter
 import com.nt118.joliecafe.adapter.CategorieAdapter
@@ -33,7 +29,7 @@ import com.nt118.joliecafe.models.CategorieModel
 import com.nt118.joliecafe.models.SliderItem
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.notifications.Notification
-import com.nt118.joliecafe.ui.activities.products.products
+import com.nt118.joliecafe.ui.activities.products.ProductsActivity
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
 import com.nt118.joliecafe.viewmodels.home.HomeViewModel
@@ -131,7 +127,7 @@ class HomeFragment : Fragment() {
         recyclerView.adapter = categorieAdapter
         categorieAdapter.setOnClickListener(object : CategorieAdapter.onItemClickListener{
             override fun onItemClick(position: Int) {
-                val intent = Intent(activity,products::class.java)
+                val intent = Intent(activity,ProductsActivity::class.java)
                 intent.putExtra("position",position)
                 startActivity(intent)
             }
