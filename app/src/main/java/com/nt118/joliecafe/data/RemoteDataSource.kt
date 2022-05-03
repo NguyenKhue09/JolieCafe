@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.nt118.joliecafe.data.network.JolieCafeApi
 import com.nt118.joliecafe.data.paging_source.AddressPagingSource
+import com.nt118.joliecafe.data.paging_source.CartItemPagingSource
 import com.nt118.joliecafe.data.paging_source.ProductPagingSource
 import com.nt118.joliecafe.models.*
 import com.nt118.joliecafe.util.Constants.Companion.PAGE_SIZE
@@ -79,5 +80,12 @@ class RemoteDataSource @Inject constructor(
         token: String
     ): Response<ApiResponseSingleData<Address>> {
         return jolieCafeApi.updateAddress(body = newAddressData, token = "Bearer $token")
+    }
+
+    fun getCartItems(token: String): Flow<PagingData<CartItem>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
+            pagingSourceFactory = { CartItemPagingSource(jolieCafeApi, token) }
+        ).flow
     }
 }
