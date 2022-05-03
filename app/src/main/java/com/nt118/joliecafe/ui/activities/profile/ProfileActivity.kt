@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.asLiveData
@@ -20,6 +21,7 @@ import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ActivityProfileBinding
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseFacebookLogin
 import com.nt118.joliecafe.firebase.firebaseauthentication.FirebaseGoogleAuthentication
+import com.nt118.joliecafe.firebase.firebasefirestore.FirebaseStorage
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.fragments.profile_bottom_sheet.ProfileBottomSheetFragment
 import com.nt118.joliecafe.util.ApiResult
@@ -28,6 +30,7 @@ import com.nt118.joliecafe.util.Constants.Companion.IS_CHANGE_PASSWORD
 import com.nt118.joliecafe.util.Constants.Companion.IS_EDIT
 import com.nt118.joliecafe.util.Constants.Companion.IS_SAVE_CHANGE_PASSWORD
 import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.util.extenstions.observeOnce
 import com.nt118.joliecafe.viewmodels.profile_activity.ProfileActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -76,6 +79,16 @@ class ProfileActivity : AppCompatActivity() {
             if (!args.isFaceOrGGLogin) {
                 val bottomSheet = ProfileBottomSheetFragment()
                 bottomSheet.show(supportFragmentManager, "TAG")
+                bottomSheet.userImageUri.observeOnce(this) {
+                    it?.let {
+                        binding.userImg.load(
+                            it
+                        ) {
+                            crossfade(600)
+                            error(R.drawable.placeholder_image)
+                        }
+                    }
+                }
             } else {
                 Toast.makeText(
                     this,
