@@ -1,11 +1,9 @@
 package com.nt118.joliecafe.ui.activities.products
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -23,7 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 
 @AndroidEntryPoint
-class products : AppCompatActivity() {
+class ProductsActivity : AppCompatActivity() {
     private val productsViewModel by viewModels<ProductsViewModel>()
 
     private var _binding: ActivityProductsBinding? = null
@@ -40,8 +38,8 @@ class products : AppCompatActivity() {
             productsViewModel.backOnline = it
         }
 
-        val bundle : Bundle? = intent.extras
-        val position = bundle!!.getInt("position")
+//        val bundle : Bundle? = intent.extras
+//        val position = bundle!!.getInt("position")
 
         // back home
         binding.iconBackHome.setOnClickListener {
@@ -68,7 +66,7 @@ class products : AppCompatActivity() {
 
         lifecycleScope.launchWhenStarted {
             networkListener = NetworkListener()
-            networkListener.checkNetworkAvailability(this@products)
+            networkListener.checkNetworkAvailability(this@ProductsActivity)
                 .collect { status ->
                     productsViewModel.networkStatus = status
                     productsViewModel.showNetworkStatus()

@@ -53,7 +53,7 @@
             android:name=".ui.activities.profile.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.products.products"
+            android:name=".ui.activities.products.ProductsActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activities.notifications.Notification"
