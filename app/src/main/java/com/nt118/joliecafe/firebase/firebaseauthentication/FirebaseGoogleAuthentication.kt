@@ -9,6 +9,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.signup.SignUpActivity
@@ -20,7 +21,6 @@ class FirebaseGoogleAuthentication {
     fun signOut(activity: Activity, mGoogleSignInClient: GoogleSignInClient) {
         mGoogleSignInClient.signOut().addOnCompleteListener(activity,
             OnCompleteListener<Void?> { })
-        Toast.makeText(activity, "Google sign out: ${mAuth.currentUser}", Toast.LENGTH_LONG).show()
     }
 
     fun googleAuthForFirebase(account: GoogleSignInAccount, activity: Activity) {
@@ -32,19 +32,37 @@ class FirebaseGoogleAuthentication {
                 if (task.isSuccessful) {
                     Toast.makeText(activity, "Google sign in successfully", Toast.LENGTH_LONG)
                         .show()
+
+                    data["_id"] = task.result.user!!.uid
+                    data["fullname"] = task.result.user!!.displayName ?: ""
+                    data["email"] = task.result.user!!.email ?: ""
+
+                    val isNewUser = task.result.additionalUserInfo?.isNewUser ?: false
+
                     when(activity) {
                         is LoginActivity -> {
-                            data["_id"] = task.result.user!!.uid
-                            data["fullname"] = task.result.user!!.displayName ?: ""
-                            data["email"] = task.result.user!!.email ?: ""
-                            activity.userLogin(userId = task.result.user!!.uid)
+                            if(isNewUser) {
+                                activity.createUser(userData = data)
+                            } else {
+                                activity.userLogin(userId = task.result.user!!.uid)
+                            }
                         }
                         is SignUpActivity -> {
-                            activity.userLogin(userId = task.result.user!!.uid)
+                            if(isNewUser) {
+                                activity.createUser(userData = data)
+                            } else {
+                                activity.userLogin(userId = task.result.user!!.uid)
+                            }
                         }
                     }
                 } else {
-                    Toast.makeText(activity, "Google sign in failed", Toast.LENGTH_LONG).show()
+                    try {
+                        throw  task.exception!!
+                    } catch (e: FirebaseAuthUserCollisionException) {
+                        Toast.makeText(activity, "This email is already use in the other account", Toast.LENGTH_LONG).show()
+                    } catch (e: Exception) {
+                        Toast.makeText(activity, "Google sign in failed", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         } catch (e: Exception) {

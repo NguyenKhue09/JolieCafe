@@ -169,6 +169,7 @@ class AddressBookActivity : AppCompatActivity() {
                 }
                 is ApiResult.Success -> {
                     Toast.makeText(this, "Add new default address successful", Toast.LENGTH_SHORT).show()
+                    addressBookAdapter.refresh()
                 }
                 is ApiResult.Error -> {
                     Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()

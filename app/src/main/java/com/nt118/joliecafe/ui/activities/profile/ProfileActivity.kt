@@ -90,6 +90,7 @@ class ProfileActivity : AppCompatActivity() {
                     }
                 }
             } else {
+
                 Toast.makeText(
                     this,
                     "Login by Google or Facebook can't change avatar!",
@@ -229,12 +230,25 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun setUserData() {
         val user = args.user
-        binding.userImg.load(
-            user.thumbnail ?: ""
-        ) {
-            crossfade(600)
-            error(R.drawable.placeholder_image)
+        if (!args.isFaceOrGGLogin)  {
+            binding.userImg.load(
+                user.thumbnail ?: ""
+            ) {
+                crossfade(600)
+                error(R.drawable.placeholder_image)
+            }
+        } else {
+            val firebaseUser = FirebaseAuth.getInstance().currentUser
+            firebaseUser?.let {
+                binding.userImg.load(
+                    it.photoUrl
+                ) {
+                    crossfade(600)
+                    error(R.drawable.placeholder_image)
+                }
+            }
         }
+
         binding.tvEmail.text = user.email
         binding.etName.setText(user.fullName)
         binding.etPhone.setText(user.phone ?: "Update your phone number")

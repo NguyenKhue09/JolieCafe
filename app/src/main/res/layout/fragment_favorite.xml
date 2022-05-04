@@ -38,7 +38,6 @@
         android:layout_marginTop="25dp"
         app:tabPaddingStart="10dp"
         app:tabMinWidth="10dp"
-        app:tabMaxWidth="90dp"
         app:tabContentStart="30dp"
         app:tabTextColor="@color/text_color"
         app:tabTextAppearance="@style/MyCustomTabTextAppearance">

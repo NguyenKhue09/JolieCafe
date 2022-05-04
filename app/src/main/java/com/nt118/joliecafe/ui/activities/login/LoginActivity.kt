@@ -190,6 +190,10 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.userLogin(userId = userId)
     }
 
+    fun createUser(userData: Map<String, String>) {
+        loginViewModel.createUser(userData = userData)
+    }
+
     private fun validateEmail(): Boolean {
         val email = binding.etUserName.text.toString().trim{it <= ' '}
 

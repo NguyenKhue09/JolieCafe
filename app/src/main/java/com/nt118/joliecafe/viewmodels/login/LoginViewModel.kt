@@ -48,6 +48,19 @@ class LoginViewModel @Inject constructor(
             }
         }
 
+    fun createUser(userData: Map<String, String>) =
+        viewModelScope.launch {
+            userLoginResponse.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.createUser(data = userData)
+                userLoginResponse.value = handleApiResponse(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                userLoginResponse.value = ApiResult.Error(e.message)
+            }
+
+        }
+
 
 
     private fun saveBackOnline(backOnline: Boolean) =
