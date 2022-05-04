@@ -144,7 +144,7 @@ class ProfileBottomSheetFragment : BottomSheetDialogFragment() {
             } else {
                 Toast.makeText(
                     context,
-                    "Oops, you just denied the permission for storage, You can aslo allow it from settings.",
+                    "Oops, you just denied the permission for storage, You can also allow it from settings.",
                     Toast.LENGTH_LONG
                 ).show()
             }
