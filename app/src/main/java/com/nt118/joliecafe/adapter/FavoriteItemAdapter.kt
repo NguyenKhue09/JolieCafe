@@ -10,13 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ItemRowLayoutBinding
+import com.nt118.joliecafe.models.FavoriteProduct
 import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.ui.activities.detail.DetailActivity
 
 class FavoriteItemAdapter(
     private val context: Context,
-    diffUtil: DiffUtil.ItemCallback<Product>
-) : PagingDataAdapter<Product, FavoriteItemAdapter.MyViewHolder>(diffCallback = diffUtil) {
+    diffUtil: DiffUtil.ItemCallback<FavoriteProduct>
+) : PagingDataAdapter<FavoriteProduct, FavoriteItemAdapter.MyViewHolder>(diffCallback = diffUtil) {
 
     class MyViewHolder(var binding: ItemRowLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -40,19 +41,24 @@ class FavoriteItemAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val favoriteProduct = getItem(position)
 
-        holder.binding.itemCard.setOnClickListener {
-            val intent = Intent(context, DetailActivity::class.java)
-            context.startActivity(intent)
-        }
-
         favoriteProduct?.let {
-            holder.binding.itemImg.load(favoriteProduct.thumbnail) {
+            val product = it.product
+            holder.binding.itemCard.setOnClickListener {
+                val intent = Intent(context, DetailActivity::class.java)
+                context.startActivity(intent)
+            }
+
+            holder.binding.itemImg.load(product.thumbnail) {
                 crossfade(600)
                 error(R.drawable.placeholder_image)
             }
 
-            holder.binding.itemName.text = favoriteProduct.name
-            holder.binding.itemPrice.text = favoriteProduct.originPrice.toString()
+            holder.binding.itemName.text = product.name
+            holder.binding.itemPrice.text = context.getString(R.string.product_price, product.originPrice)
+
+            holder.binding.itemFavorite.setOnClickListener {
+
+            }
         }
     }
 

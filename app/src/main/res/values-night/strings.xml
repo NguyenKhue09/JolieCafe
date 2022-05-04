@@ -31,4 +31,5 @@
     <string name="notifications">Notifications</string>
     <string name="language">Language</string>
     <string name="camera">Camera</string>
+    <string name="product_price">%f VND</string>
 </resources>

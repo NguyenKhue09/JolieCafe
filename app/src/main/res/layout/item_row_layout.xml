@@ -68,7 +68,7 @@
 
                     <TextView
                         android:id="@+id/item_name"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:fontFamily="@font/raleway_regular"
@@ -79,7 +79,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/textView"
                         app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintWidth_default="wrap"
+                        app:layout_constrainedWidth="true"
                         app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
@@ -105,7 +105,7 @@
 
                     <TextView
                         android:id="@+id/item_favorite"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="3dp"
                         android:ellipsize="end"
@@ -115,7 +115,7 @@
                         android:text="@string/item_favorite"
                         android:textColor="@color/text_color"
                         android:textSize="16sp"
-                        app:layout_constraintWidth_default="wrap"
+                        app:layout_constrainedWidth="true"
                         app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintBottom_toBottomOf="@+id/textView"
                         app:layout_constraintStart_toEndOf="@+id/textView"

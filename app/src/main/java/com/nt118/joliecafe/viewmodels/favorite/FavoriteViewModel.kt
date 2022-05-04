@@ -4,10 +4,12 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
 import com.nt118.joliecafe.models.ApiResponseSingleData
+import com.nt118.joliecafe.models.FavoriteProduct
 import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.models.User
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +31,9 @@ class FavoriteViewModel @Inject constructor(
     var readBackOnline = dataStoreRepository.readBackOnline
     var readUserToken = dataStoreRepository.readUserToken
 
+    private var _tabSelected = MutableLiveData<String>()
+    val tabSelected: LiveData<String> = _tabSelected
+
     var userToken = ""
 
     var networkStatus = false
@@ -42,7 +47,7 @@ class FavoriteViewModel @Inject constructor(
                     token = "Bearer $token"
                 )
             } catch (e: Exception) {
-                println(e.message)
+                e.printStackTrace()
                 flowOf()
             }
         } else {
@@ -50,6 +55,29 @@ class FavoriteViewModel @Inject constructor(
             handleTokenEmpty()
             flowOf()
         }
+    }
+
+    fun getUserFavoriteProducts(productQuery: Map<String, String>, token: String): Flow<PagingData<FavoriteProduct>> {
+        return if (token.isNotEmpty()) {
+            try {
+                repository.remote.getUserFavoriteProducts(
+                    productQuery = productQuery,
+                    token = token
+                ).cachedIn(viewModelScope)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                flowOf()
+            }
+        } else {
+            println("Token empty")
+            handleTokenEmpty()
+            flowOf()
+        }
+    }
+
+
+    fun setTabSelected(tab: String) {
+        _tabSelected.value = tab
     }
 
     private fun handleTokenEmpty() {

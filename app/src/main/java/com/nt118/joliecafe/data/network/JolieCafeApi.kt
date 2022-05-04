@@ -2,6 +2,7 @@ package com.nt118.joliecafe.data.network
 
 import com.nt118.joliecafe.models.*
 import com.nt118.joliecafe.util.Constants.Companion.API_GATEWAY
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -26,16 +27,39 @@ interface JolieCafeApi {
         @Query("userId") userId: String
     ): Response<ApiResponseSingleData<User>>
 
+    @GET("$API_GATEWAY/user/get-user-info")
+    suspend fun getUserInfos(
+        @Header("Authorization") token: String
+    ): Response<ApiResponseSingleData<User>>
+
+    @PUT("$API_GATEWAY/user/update-user-info")
+    suspend fun updateUserInfos(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, String>,
+    ): Response<ApiResponseSingleData<User>>
+
+
     @GET("$API_GATEWAY/product/get-products")
     suspend fun getProducts(
         @QueryMap productQuery: Map<String, String>,
         @Header("Authorization") token: String
     ): ApiResponseMultiData<Product>
 
-    @GET("$API_GATEWAY/user/get-user-info")
-    suspend fun getUserInfos(
+    @Headers("Content-Type: application/json")
+        @GET("$API_GATEWAY/favorite")
+    suspend fun getUserFavoriteProduct(
+        @QueryMap productQuery: Map<String, String>,
         @Header("Authorization") token: String
-    ): Response<ApiResponseSingleData<User>>
+    ): ApiResponseMultiData<FavoriteProduct>
+
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @GET("$API_GATEWAY/favorite/remove")
+    @FormUrlEncoded
+    suspend fun removeUserFavoriteProduct(
+        @Header("Authorization") token: String,
+        @Field("favoriteProductId") favoriteProductId: String,
+    ): ApiResponseSingleData<Unit>
+
 
     @Headers("Content-Type: application/json")
     @POST("$API_GATEWAY/address/add")
@@ -84,17 +108,8 @@ interface JolieCafeApi {
 
     // End of Cart API
 
-//    @Headers("Content-Type: application/json")
-//    @GET("$API_GATEWAY/address/get")
-//    suspend fun getFavoriteUserProduct(
-//        @Header("Authorization") token: String
-//    ): ApiResponseMultiData<Product>
 
-    @PUT("$API_GATEWAY/user/update-user-info")
-    suspend fun updateUserInfos(
-        @Header("Authorization") token: String,
-        @Body body: Map<String, String>,
-    ): Response<ApiResponseSingleData<User>>
+
 
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 
