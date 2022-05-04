@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.nt118.joliecafe.R
-import com.nt118.joliecafe.databinding.ItemRvBestsallerBinding
 import com.nt118.joliecafe.databinding.ItemRvProductBinding
 import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.ui.activities.detail.DetailActivity
@@ -22,10 +21,10 @@ class ProductAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         companion object {
-            fun from(parent: ViewGroup): ProductAdapter.ViewHolder {
+            fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemRvProductBinding.inflate(layoutInflater)
-                return ProductAdapter.ViewHolder(binding)
+                return ViewHolder(binding)
             }
         }
     }
@@ -34,11 +33,11 @@ class ProductAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ProductAdapter.ViewHolder {
-        return ProductAdapter.ViewHolder.from(parent)
+    ): ViewHolder {
+        return ViewHolder.from(parent)
     }
 
-    override fun onBindViewHolder(holder: ProductAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
 
         holder.binding.itemCard.setOnClickListener {
