@@ -12,6 +12,7 @@ import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.signup.SignUpActivity
 
@@ -40,7 +41,10 @@ class FirebaseFacebookLogin {
             }
 
             override fun onError(error: FacebookException) {
-                println("facebook:onError: ${error.message}")
+                Toast.makeText(
+                    context, error.message,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
     }
@@ -57,24 +61,51 @@ class FirebaseFacebookLogin {
                     println("signInWithCredential:success")
                     val user = auth.currentUser
                     println(user?.displayName)
+
+                    Toast.makeText(
+                        activity.baseContext, "Facebook login successful",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    data["_id"] = task.result.user!!.uid
+                    data["fullname"] = task.result.user!!.displayName ?: ""
+                    data["email"] = task.result.user!!.email ?: ""
+
+                    val isNewUser = task.result.additionalUserInfo?.isNewUser ?: false
+
                     when(activity) {
                         is LoginActivity -> {
-                            data["_id"] = task.result.user!!.uid
-                            data["fullname"] = task.result.user!!.displayName ?: ""
-                            data["email"] = task.result.user!!.email ?: ""
-                            activity.userLogin(userId = task.result.user!!.uid)
+                            if(isNewUser) {
+                                activity.createUser(userData = data)
+                            } else {
+                                activity.userLogin(userId = task.result.user!!.uid)
+                            }
                         }
                         is SignUpActivity -> {
-                            activity.userLogin(userId = task.result.user!!.uid)
+                            if(isNewUser) {
+                                activity.createUser(userData = data)
+                            } else {
+                                activity.userLogin(userId = task.result.user!!.uid)
+                            }
                         }
                     }
                 } else {
                     // If sign in fails, display a message to the User.
                     println("signInWithCredential:failure  ${task.exception}")
-                    Toast.makeText(
-                        activity.baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    when(task.exception) {
+                        is FirebaseAuthUserCollisionException -> {
+                            Toast.makeText(
+                                activity.baseContext, "An account already exists with the same email address.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        else -> {
+                            Toast.makeText(
+                                activity.baseContext, "Authentication failed.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 }
             }
     }

@@ -2,6 +2,7 @@ package com.nt118.joliecafe.firebase.firebaseauthentication
 
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
 import com.nt118.joliecafe.ui.activities.forgotpassword.ForgotPasswordActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
@@ -28,7 +29,17 @@ class FirebaseEmailPasswordAuthentication {
 
                     signUpActivity.createUser(userData = data)
                 } else {
-                    Toast.makeText(signUpActivity, "Register User failed!", Toast.LENGTH_SHORT).show()
+                    when(task.exception) {
+                        is FirebaseAuthUserCollisionException -> {
+                            Toast.makeText(
+                                signUpActivity, "An account already exists with the same email address.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        else -> {
+                            Toast.makeText(signUpActivity, "Register User failed!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
             .addOnFailureListener {
