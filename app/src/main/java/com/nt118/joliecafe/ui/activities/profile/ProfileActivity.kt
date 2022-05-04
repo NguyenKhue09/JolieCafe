@@ -222,6 +222,7 @@ class ProfileActivity : AppCompatActivity() {
                     Toast.makeText(this, "Update data failed!", Toast.LENGTH_SHORT).show()
                     profileActivityViewModel.saveIsUserDataChange(false)
                 }
+                else -> {}
             }
         }
     }

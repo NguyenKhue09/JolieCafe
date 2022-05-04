@@ -13,9 +13,10 @@ import com.nt118.joliecafe.databinding.ItemRowLayoutBinding
 import com.nt118.joliecafe.models.FavoriteProduct
 import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.ui.activities.detail.DetailActivity
+import com.nt118.joliecafe.ui.fragments.favorite.FavoriteFragment
 
 class FavoriteItemAdapter(
-    private val context: Context,
+    private val favoriteFragment: FavoriteFragment,
     diffUtil: DiffUtil.ItemCallback<FavoriteProduct>
 ) : PagingDataAdapter<FavoriteProduct, FavoriteItemAdapter.MyViewHolder>(diffCallback = diffUtil) {
 
@@ -44,8 +45,8 @@ class FavoriteItemAdapter(
         favoriteProduct?.let {
             val product = it.product
             holder.binding.itemCard.setOnClickListener {
-                val intent = Intent(context, DetailActivity::class.java)
-                context.startActivity(intent)
+                val intent = Intent(favoriteFragment.context, DetailActivity::class.java)
+                favoriteFragment.context?.startActivity(intent)
             }
 
             holder.binding.itemImg.load(product.thumbnail) {
@@ -54,10 +55,13 @@ class FavoriteItemAdapter(
             }
 
             holder.binding.itemName.text = product.name
-            holder.binding.itemPrice.text = context.getString(R.string.product_price, product.originPrice)
 
-            holder.binding.itemFavorite.setOnClickListener {
+            favoriteFragment.context?.let { context ->
+                holder.binding.itemPrice.text = context.getString(R.string.product_price, product.originPrice)
+            }
 
+            holder.binding.btnFavorite.setOnClickListener {
+                favoriteFragment.removeUserFavoriteProduct(favoriteProductId = favoriteProduct.id)
             }
         }
     }

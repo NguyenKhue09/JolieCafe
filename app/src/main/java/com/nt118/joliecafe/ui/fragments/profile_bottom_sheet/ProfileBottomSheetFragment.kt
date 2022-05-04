@@ -111,6 +111,7 @@ class ProfileBottomSheetFragment : BottomSheetDialogFragment() {
                     Toast.makeText(requireContext(), "Update data failed!", Toast.LENGTH_SHORT).show()
                     profileActivityViewModel.saveIsUserDataChange(false)
                 }
+                else -> {}
             }
         }
 

@@ -209,6 +209,7 @@ class ProfileFragment : Fragment() {
                     preventNavigateToProfileActivity = false
                     Toast.makeText(requireContext(), userInfos.message, Toast.LENGTH_SHORT).show()
                 }
+                else -> {}
             }
         }
 

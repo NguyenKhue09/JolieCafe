@@ -52,13 +52,11 @@ interface JolieCafeApi {
         @Header("Authorization") token: String
     ): ApiResponseMultiData<FavoriteProduct>
 
-    @Headers("Content-Type: application/x-www-form-urlencoded")
-    @GET("$API_GATEWAY/favorite/remove")
-    @FormUrlEncoded
+    @DELETE("$API_GATEWAY/favorite/remove")
     suspend fun removeUserFavoriteProduct(
         @Header("Authorization") token: String,
-        @Field("favoriteProductId") favoriteProductId: String,
-    ): ApiResponseSingleData<Unit>
+        @Query("favoriteProductId") favoriteProductId: String,
+    ): Response<ApiResponseSingleData<Unit>>
 
 
     @Headers("Content-Type: application/json")

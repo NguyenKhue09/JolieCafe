@@ -158,6 +158,7 @@ class AddressBookActivity : AppCompatActivity() {
                 is ApiResult.Error -> {
                     Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
                 }
+                else -> {}
             }
         }
 
@@ -172,6 +173,7 @@ class AddressBookActivity : AppCompatActivity() {
                 is ApiResult.Error -> {
                     Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
                 }
+                else -> {}
             }
         }
 
@@ -187,6 +189,7 @@ class AddressBookActivity : AppCompatActivity() {
                 is ApiResult.Error -> {
                     Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
                 }
+                else -> {}
             }
         }
 
@@ -203,6 +206,7 @@ class AddressBookActivity : AppCompatActivity() {
                     Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
                     false
                 }
+                else -> {false}
             }
             addressViewModel.setUpdateAddressStatus(status = status)
         }

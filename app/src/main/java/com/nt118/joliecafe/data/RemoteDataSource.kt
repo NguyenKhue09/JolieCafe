@@ -61,7 +61,7 @@ class RemoteDataSource @Inject constructor(
         ).flow
     }
 
-    suspend fun removeUserFavoriteProduct(token: String, favoriteProductId: String): ApiResponseSingleData<Unit> {
+    suspend fun removeUserFavoriteProduct(token: String, favoriteProductId: String): Response<ApiResponseSingleData<Unit>> {
         return jolieCafeApi.removeUserFavoriteProduct(token = "Bearer $token", favoriteProductId = favoriteProductId)
     }
 

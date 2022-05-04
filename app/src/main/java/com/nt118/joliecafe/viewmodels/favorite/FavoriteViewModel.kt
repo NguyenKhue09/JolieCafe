@@ -10,16 +10,16 @@ import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
 import com.nt118.joliecafe.models.ApiResponseSingleData
 import com.nt118.joliecafe.models.FavoriteProduct
-import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.models.User
+import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import retrofit2.Response
-import java.lang.Exception
 import javax.inject.Inject
+import kotlin.Exception
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
@@ -31,6 +31,8 @@ class FavoriteViewModel @Inject constructor(
     var readBackOnline = dataStoreRepository.readBackOnline
     var readUserToken = dataStoreRepository.readUserToken
 
+    val removeUserFavoriteProductResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
+
     private var _tabSelected = MutableLiveData<String>()
     val tabSelected: LiveData<String> = _tabSelected
 
@@ -39,25 +41,11 @@ class FavoriteViewModel @Inject constructor(
     var networkStatus = false
     var backOnline = false
 
-    fun getProducts(productQuery: Map<String, String>, token: String): Flow<PagingData<Product>> {
-        return if (token.isNotEmpty()) {
-            try {
-                repository.remote.getProducts(
-                    productQuery = productQuery,
-                    token = "Bearer $token"
-                )
-            } catch (e: Exception) {
-                e.printStackTrace()
-                flowOf()
-            }
-        } else {
-            println("Token empty")
-            handleTokenEmpty()
-            flowOf()
-        }
-    }
 
-    fun getUserFavoriteProducts(productQuery: Map<String, String>, token: String): Flow<PagingData<FavoriteProduct>> {
+    fun getUserFavoriteProducts(
+        productQuery: Map<String, String>,
+        token: String
+    ): Flow<PagingData<FavoriteProduct>> {
         return if (token.isNotEmpty()) {
             try {
                 repository.remote.getUserFavoriteProducts(
@@ -74,6 +62,22 @@ class FavoriteViewModel @Inject constructor(
             flowOf()
         }
     }
+
+    fun removeUserFavoriteProduct(token: String, favoriteProductId: String) =
+        viewModelScope.launch {
+            removeUserFavoriteProductResponse.value = ApiResult.Loading()
+            try {
+                if (token.isEmpty()) Throwable("Unauthorized")
+                val response = repository.remote.removeUserFavoriteProduct(
+                    token = token,
+                    favoriteProductId = favoriteProductId
+                )
+                removeUserFavoriteProductResponse.value = handleApiResponse(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                removeUserFavoriteProductResponse.value = ApiResult.Error(e.message)
+            }
+        }
 
 
     fun setTabSelected(tab: String) {
@@ -104,6 +108,24 @@ class FavoriteViewModel @Inject constructor(
             }
             else -> {
                 saveUserToken("")
+            }
+        }
+    }
+
+    private fun <T> handleApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
+        println(response)
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+            response.isSuccessful -> {
+                ApiResult.NullDataSuccess()
+            }
+            else -> {
+                ApiResult.Error(response.message())
             }
         }
     }
