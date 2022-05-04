@@ -44,6 +44,9 @@ class AddressPagingSource(
         } catch (e: HttpException) {
             // HttpException for any non-2xx HTTP status codes.
             return LoadResult.Error(e)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return LoadResult.Error(e)
         }
 
     }

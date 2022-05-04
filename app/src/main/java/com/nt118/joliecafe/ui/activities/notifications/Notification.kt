@@ -1,13 +1,10 @@
 package com.nt118.joliecafe.ui.activities.notifications
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.nt118.joliecafe.R
-import com.nt118.joliecafe.adapter.FavoriteItemAdapter
 import com.nt118.joliecafe.adapter.NotificationAdapter
 import com.nt118.joliecafe.databinding.ActivityNotificationBinding
-import com.nt118.joliecafe.databinding.ActivityProfileBinding
 
 class Notification : AppCompatActivity() {
     private var _binding: ActivityNotificationBinding? = null

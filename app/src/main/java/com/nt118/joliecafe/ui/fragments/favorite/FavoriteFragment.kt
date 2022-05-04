@@ -16,8 +16,10 @@ import com.nt118.joliecafe.adapter.FavoriteItemAdapter
 import com.nt118.joliecafe.databinding.FragmentFavoriteBinding
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.util.Constants.Companion.listTabContentFavorite
+import com.nt118.joliecafe.util.FavoriteProductComparator
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
+import com.nt118.joliecafe.util.extenstions.observeOnce
 import com.nt118.joliecafe.viewmodels.favorite.FavoriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -26,7 +28,7 @@ import kotlinx.coroutines.flow.collectLatest
 class FavoriteFragment : Fragment() {
 
 
-    val favoriteViewModel by viewModels<FavoriteViewModel>()
+    private val favoriteViewModel by viewModels<FavoriteViewModel>()
 
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
@@ -55,8 +57,7 @@ class FavoriteFragment : Fragment() {
         }
 
 
-
-        val diffUtil = ProductComparator
+        val diffUtil = FavoriteProductComparator
         favoriteItemAdapter = FavoriteItemAdapter(
             context = requireContext(),
             diffUtil = diffUtil
@@ -65,22 +66,47 @@ class FavoriteFragment : Fragment() {
         addTabContent()
         onTabSelected()
         recyclerViewLayout()
+        setFavoriteAdapterProducts()
+        initTabPageData()
+
         return binding.root
     }
 
-    private fun onTabSelected() {
-        binding.tabLayoutFavorite.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+    private fun initTabPageData() {
+        networkListener = NetworkListener()
+        networkListener.checkNetworkAvailability(requireContext())
+            .asLiveData().observeOnce(viewLifecycleOwner) { status ->
+                favoriteViewModel.networkStatus = status
+                if (favoriteViewModel.networkStatus) {
+                    lifecycleScope.launchWhenStarted {
+                        favoriteViewModel.getUserFavoriteProducts(
+                            productQuery = mapOf(
+                                "type" to listTabContentFavorite[0]
+                            ),
+                            token = favoriteViewModel.userToken
+                        ).collectLatest { data ->
+                            favoriteItemAdapter.submitData(data)
+                        }
+                    }
+                } else {
+                    favoriteViewModel.showNetworkStatus()
+                }
+            }
+    }
 
+    private fun onTabSelected() {
+        binding.tabLayoutFavorite.addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                setFavoriteAdapterProducts()
+                if (tab != null) {
+                    favoriteViewModel.setTabSelected(tab = tab.text.toString())
+                }
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                setFavoriteAdapterProducts()
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                setFavoriteAdapterProducts()
             }
         })
     }
@@ -98,8 +124,7 @@ class FavoriteFragment : Fragment() {
 
     private fun recyclerViewLayout() {
         val recyclerViewBS = binding.favoriteItemRecyclerView
-        setFavoriteAdapterProducts()
-        recyclerViewBS.layoutManager = GridLayoutManager(context,1)
+        recyclerViewBS.layoutManager = GridLayoutManager(context, 1)
         recyclerViewBS.adapter = favoriteItemAdapter
     }
 
@@ -110,10 +135,10 @@ class FavoriteFragment : Fragment() {
                 .collect { status ->
                     favoriteViewModel.networkStatus = status
                     favoriteViewModel.showNetworkStatus()
-                    if(favoriteViewModel.backOnline) {
-                        favoriteViewModel.getProducts(
+                    if (favoriteViewModel.backOnline) {
+                        favoriteViewModel.getUserFavoriteProducts(
                             productQuery = mapOf(
-                                "type" to "Coffee"
+                                "type" to listTabContentFavorite[binding.tabLayoutFavorite.selectedTabPosition]
                             ),
                             token = favoriteViewModel.userToken
                         ).collectLatest { data ->
@@ -123,21 +148,29 @@ class FavoriteFragment : Fragment() {
                 }
         }
 
+        favoriteViewModel.tabSelected.observe(viewLifecycleOwner) { tab ->
+            if (favoriteViewModel.networkStatus) {
+                lifecycleScope.launchWhenStarted {
+                    favoriteViewModel.getUserFavoriteProducts(
+                        productQuery = mapOf(
+                            "type" to tab
+                        ),
+                        token = favoriteViewModel.userToken
+                    ).collectLatest { data ->
+                        favoriteItemAdapter.submitData(data)
+                    }
+                }
+            } else {
+                favoriteViewModel.showNetworkStatus()
+            }
+        }
+
         lifecycleScope.launchWhenStarted {
             favoriteViewModel.readUserToken.collectLatest { token ->
                 favoriteViewModel.userToken = token
-                favoriteViewModel.getProducts(
-                    productQuery = mapOf(
-                        "type" to "Coffee"
-                    ),
-                    token = token
-                ).collectLatest { data ->
-                    favoriteItemAdapter.submitData(data)
-                }
             }
         }
     }
-
 
 
     override fun onDestroyView() {

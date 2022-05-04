@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.nt118.joliecafe.data.network.JolieCafeApi
 import com.nt118.joliecafe.data.paging_source.AddressPagingSource
 import com.nt118.joliecafe.data.paging_source.CartItemPagingSource
+import com.nt118.joliecafe.data.paging_source.FavoriteProductPagingSource
 import com.nt118.joliecafe.data.paging_source.ProductPagingSource
 import com.nt118.joliecafe.models.*
 import com.nt118.joliecafe.util.Constants.Companion.PAGE_SIZE
@@ -35,6 +36,13 @@ class RemoteDataSource @Inject constructor(
         return jolieCafeApi.getUserInfos(token = token)
     }
 
+    suspend fun updateUserInfos(
+        newUserData: Map<String, String>,
+        token: String
+    ): Response<ApiResponseSingleData<User>> {
+        return jolieCafeApi.updateUserInfos(token = "Bearer $token", body = newUserData)
+    }
+
     fun getProducts(productQuery: Map<String, String>, token: String): Flow<PagingData<Product>> {
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
@@ -42,6 +50,19 @@ class RemoteDataSource @Inject constructor(
                 ProductPagingSource(jolieCafeApi, token, productQuery)
             }
         ).flow
+    }
+
+    fun getUserFavoriteProducts(token: String, productQuery: Map<String, String>) : Flow<PagingData<FavoriteProduct>>{
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
+            pagingSourceFactory = {
+                FavoriteProductPagingSource(jolieCafeApi, "Bearer $token", productQuery = productQuery)
+            }
+        ).flow
+    }
+
+    suspend fun removeUserFavoriteProduct(token: String, favoriteProductId: String): ApiResponseSingleData<Unit> {
+        return jolieCafeApi.removeUserFavoriteProduct(token = "Bearer $token", favoriteProductId = favoriteProductId)
     }
 
     suspend fun addNewAddress(
@@ -89,10 +110,5 @@ class RemoteDataSource @Inject constructor(
         ).flow
     }
 
-    suspend fun updateUserInfos(
-        newUserData: Map<String, String>,
-        token: String
-    ): Response<ApiResponseSingleData<User>> {
-        return jolieCafeApi.updateUserInfos(token = "Bearer $token", body = newUserData)
-    }
+
 }

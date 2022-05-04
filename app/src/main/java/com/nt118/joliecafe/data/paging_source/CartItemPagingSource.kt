@@ -46,6 +46,9 @@ class CartItemPagingSource(
         } catch (e: HttpException) {
             e.printStackTrace()
             return LoadResult.Error(throwable = e)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return LoadResult.Error(e)
         }
     }
 }

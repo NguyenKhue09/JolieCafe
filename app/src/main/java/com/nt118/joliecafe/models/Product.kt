@@ -5,16 +5,16 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Product(
-    val discountPercent: Int,
-    val startDateDiscount: String,
-    val endDateDiscount: String,
+    val discountPercent: Int? = null,
+    val startDateDiscount: String? = null,
+    val endDateDiscount: String? = null,
     @SerialName("_id")
     val id: String,
     val name: String,
     val status: String,
     val description: String,
     val thumbnail: String,
-    val comments: List<String>,
+    val comments: List<String>? = null,
     val originPrice: Double,
     val avgRating: Int,
     val isDeleted: Boolean,
