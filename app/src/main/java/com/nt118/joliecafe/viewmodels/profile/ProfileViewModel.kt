@@ -60,8 +60,8 @@ class ProfileViewModel @Inject constructor(
                 ApiResult.Error(response.message())
             }
             response.isSuccessful -> {
-                saveUserToken(result!!.data!!.token)
-                ApiResult.Success(result.data!!)
+                //saveUserToken(result!!.data!!.token)
+                ApiResult.Success(result!!.data!!)
             }
             else -> {
                 ApiResult.Error(response.message())
@@ -70,33 +70,33 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-    private fun handleTokenEmpty() {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        viewModelScope.launch {
-            if (currentUser != null && networkStatus) {
-                println("Token empty")
-                val data = mutableMapOf<String, String>()
-                val user = FirebaseAuth.getInstance().currentUser
-                data["_id"] = user!!.uid
-                data["fullname"] = user.displayName ?: ""
-                data["email"] = user.email ?: ""
-                val response = repository.remote.createUser(data = data)
-                handleGetTokenResponse(response)
-            }
-        }
-    }
-
-    private fun handleGetTokenResponse(response: retrofit2.Response<ApiResponseSingleData<User>>) {
-        val result = response.body()
-        when {
-            response.isSuccessful -> {
-                saveUserToken(userToken = result!!.data!!.token)
-            }
-            else -> {
-                saveUserToken("")
-            }
-        }
-    }
+//    private fun handleTokenEmpty() {
+//        val currentUser = FirebaseAuth.getInstance().currentUser
+//        viewModelScope.launch {
+//            if (currentUser != null && networkStatus) {
+//                println("Token empty")
+//                val data = mutableMapOf<String, String>()
+//                val user = FirebaseAuth.getInstance().currentUser
+//                data["_id"] = user!!.uid
+//                data["fullname"] = user.displayName ?: ""
+//                data["email"] = user.email ?: ""
+//                val response = repository.remote.createUser(data = data)
+//                handleGetTokenResponse(response)
+//            }
+//        }
+//    }
+//
+//    private fun handleGetTokenResponse(response: Response<ApiResponseSingleData<User>>) {
+//        val result = response.body()
+//        when {
+//            response.isSuccessful -> {
+//                saveUserToken(userToken = result!!.data!!.token)
+//            }
+//            else -> {
+//                saveUserToken("")
+//            }
+//        }
+//    }
 
     fun saveUserToken(userToken: String) =
         viewModelScope.launch(Dispatchers.IO) {

@@ -262,7 +262,7 @@ class ProfileActivity : AppCompatActivity() {
             profileActivityViewModel.updateUserInfos(
                 token = profileActivityViewModel.userToken,
                 newUserData = mapOf(
-                    "fullName" to username,
+                    "fullname" to username,
                     "phone" to userPhone
                 )
             )
