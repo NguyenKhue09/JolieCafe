@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="18dp"
+    android:layout_marginHorizontal="14dp"
     android:layout_marginVertical="10dp">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/btn_categories"
         android:background="@color/grey_primary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,9 +22,12 @@
                 android:id="@+id/imgCart"
                 android:layout_centerHorizontal="true"
                 android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/milkshake"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@drawable/circle_shape_opacity60"/>
+                android:background="@drawable/circle_shape_opacity60"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/tvCart"
@@ -32,6 +36,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
+                android:textAlignment="center"
+                android:text="Milk shake"
                 android:fontFamily="@font/raleway_variable_font_wght"
                 android:textColor="@color/white"
                 android:layout_below="@id/imgCart"/>
