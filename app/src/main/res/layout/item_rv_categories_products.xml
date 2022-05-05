@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btn_categories_products"
+        android:background="@color/grey_primary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+
+        <RelativeLayout
+            android:background="@color/grey_primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="10dp">
+
+            <ImageView
+                android:id="@+id/img_categories_products"
+                android:layout_centerHorizontal="true"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/milkshake"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+
+                android:background="@drawable/circle_shape_opacity60"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_categories_products"
+                android:layout_marginTop="5dp"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textAlignment="center"
+                android:text="Milk shake"
+                android:fontFamily="@font/raleway_variable_font_wght"
+                android:textColor="@color/white"
+                android:layout_below="@id/img_categories_products"/>
+
+        </RelativeLayout>
+
+
+
+
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
