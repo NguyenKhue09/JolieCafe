@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.nt118.joliecafe.adapter.CartAdapter
+import com.nt118.joliecafe.adapter.CartAdapterDemo
 import com.nt118.joliecafe.databinding.FragmentCartBinding
 import com.nt118.joliecafe.ui.activities.checkout.CheckoutActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
@@ -61,10 +62,10 @@ class CartFragment : Fragment() {
         val rvMilkTea: RecyclerView = binding.rvMilkTea
         val btnCheckout: Button = binding.btnCheckout
         cartAdapter = CartAdapter(requireActivity(), diffCallback)
-        rvCoffee.adapter = cartAdapter
-        //        rvTea.adapter = CartAdapter()
-//        rvJuice.adapter = CartAdapter()
-//        rvMilkTea.adapter = CartAdapter()
+        rvCoffee.adapter = CartAdapterDemo()
+        rvTea.adapter = CartAdapterDemo()
+        rvJuice.adapter = CartAdapterDemo()
+        rvMilkTea.adapter = CartAdapterDemo()
 
         lifecycleScope.launchWhenStarted {
             cartViewModel.readUserToken.collectLatest { token ->
