@@ -57,7 +57,7 @@
             android:name=".ui.activities.products.ProductsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.notifications.Notification"
+            android:name=".ui.activities.notifications.NotificationActivity"
             android:exported="false" />
         <activity
             android:name=".ui.activities.checkout.CheckoutActivity"

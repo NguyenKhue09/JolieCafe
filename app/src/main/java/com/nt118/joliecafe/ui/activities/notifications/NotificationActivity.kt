@@ -3,10 +3,11 @@ package com.nt118.joliecafe.ui.activities.notifications
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.nt118.joliecafe.adapter.NotificationAdapter
 import com.nt118.joliecafe.databinding.ActivityNotificationBinding
 
-class Notification : AppCompatActivity() {
+class NotificationActivity : AppCompatActivity() {
     private var _binding: ActivityNotificationBinding? = null
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +25,7 @@ class Notification : AppCompatActivity() {
     private fun recyclerViewLayout() {
         val recyclerViewNotificationAdapter = binding.recyclerViewNotification
         val notificationAdapter = NotificationAdapter(fetDataBestSaler())
-        recyclerViewNotificationAdapter.layoutManager = GridLayoutManager(this,1)
+        recyclerViewNotificationAdapter.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false)
         recyclerViewNotificationAdapter.adapter = notificationAdapter
     }
 

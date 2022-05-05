@@ -126,6 +126,7 @@
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_marginStart="3dp"
+                        android:layout_marginTop="1dp"
                         android:src="@drawable/ic_favorite"
                         app:layout_constraintBottom_toBottomOf="@+id/item_favorite"
                         app:layout_constraintEnd_toEndOf="parent"
