@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:src="@drawable/ic_refreshing_rafiki">
+
+    </ImageView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your list is empty!"
+        android:textSize="20sp"
+        android:textColor="@color/text_color"
+        android:fontFamily="@font/raleway_medium"
+        android:layout_gravity="center_horizontal">
+    </TextView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You haven't liked anything yet."
+        android:textSize="11sp"
+        android:layout_marginTop="14dp"
+        android:textColor="@color/dark_text_color"
+        android:fontFamily="@font/raleway_medium"
+        android:layout_gravity="center_horizontal">
+
+    </TextView>
+</LinearLayout>

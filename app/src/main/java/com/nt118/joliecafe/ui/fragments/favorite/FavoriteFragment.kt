@@ -11,11 +11,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.adapter.FavoriteItemAdapter
 import com.nt118.joliecafe.databinding.FragmentFavoriteBinding
+import com.nt118.joliecafe.models.FavoriteProduct
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants.Companion.listTabContentFavorite
@@ -90,7 +92,7 @@ class FavoriteFragment : Fragment() {
                             ),
                             token = favoriteViewModel.userToken
                         ).collectLatest { data ->
-                            favoriteItemAdapter.submitData(data)
+                            submitFavoriteData(data = data)
                         }
                     }
                 } else {
@@ -146,7 +148,7 @@ class FavoriteFragment : Fragment() {
                             ),
                             token = favoriteViewModel.userToken
                         ).collectLatest { data ->
-                            favoriteItemAdapter.submitData(data)
+                            submitFavoriteData(data = data)
                         }
                     }
                 }
@@ -161,7 +163,7 @@ class FavoriteFragment : Fragment() {
                         ),
                         token = favoriteViewModel.userToken
                     ).collectLatest { data ->
-                        favoriteItemAdapter.submitData(data)
+                        submitFavoriteData(data = data)
                     }
                 }
             } else {
@@ -176,6 +178,10 @@ class FavoriteFragment : Fragment() {
         }
     }
 
+    private suspend fun submitFavoriteData(data: PagingData<FavoriteProduct>) {
+        favoriteItemAdapter.submitData(data)
+    }
+
     fun removeUserFavoriteProduct(favoriteProductId: String) {
         favoriteViewModel.removeUserFavoriteProduct(token = favoriteViewModel.userToken, favoriteProductId = favoriteProductId)
     }
@@ -184,9 +190,12 @@ class FavoriteFragment : Fragment() {
         favoriteItemAdapter.addLoadStateListener { loadState ->
             if (loadState.refresh is LoadState.Loading){
                 binding.favCircularProgressIndicator.visibility = View.VISIBLE
+                binding.emptyFavList.root.visibility = View.INVISIBLE
             }
             else{
+                checkFavItemEmpty()
                 binding.favCircularProgressIndicator.visibility = View.INVISIBLE
+
                 // getting the error
                 val error = when {
                     loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
@@ -198,6 +207,14 @@ class FavoriteFragment : Fragment() {
                     Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+    private fun checkFavItemEmpty() {
+        if (favoriteItemAdapter.itemCount == 0) {
+            binding.emptyFavList.root.visibility = View.VISIBLE
+        } else {
+            binding.emptyFavList.root.visibility = View.INVISIBLE
         }
     }
 
