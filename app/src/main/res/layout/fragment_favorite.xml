@@ -73,7 +73,16 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-
+    <include
+        android:id="@+id/empty_fav_list"
+        layout="@layout/empty_favorite_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/favorite_item_recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayoutFavorite" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -58,12 +58,12 @@
                 android:layout_below="@id/dots_indicator"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:layout_marginTop="10dp"
-                android:layout_below="@id/tvCategories"
                 android:id="@+id/recyclerView"
-                android:layout_centerHorizontal="true"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvCategories"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp" />
 
             <TextView
                 android:layout_marginTop="13dp"
@@ -85,4 +85,14 @@
 
         </RelativeLayout>
     </ScrollView>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/home_CircularProgressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:indicatorColor="@color/text_color_2"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
 </RelativeLayout>
