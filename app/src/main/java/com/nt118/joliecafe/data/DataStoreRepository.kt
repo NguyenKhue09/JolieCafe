@@ -1,6 +1,7 @@
 package com.nt118.joliecafe.data
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
@@ -40,6 +41,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
     }
 
     suspend fun saveUserToken(userToken: String) {
+        Log.d("get", "Save token")
         dataStore.edit { preferences ->
             preferences[PreferenceKeys.userToken] = userToken
         }
@@ -105,7 +107,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
             }
         }
         .map { preferences ->
-            val isFaceOrGGLogin = preferences[PreferenceKeys.isUserDataChange] ?: false
-            isFaceOrGGLogin
+            val isUserDataChange = preferences[PreferenceKeys.isUserDataChange] ?: false
+            isUserDataChange
         }
 }
