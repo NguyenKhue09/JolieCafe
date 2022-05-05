@@ -8,11 +8,15 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 import com.nt118.joliecafe.databinding.OrderHistoryItemLayoutBinding
 
 class OrderHistoryAdapter(
     val context: Context
 ) : RecyclerView.Adapter<OrderHistoryAdapter.MyViewHolder>() {
+
+    private var isViewExpanded = false
 
     class MyViewHolder(var binding: OrderHistoryItemLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -36,34 +40,39 @@ class OrderHistoryAdapter(
         orderItemInBillRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         orderItemInBillRecyclerView.adapter = orderItemInBillAdapter
 
-        var isCollapse = true
 
-        val cartContent = holder.binding.orderItemBody
+
+        val orderItem = holder.binding.cardAddAddress
+        val cardContent = holder.binding.orderItemBody
 
         holder.binding.btnCollapse.setOnClickListener {
-            if (isCollapse) {
+            if (isViewExpanded) {
                 val rotateAnimation = RotateAnimation(0f, -180f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
-                rotateAnimation.duration = 300
+                rotateAnimation.duration = 200
                 rotateAnimation.fillAfter = true
                 it.startAnimation(rotateAnimation)
-                cartContent.animate().translationY(-cartContent.height.toFloat())
-                    .alpha(0.0f).duration = 300
-                //cartContent.visibility = View.GONE
+                TransitionManager.beginDelayedTransition(
+                    orderItem,
+                    AutoTransition()
+                )
+                cardContent.visibility = View.GONE
 
             } else {
                 val rotateAnimation = RotateAnimation(-180f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
-                rotateAnimation.duration = 300
+                rotateAnimation.duration = 200
                 rotateAnimation.fillAfter = true
                 it.startAnimation(rotateAnimation)
-//                cartContent.animate().translationY(cartContent.height.toFloat())
-//                    .alpha(1f).duration = 300
-                cartContent.visibility = View.VISIBLE
+                TransitionManager.beginDelayedTransition(
+                    orderItem,
+                    AutoTransition()
+                )
+                cardContent.visibility = View.VISIBLE
             }
-            isCollapse = !isCollapse
+            isViewExpanded = !isViewExpanded
         }
     }
 
     override fun getItemCount(): Int {
-        return 3
+        return 15
     }
 }

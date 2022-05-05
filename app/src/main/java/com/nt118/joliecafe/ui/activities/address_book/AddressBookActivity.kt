@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
@@ -143,6 +144,28 @@ class AddressBookActivity : AppCompatActivity() {
         }
 
         handleApiResponse()
+        handlePagingAdapterState()
+    }
+
+    private fun handlePagingAdapterState() {
+        addressBookAdapter.addLoadStateListener { loadState ->
+            if (loadState.refresh is LoadState.Loading){
+                binding.addressCircularProgressIndicator.visibility = View.VISIBLE
+            }
+            else{
+                binding.addressCircularProgressIndicator.visibility = View.INVISIBLE
+                // getting the error
+                val error = when {
+                    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+                    else -> null
+                }
+                error?.let {
+                    Toast.makeText(this, it.error.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     private fun handleApiResponse() {
