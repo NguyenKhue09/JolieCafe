@@ -137,8 +137,7 @@
                         android:layout_height="wrap_content"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:itemCount="2"
-                        tools:listitem="@layout/item_cart"
-                        android:nestedScrollingEnabled="false"/>
+                        tools:listitem="@layout/item_cart"/>
 
                 </LinearLayout>
 
