@@ -2,6 +2,7 @@ package com.nt118.joliecafe.ui.fragments.profile
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -92,7 +93,7 @@ class ProfileFragment : Fragment() {
         }
 
         binding.btnProfile.setOnClickListener {
-            if(!preventNavigateToProfileActivity && profileViewModel.networkStatus) {
+            if (!preventNavigateToProfileActivity && profileViewModel.networkStatus) {
                 val action = ProfileFragmentDirections.actionNavigationProfileToProfileActivity(
                     user = user,
                     isFaceOrGGLogin = profileViewModel.isFaceOrGGLogin
@@ -100,9 +101,11 @@ class ProfileFragment : Fragment() {
                 findNavController().navigate(action)
             } else {
                 if (!profileViewModel.networkStatus) {
-                    Toast.makeText(requireContext(), "No internet access", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "No internet access", Toast.LENGTH_SHORT)
+                        .show()
                 } else {
-                    Toast.makeText(requireContext(), "Can't get your profile", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Can't get your profile", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -135,29 +138,14 @@ class ProfileFragment : Fragment() {
             profileViewModel.backOnline = it
         }
 
-        lifecycleScope.launchWhenResumed {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                profileViewModel.readIsUserDataChange.collectLatest {
-                    if (it && profileViewModel.networkStatus) {
-                        profileViewModel.getUserInfos(
-                            token = profileViewModel.userToken
-                        )
-                        profileViewModel.saveIsUserDataChange(false)
-                    } else if(!profileViewModel.networkStatus) {
-                        profileViewModel.showNetworkStatus()
-                    }
-                }
-            }
-        }
-
-
         lifecycleScope.launchWhenStarted {
             networkListener = NetworkListener()
             networkListener.checkNetworkAvailability(requireContext())
                 .collect { status ->
                     profileViewModel.networkStatus = status
                     profileViewModel.showNetworkStatus()
-                    if(profileViewModel.backOnline) {
+                    if (profileViewModel.backOnline) {
+                        println("Network")
                         profileViewModel.getUserInfos(
                             token = profileViewModel.userToken
                         )
@@ -165,29 +153,43 @@ class ProfileFragment : Fragment() {
                 }
         }
 
+        lifecycleScope.launchWhenResumed {
+            profileViewModel.readIsUserDataChange.collect {
+                if (it && profileViewModel.networkStatus) {
+                    profileViewModel.getUserInfos(
+                        token = profileViewModel.userToken
+                    )
+                    Log.d("get","Data Change")
+                    profileViewModel.saveIsUserDataChange(false)
+                } else if (!profileViewModel.networkStatus) {
+                    profileViewModel.showNetworkStatus()
+                }
+            }
+        }
+
         lifecycleScope.launchWhenStarted {
-            profileViewModel.readUserToken.collectLatest { token ->
+            profileViewModel.readUserToken.collect { token ->
                 profileViewModel.userToken = token
-                if(profileViewModel.networkStatus) {
+                if (profileViewModel.networkStatus) {
+                    Log.d("get", "Token")
                     profileViewModel.getUserInfos(
                         token = profileViewModel.userToken
                     )
                 } else {
                     profileViewModel.showNetworkStatus()
                 }
-
             }
         }
 
         profileViewModel.getUserInfosResponse.observe(viewLifecycleOwner) { userInfos ->
-            when(userInfos) {
+            when (userInfos) {
                 is ApiResult.Loading -> {
                     preventNavigateToProfileActivity = true
                 }
                 is ApiResult.Success -> {
                     preventNavigateToProfileActivity = false
                     user = userInfos.data!!
-                    if(profileViewModel.isFaceOrGGLogin) {
+                    if (profileViewModel.isFaceOrGGLogin) {
                         binding.userName.text = currentUser?.displayName ?: "You"
                         binding.userImg.load(
                             uri = currentUser?.photoUrl
