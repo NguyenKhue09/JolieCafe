@@ -62,6 +62,7 @@ class BestSellerAdapter(
             }
 
             holder.binding.itemName.text = product.name
+            holder.binding.itemCategories.text = product.type
             holder.binding.itemPrice.text = product.originPrice.toString()
         }
     }
