@@ -26,7 +26,6 @@
                 android:src="@drawable/milkshake"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-
                 android:background="@drawable/circle_shape_opacity60"
                 tools:ignore="ContentDescription" />
 
