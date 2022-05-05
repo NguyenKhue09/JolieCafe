@@ -28,7 +28,7 @@ import com.nt118.joliecafe.databinding.FragmentHomeBinding
 import com.nt118.joliecafe.models.CategorieModel
 import com.nt118.joliecafe.models.SliderItem
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
-import com.nt118.joliecafe.ui.activities.notifications.Notification
+import com.nt118.joliecafe.ui.activities.notifications.NotificationActivity
 import com.nt118.joliecafe.ui.activities.products.ProductsActivity
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
@@ -114,7 +114,7 @@ class HomeFragment : Fragment() {
 
         //open  notification
         binding.toolbarHome.imgNotification.setOnClickListener {
-            val intent = Intent(activity,Notification::class.java)
+            val intent = Intent(activity,NotificationActivity::class.java)
             startActivity(intent)
         }
 
@@ -227,9 +227,9 @@ class HomeFragment : Fragment() {
         item.add(CategorieModel("Tea",R.drawable.ic_leaf))
         item.add(CategorieModel("Juice",R.drawable.ic_watermelon))
         item.add(CategorieModel("Pastry",R.drawable.ic_croissant_svgrepo_com))
-        item.add(CategorieModel("Coffee",R.drawable.ic_coffee))
-        item.add(CategorieModel("Coffee",R.drawable.ic_coffee))
-        item.add(CategorieModel("More",R.drawable.ic_coffee))
+        item.add(CategorieModel("Milk shake",R.drawable.milkshake))
+        item.add(CategorieModel("Milk tea",R.drawable.bubble_tea))
+        item.add(CategorieModel("More",R.drawable.ic_more))
 
         return  item
     }

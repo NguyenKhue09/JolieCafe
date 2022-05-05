@@ -131,9 +131,8 @@ class ProductsActivity : AppCompatActivity() {
         item.add(CategorieModel("Tea",R.drawable.ic_leaf))
         item.add(CategorieModel("Juice",R.drawable.ic_watermelon))
         item.add(CategorieModel("Pastry",R.drawable.ic_croissant_svgrepo_com))
-        item.add(CategorieModel("Coffee",R.drawable.ic_coffee))
-        item.add(CategorieModel("Coffee",R.drawable.ic_coffee))
-        item.add(CategorieModel("More",R.drawable.ic_coffee))
+        item.add(CategorieModel("Milk shake",R.drawable.milkshake))
+        item.add(CategorieModel("Milk tea",R.drawable.bubble_tea))
         return  item
     }
 
