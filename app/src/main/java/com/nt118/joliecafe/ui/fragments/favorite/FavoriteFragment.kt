@@ -40,6 +40,7 @@ class FavoriteFragment : Fragment() {
 
     private lateinit var networkListener: NetworkListener
     private lateinit var favoriteItemAdapter: FavoriteItemAdapter
+    private lateinit var selectedTab: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +93,7 @@ class FavoriteFragment : Fragment() {
                             ),
                             token = favoriteViewModel.userToken
                         ).collectLatest { data ->
+                            selectedTab = listTabContentFavorite[0]
                             submitFavoriteData(data = data)
                         }
                     }
@@ -148,6 +150,7 @@ class FavoriteFragment : Fragment() {
                             ),
                             token = favoriteViewModel.userToken
                         ).collectLatest { data ->
+                            selectedTab = listTabContentFavorite[binding.tabLayoutFavorite.selectedTabPosition]
                             submitFavoriteData(data = data)
                         }
                     }
@@ -163,6 +166,7 @@ class FavoriteFragment : Fragment() {
                         ),
                         token = favoriteViewModel.userToken
                     ).collectLatest { data ->
+                        selectedTab = tab
                         submitFavoriteData(data = data)
                     }
                 }
@@ -194,6 +198,7 @@ class FavoriteFragment : Fragment() {
             }
             else{
                 checkFavItemEmpty()
+                tabAppearance(tab = selectedTab)
                 binding.favCircularProgressIndicator.visibility = View.INVISIBLE
 
                 // getting the error
@@ -207,6 +212,14 @@ class FavoriteFragment : Fragment() {
                     Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+    private fun tabAppearance(tab: String) {
+        if (tab == listTabContentFavorite[0] && favoriteItemAdapter.itemCount == 0) {
+            binding.tabLayoutFavorite.visibility = View.GONE
+        } else {
+            binding.tabLayoutFavorite.visibility = View.VISIBLE
         }
     }
 
