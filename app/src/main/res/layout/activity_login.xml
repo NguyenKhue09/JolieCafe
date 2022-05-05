@@ -25,7 +25,7 @@
         android:layout_below="@id/tvAppName"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_medium"
         android:text="@string/sing_in"
         android:textColor="#bc834b"
         android:textSize="24sp"
@@ -35,13 +35,12 @@
         android:id="@+id/tvUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tvSignin"
+        android:layout_marginTop="32dp"
+        android:fontFamily="@font/raleway_regular"
         android:text="@string/username"
         android:textColor="#e4e4e4"
-        android:fontFamily="@font/raleway_variable_font_wght"
-        android:layout_marginTop="32dp"
-        android:layout_below="@id/tvSignin"
-        android:textSize="16sp"
-        />
+        android:textSize="16sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/etUserNameLayout"
@@ -71,7 +70,7 @@
         android:layout_height="wrap_content"
         android:text="@string/password"
         android:textColor="#e4e4e4"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:layout_marginTop="24dp"
         android:layout_below="@id/etUserNameLayout"
         android:textSize="16sp"
@@ -104,7 +103,7 @@
         android:layout_height="wrap_content"
         android:text="@string/forgot_password"
         android:textColor="#e7a15c"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:layout_marginTop="12dp"
         android:layout_below="@id/etPasswordLayout"
         android:textSize="16sp"
@@ -118,7 +117,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
         android:text="SIGN IN"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:textSize="16sp"
         android:width="150dp"
         android:height="40dp"
@@ -132,7 +131,7 @@
         android:layout_below="@+id/btnLogin"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:text="--- OR ---"
         android:textColor="#ffffff"
         android:textSize="16sp" />
@@ -173,7 +172,7 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:layout_centerHorizontal="true"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

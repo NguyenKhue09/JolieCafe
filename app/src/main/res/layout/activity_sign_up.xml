@@ -25,7 +25,7 @@
         android:layout_below="@id/tvAppName"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_medium"
         android:text="SIGN UP"
         android:textColor="#bc834b"
         android:textSize="24sp"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:text="@string/username"
         android:textColor="#e4e4e4"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:layout_marginTop="28dp"
         android:layout_below="@id/tvSignUp"
         android:textSize="16sp"
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/etUserNameLayout"
         android:layout_marginTop="20dp"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:text="Email"
         android:textColor="#e4e4e4"
         android:textSize="16sp" />
@@ -103,7 +103,7 @@
         android:layout_height="wrap_content"
         android:text="@string/password"
         android:textColor="#e4e4e4"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:layout_marginTop="20dp"
         android:layout_below="@id/etEmailLayout"
         android:textSize="16sp"
@@ -137,7 +137,7 @@
         android:layout_height="wrap_content"
         android:text="Confirm password"
         android:textColor="#e4e4e4"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:layout_marginTop="20dp"
         android:layout_below="@id/etPasswordLayout"
         android:textSize="16sp"
@@ -175,13 +175,13 @@
         android:width="150dp"
         android:height="40dp"
         android:background="@drawable/rounded_shape"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:text="SIGN UP"
         android:textColor="#ffffff"
         android:textSize="16sp" />
 
     <TextView
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="--- OR ---"
@@ -229,7 +229,7 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:layout_centerHorizontal="true"
-        android:fontFamily="@font/raleway_variable_font_wght"
+        android:fontFamily="@font/raleway_regular"
         android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>
