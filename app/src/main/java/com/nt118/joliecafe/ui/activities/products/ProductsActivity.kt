@@ -2,6 +2,7 @@ package com.nt118.joliecafe.ui.activities.products
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.asLiveData
@@ -97,10 +98,10 @@ class ProductsActivity : AppCompatActivity() {
 
         productAdapter.addLoadStateListener { loadState ->
             if (loadState.refresh is LoadState.Loading){
-
+                binding.categoriesCircularProgressIndicator.visibility = View.VISIBLE
             }
             else{
-
+                binding.categoriesCircularProgressIndicator.visibility = View.GONE
                 // getting the error
                 val error = when {
                     loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
