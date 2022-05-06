@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.activities.products.ProductsActivity"
     android:paddingTop="20dp"
     android:background="@color/grey_primary">
@@ -48,14 +49,13 @@
         android:layout_marginHorizontal="20dp"
         android:background="@drawable/searchview_background"
         android:backgroundTint="@color/grey_opacity60_primary"/>
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:layout_marginTop="12dp"
+        android:layout_height="match_parent"
         android:layout_below="@id/searchView"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="12dp"
+        android:scrollbars="none">
 
         <RelativeLayout
             android:id="@+id/sliderHome"
@@ -64,26 +64,43 @@
 
             <TextView
                 android:id="@+id/tvNull"
-                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
-                android:layout_below="@id/tvNull"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp"/>
+                android:layout_below="@id/tvNull"
+                android:layout_marginHorizontal="20dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewProduct"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/recyclerView"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="3dp"
-                android:layout_marginBottom="24dp"
-                android:layout_marginHorizontal="8dp"/>
+                android:layout_marginEnd="8dp" />
+
+
 
         </RelativeLayout>
     </ScrollView>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/categories_CircularProgressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        android:layout_marginBottom="20dp"
+        app:indicatorColor="@color/text_color_2" />
 </RelativeLayout>
