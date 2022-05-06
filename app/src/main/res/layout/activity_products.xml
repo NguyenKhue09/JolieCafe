@@ -14,9 +14,9 @@
         <ImageView
             android:id="@+id/iconBackHome"
             android:layout_centerVertical="true"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_baseline_arrow_back_24"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_arrow_left"
             android:layout_marginStart="20dp"
             tools:ignore="ContentDescription" />
 
@@ -27,8 +27,8 @@
             android:text="Categories"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/iconBackHome"
-            android:layout_marginStart="18dp"
-            android:fontFamily="@font/raleway_regular"
+            android:layout_marginStart="24dp"
+            android:fontFamily="@font/raleway_medium"
             android:textSize="20sp"
             android:textColor="@color/grey_primary_variant"/>
     </RelativeLayout>
