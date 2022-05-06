@@ -10,6 +10,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.CategorieAdapter
+import com.nt118.joliecafe.adapter.CategoriesProductsAdapter
 import com.nt118.joliecafe.adapter.ProductAdapter
 import com.nt118.joliecafe.databinding.ActivityProductsBinding
 import com.nt118.joliecafe.models.CategorieModel
@@ -48,14 +49,11 @@ class ProductsActivity : AppCompatActivity() {
 
         // RecyclerView Categories
         val recyclerView = binding.recyclerView
-        val categorieAdapter = CategorieAdapter(fetData())
+        val categorieAdapter = CategoriesProductsAdapter(fetData())
         recyclerView.layoutManager = GridLayoutManager(this,4)
         recyclerView.adapter = categorieAdapter
-        categorieAdapter.setOnClickListener(object : CategorieAdapter.onItemClickListener{
-            override fun onItemClick(position: Int) {
 
-            }
-        })
+
 
         // RecyclerView product
         val diffCallBack = ProductComparator
