@@ -40,8 +40,8 @@ class ProductsActivity : AppCompatActivity() {
             productsViewModel.backOnline = it
         }
 
-//        val bundle : Bundle? = intent.extras
-//        val position = bundle!!.getInt("position")
+        val bundle : Bundle? = intent.extras
+        val position = bundle!!.getInt("position")
 
         // back home
         binding.iconBackHome.setOnClickListener {
@@ -50,7 +50,7 @@ class ProductsActivity : AppCompatActivity() {
 
         // RecyclerView Categories
         val recyclerView = binding.recyclerView
-        val categorieAdapter = CategoriesProductsAdapter(fetData())
+        val categorieAdapter = CategoriesProductsAdapter(fetData(),position)
         recyclerView.layoutManager = GridLayoutManager(this,4)
         recyclerView.adapter = categorieAdapter
 
