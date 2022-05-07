@@ -3,6 +3,8 @@ package com.nt118.joliecafe.viewmodels.products
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.google.firebase.auth.FirebaseAuth
@@ -11,11 +13,13 @@ import com.nt118.joliecafe.data.Repository
 import com.nt118.joliecafe.models.ApiResponseSingleData
 import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.models.User
+import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -27,6 +31,9 @@ class ProductsViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
     var readBackOnline = dataStoreRepository.readBackOnline
     var readUserToken = dataStoreRepository.readUserToken
+
+    private var _tabSelected = MutableLiveData<String>()
+    val tabSelected: LiveData<String> = _tabSelected
 
     var userToken = ""
 
@@ -52,6 +59,10 @@ class ProductsViewModel @Inject constructor(
         }
     }
 
+    fun setTabSelected(tab: String) {
+        _tabSelected.value = tab
+    }
+
     private fun handleTokenEmpty() {
         val currentUser = FirebaseAuth.getInstance().currentUser
         viewModelScope.launch {
@@ -68,7 +79,7 @@ class ProductsViewModel @Inject constructor(
         }
     }
 
-    private fun handleGetTokenResponse(response: retrofit2.Response<ApiResponseSingleData<User>>) {
+    private fun handleGetTokenResponse(response: Response<ApiResponseSingleData<User>>) {
         val result = response.body()
         when {
             response.isSuccessful -> {
@@ -76,6 +87,24 @@ class ProductsViewModel @Inject constructor(
             }
             else -> {
                 saveUserToken("")
+            }
+        }
+    }
+
+    private fun <T> handleApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
+        println(response)
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+            response.isSuccessful -> {
+                ApiResult.NullDataSuccess()
+            }
+            else -> {
+                ApiResult.Error(response.message())
             }
         }
     }

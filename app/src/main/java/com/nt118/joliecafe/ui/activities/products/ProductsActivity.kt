@@ -1,5 +1,6 @@
 package com.nt118.joliecafe.ui.activities.products
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -12,11 +13,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.CategorieAdapter
 import com.nt118.joliecafe.adapter.CategoriesProductsAdapter
+import com.nt118.joliecafe.adapter.FavoriteItemAdapter
 import com.nt118.joliecafe.adapter.ProductAdapter
 import com.nt118.joliecafe.databinding.ActivityProductsBinding
 import com.nt118.joliecafe.models.CategorieModel
+import com.nt118.joliecafe.util.Constants
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
+import com.nt118.joliecafe.util.extenstions.observeOnce
 import com.nt118.joliecafe.viewmodels.products.ProductsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -30,7 +34,8 @@ class ProductsActivity : AppCompatActivity() {
     private val  binding get() = _binding!!
 
     private lateinit var networkListener: NetworkListener
-
+    private lateinit var productAdapter: ProductAdapter
+    private lateinit var selectedTab: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityProductsBinding.inflate(layoutInflater)
@@ -51,7 +56,8 @@ class ProductsActivity : AppCompatActivity() {
         // RecyclerView Categories
         val recyclerView = binding.recyclerView
         val categorieAdapter = CategoriesProductsAdapter(fetData(),position){
-            Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
+            productsViewModel.setTabSelected(tab = Constants.listTabContentFavorite[it])
+            setCatagoriesAdapterProducts(it)
         }
         recyclerView.layoutManager = GridLayoutManager(this,4)
         recyclerView.adapter = categorieAdapter
@@ -61,61 +67,13 @@ class ProductsActivity : AppCompatActivity() {
         // RecyclerView product
         val diffCallBack = ProductComparator
         val recyclerViewProduct = binding.recyclerViewProduct
-        val productAdapter = ProductAdapter( this, diffCallBack = diffCallBack)
+         productAdapter = ProductAdapter( this, diffCallBack = diffCallBack)
         recyclerViewProduct.layoutManager = GridLayoutManager(this,2)
         recyclerViewProduct.adapter = productAdapter
 
-        lifecycleScope.launchWhenStarted {
-            networkListener = NetworkListener()
-            networkListener.checkNetworkAvailability(this@ProductsActivity)
-                .collect { status ->
-                    productsViewModel.networkStatus = status
-                    productsViewModel.showNetworkStatus()
-                    if(productsViewModel.backOnline) {
-                        productsViewModel.getProducts(
-                            productQuery = mapOf(
-                                "type" to "Coffee"
-                            ),
-                            token = productsViewModel.userToken
-                        ).collectLatest { data ->
-                            productAdapter.submitData(data)
-                        }
-                    }
-                }
-        }
+        initTabPageData(position)
+        handlePagingAdapterState()
 
-        lifecycleScope.launchWhenStarted {
-            productsViewModel.readUserToken.collectLatest { token ->
-                productsViewModel.userToken = token
-                productsViewModel.getProducts(
-                    productQuery = mapOf(
-                        "type" to "Coffee"
-                    ),
-                    token = token
-                ).collectLatest { data ->
-                    productAdapter.submitData(data)
-                }
-            }
-        }
-
-        productAdapter.addLoadStateListener { loadState ->
-            if (loadState.refresh is LoadState.Loading){
-                binding.categoriesCircularProgressIndicator.visibility = View.VISIBLE
-            }
-            else{
-                binding.categoriesCircularProgressIndicator.visibility = View.GONE
-                // getting the error
-                val error = when {
-                    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
-                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
-                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
-                    else -> null
-                }
-                error?.let {
-                    Toast.makeText(this, it.error.message, Toast.LENGTH_LONG).show()
-                }
-            }
-        }
 
     }
 
@@ -135,6 +93,96 @@ class ProductsActivity : AppCompatActivity() {
         item.add(CategorieModel("Milk shake",R.drawable.milkshake))
         item.add(CategorieModel("Milk tea",R.drawable.bubble_tea))
         return  item
+    }
+
+    private fun handlePagingAdapterState() {
+        productAdapter.addLoadStateListener { loadState ->
+            if (loadState.refresh is LoadState.Loading){
+                binding.categoriesCircularProgressIndicator.visibility = View.VISIBLE
+            }
+            else{
+                binding.categoriesCircularProgressIndicator.visibility = View.GONE
+                // getting the error
+                val error = when {
+                    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+                    else -> null
+                }
+                error?.let {
+                    Toast.makeText(this, it.error.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun initTabPageData(position:Int ) {
+        networkListener = NetworkListener()
+        networkListener.checkNetworkAvailability(this)
+            .asLiveData().observeOnce(this) { status ->
+                productsViewModel.networkStatus = status
+                if (productsViewModel.networkStatus) {
+                    lifecycleScope.launchWhenStarted {
+                        productsViewModel.getProducts(
+                            productQuery = mapOf(
+                                "type" to Constants.listTabContentFavorite[position]
+                            ),
+                            token = productsViewModel.userToken
+                        ).collectLatest { data ->
+                            selectedTab = Constants.listTabContentFavorite[0]
+                            productAdapter.submitData(data)
+                        }
+                    }
+                } else {
+                    productsViewModel.showNetworkStatus()
+                }
+            }
+    }
+
+    private fun setCatagoriesAdapterProducts(position:Int) {
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(this@ProductsActivity)
+                .collect { status ->
+                    productsViewModel.networkStatus = status
+                    productsViewModel.showNetworkStatus()
+                    if(productsViewModel.backOnline) {
+                        productsViewModel.getProducts(
+                            productQuery = mapOf(
+                                "type" to Constants.listTabContentFavorite[position]
+                            ),
+                            token = productsViewModel.userToken
+                        ).collectLatest { data ->
+                            selectedTab = Constants.listTabContentFavorite[position]
+                            productAdapter.submitData(data)
+                        }
+                    }
+                }
+        }
+
+        productsViewModel.tabSelected.observe(this) { tab ->
+            if (productsViewModel.networkStatus) {
+                lifecycleScope.launchWhenStarted {
+                    productsViewModel.getProducts(
+                        productQuery = mapOf(
+                            "type" to tab
+                        ),
+                        token = productsViewModel.userToken
+                    ).collectLatest { data ->
+                        selectedTab = tab
+                        productAdapter.submitData(data)
+                    }
+                }
+            } else {
+                productsViewModel.showNetworkStatus()
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            productsViewModel.readUserToken.collectLatest { token ->
+                productsViewModel.userToken = token
+            }
+        }
     }
 
 }
