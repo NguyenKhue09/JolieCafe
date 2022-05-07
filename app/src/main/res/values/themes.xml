@@ -138,7 +138,8 @@
         <item name="android:fontFamily">@font/raleway_regular</item>
     </style>
 
-    <style name="SplashScreen" parent="Theme.JolieCafe">
+    <style name="SplashScreen" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splashbackground</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 </resources>
