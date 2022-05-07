@@ -49,7 +49,9 @@ class ProductsActivity : AppCompatActivity() {
 
         // RecyclerView Categories
         val recyclerView = binding.recyclerView
-        val categorieAdapter = CategoriesProductsAdapter(fetData(),position)
+        val categorieAdapter = CategoriesProductsAdapter(fetData(),position){
+            Toast.makeText(this, it.toString(), Toast.LENGTH_SHORT).show()
+        }
         recyclerView.layoutManager = GridLayoutManager(this,4)
         recyclerView.adapter = categorieAdapter
 
