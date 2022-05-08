@@ -132,10 +132,12 @@
 
             <RadioGroup
                 android:id="@+id/radio_group_sugar"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_sugar">
 
@@ -188,12 +190,15 @@
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/radio_group_sugar" />
+
             <RadioGroup
                 android:id="@+id/radio_group_ice"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_ice">
 
@@ -210,9 +215,9 @@
                     android:id="@+id/ice_25"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="35dp"
                     android:fontFamily="@font/montserrat_regular"
                     android:text="25%"
-                    android:layout_marginHorizontal="35dp"
                     android:textColor="@color/text_color"
                     android:textSize="14sp" />
 
@@ -220,9 +225,9 @@
                     android:id="@+id/ice_50"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="35dp"
                     android:fontFamily="@font/montserrat_regular"
                     android:text="50%"
-                    android:layout_marginEnd="35dp"
                     android:textColor="@color/text_color"
                     android:textSize="14sp" />
 
@@ -233,7 +238,7 @@
                     android:fontFamily="@font/montserrat_regular"
                     android:text="100%"
                     android:textColor="@color/text_color"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
             </RadioGroup>
             <TextView
                 android:id="@+id/tv_topping"
@@ -440,7 +445,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_purchase"
         android:layout_marginTop="24dp"
-        android:layout_width="90dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:paddingHorizontal="10dp"
         android:fontFamily="@font/raleway_regular"
