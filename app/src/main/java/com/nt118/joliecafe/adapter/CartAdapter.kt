@@ -13,7 +13,7 @@ import com.nt118.joliecafe.R
 
 class CartAdapter(
     private val mActivity: Activity,
-    diffCallback: DiffUtil.ItemCallback<CartItem>
+    diffCallback: DiffUtil.ItemCallback<CartItem>,
 ) : PagingDataAdapter<CartItem, CartAdapter.ViewHolder>(diffCallback) {
 
     class ViewHolder(var binding: ItemCartBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -33,12 +33,12 @@ class CartAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cartItem = getItem(position)
         cartItem?.let {
-            holder.binding.ivThumbnail.load(cartItem.thumbnail) {
+            holder.binding.ivThumbnail.load(cartItem.productDetail.thumbnail) {
                 crossfade(600)
                 error(R.drawable.placeholder_image)
             }
-            holder.binding.tvProductName.text = cartItem.name
-            holder.binding.tvProductDescription.text = cartItem.description
+            holder.binding.tvProductName.text = cartItem.productDetail.name
+            holder.binding.tvProductDescription.text = cartItem.productDetail.description
             holder.binding.tvAmount.text = cartItem.quantity.toString()
         }
     }

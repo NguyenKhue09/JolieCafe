@@ -11,7 +11,8 @@ import java.io.IOException
 
 class CartItemPagingSource(
     private val jolieCafeApi: JolieCafeApi,
-    private val token: String
+    private val token: String,
+    private val type: String
 ) : PagingSource<Int, CartItem>() {
 
     override fun getRefreshKey(state: PagingState<Int, CartItem>): Int? {
@@ -27,6 +28,7 @@ class CartItemPagingSource(
             val query = mapOf(
                 "currentPage" to nextPageNumber.toString(),
                 "itemsPerPage" to Constants.PAGE_SIZE.toString(),
+                "type" to type
             )
             val response = jolieCafeApi.getCartItems(token, query)
 
