@@ -175,10 +175,10 @@ class HomeFragment : Fragment() {
 
         bestSellerAdapter.addLoadStateListener { loadState ->
             if (loadState.refresh is LoadState.Loading){
-
+                binding.homeCircularProgressIndicator.visibility = View.VISIBLE
             }
             else{
-
+                binding.homeCircularProgressIndicator.visibility = View.INVISIBLE
                 // getting the error
                 val error = when {
                     loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error

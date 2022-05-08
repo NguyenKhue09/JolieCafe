@@ -3,7 +3,7 @@ package com.nt118.joliecafe.util
 class Constants {
 
     companion object {
-        val listTabContentFavorite = listOf("All", "Coffee", "Tea", "Juice", "Milk shake", "Milk tea", "Pasty")
+        val listTabContentFavorite = listOf("All", "Coffee", "Tea", "Juice", "Pasty", "Milk shake", "Milk tea")
         const val WEBCLIENT_ID = "761101144147-1ac26g0mibusafq3vfgd7dutvgad81f1.apps.googleusercontent.com"
         const val IS_EDIT = "isEdit"
         const val IS_CHANGE_PASSWORD = "isChangePassword"

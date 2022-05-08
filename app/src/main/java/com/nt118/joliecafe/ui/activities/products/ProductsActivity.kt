@@ -2,6 +2,7 @@ package com.nt118.joliecafe.ui.activities.products
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.asLiveData
@@ -10,6 +11,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.CategorieAdapter
+import com.nt118.joliecafe.adapter.CategoriesProductsAdapter
 import com.nt118.joliecafe.adapter.ProductAdapter
 import com.nt118.joliecafe.databinding.ActivityProductsBinding
 import com.nt118.joliecafe.models.CategorieModel
@@ -38,8 +40,8 @@ class ProductsActivity : AppCompatActivity() {
             productsViewModel.backOnline = it
         }
 
-//        val bundle : Bundle? = intent.extras
-//        val position = bundle!!.getInt("position")
+        val bundle : Bundle? = intent.extras
+        val position = bundle!!.getInt("position")
 
         // back home
         binding.iconBackHome.setOnClickListener {
@@ -48,14 +50,11 @@ class ProductsActivity : AppCompatActivity() {
 
         // RecyclerView Categories
         val recyclerView = binding.recyclerView
-        val categorieAdapter = CategorieAdapter(fetData())
+        val categorieAdapter = CategoriesProductsAdapter(fetData(),position)
         recyclerView.layoutManager = GridLayoutManager(this,4)
         recyclerView.adapter = categorieAdapter
-        categorieAdapter.setOnClickListener(object : CategorieAdapter.onItemClickListener{
-            override fun onItemClick(position: Int) {
 
-            }
-        })
+
 
         // RecyclerView product
         val diffCallBack = ProductComparator
@@ -99,10 +98,10 @@ class ProductsActivity : AppCompatActivity() {
 
         productAdapter.addLoadStateListener { loadState ->
             if (loadState.refresh is LoadState.Loading){
-
+                binding.categoriesCircularProgressIndicator.visibility = View.VISIBLE
             }
             else{
-
+                binding.categoriesCircularProgressIndicator.visibility = View.GONE
                 // getting the error
                 val error = when {
                     loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error

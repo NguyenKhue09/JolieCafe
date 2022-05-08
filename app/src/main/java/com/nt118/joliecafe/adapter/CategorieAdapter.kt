@@ -15,7 +15,6 @@ class CategorieAdapter(private val item : ArrayList<CategorieModel>) : RecyclerV
     class ViewHolder(itemView: View, listener: onItemClickListener) : RecyclerView.ViewHolder(itemView){
         val tvCart: TextView = itemView.findViewById(R.id.tvCart)
         val imgCart : ImageView = itemView.findViewById(R.id.imgCart)
-        val btn_categories : CardView = itemView.findViewById(R.id.btn_categories)
         init {
             itemView.setOnClickListener {
                 listener.onItemClick(absoluteAdapterPosition)
