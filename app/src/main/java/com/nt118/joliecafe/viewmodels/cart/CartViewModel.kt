@@ -28,10 +28,10 @@ class CartViewModel @Inject constructor(
     var networkStatus = false
     var backOnline = false
 
-    fun getCartItems(token: String): Flow<PagingData<CartItem>> {
+    fun getCartItems(token: String, type: String): Flow<PagingData<CartItem>> {
         return if (token.isNotEmpty()) {
             try {
-                repository.remote.getCartItems(token).cachedIn(viewModelScope)
+                repository.remote.getCartItems(token, type).cachedIn(viewModelScope)
             } catch (e: Exception) {
                 e.printStackTrace()
                 flowOf()

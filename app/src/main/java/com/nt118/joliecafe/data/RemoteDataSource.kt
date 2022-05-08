@@ -103,10 +103,10 @@ class RemoteDataSource @Inject constructor(
         return jolieCafeApi.updateAddress(body = newAddressData, token = "Bearer $token")
     }
 
-    fun getCartItems(token: String): Flow<PagingData<CartItem>> {
+    fun getCartItems(token: String, type: String): Flow<PagingData<CartItem>> {
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
-            pagingSourceFactory = { CartItemPagingSource(jolieCafeApi, token = "Bearer $token") }
+            pagingSourceFactory = { CartItemPagingSource(jolieCafeApi, token = "Bearer $token", type) }
         ).flow
     }
 
