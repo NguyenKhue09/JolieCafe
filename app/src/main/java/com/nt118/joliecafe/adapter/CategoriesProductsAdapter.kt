@@ -9,7 +9,7 @@ import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ItemRvCategoriesProductsBinding
 import com.nt118.joliecafe.models.CategorieModel
 
-class CategoriesProductsAdapter(private val item : ArrayList<CategorieModel>,private val currentPosition:Int) : RecyclerView.Adapter<CategoriesProductsAdapter.ViewHolder>() {
+class CategoriesProductsAdapter(private val item : ArrayList<CategorieModel>,private val currentPosition:Int, val clicked:(Int)->Unit) : RecyclerView.Adapter<CategoriesProductsAdapter.ViewHolder>() {
 
     private var positionOld = currentPosition
     class ViewHolder(var binding: ItemRvCategoriesProductsBinding) :
@@ -40,6 +40,7 @@ class CategoriesProductsAdapter(private val item : ArrayList<CategorieModel>,pri
         holder.binding.tvCategoriesProducts.text = item[position].title
         holder.binding.btnCategoriesProducts.setOnClickListener {
             positionOld = position
+            clicked.invoke(position)
             notifyDataSetChanged()
         }
         if(position == positionOld){
