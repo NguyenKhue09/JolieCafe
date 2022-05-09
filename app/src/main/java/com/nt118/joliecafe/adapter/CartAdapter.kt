@@ -61,13 +61,16 @@ class CartAdapter(
                     numOfCheckedItem--
                 }
 
-                if (numOfCheckedItem == itemCount) {
-                    isSelectAll = true
-                    onSelectAllAction?.invoke()
-                }
-                if (numOfCheckedItem == 0) {
-                    isDeselectAll = true
-                    onDeselectAllAction?.invoke()
+                when (numOfCheckedItem) {
+                    itemCount -> {
+                        isSelectAll = true
+                        onSelectAllAction?.invoke()
+                    }
+                    0 -> {
+                        isDeselectAll = true
+                        onDeselectAllAction?.invoke()
+                    }
+                    else -> onDeselectAllAction?.invoke()
                 }
             }
         }
@@ -87,5 +90,11 @@ class CartAdapter(
         isSelectAll = false
         numOfCheckedItem = 0
         notifyDataSetChanged()
+    }
+
+    fun resetCounter() {
+        isSelectAll = false
+        isDeselectAll = false
+        numOfCheckedItem = 0
     }
 }
