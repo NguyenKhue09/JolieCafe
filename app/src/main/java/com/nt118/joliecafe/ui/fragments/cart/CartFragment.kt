@@ -55,6 +55,7 @@ class CartFragment : Fragment() {
     private lateinit var header2: FrameLayout
     private lateinit var rvCartSuggestion: RecyclerView
     private lateinit var suggestionContainer: LinearLayout
+    private lateinit var footer: FrameLayout
     private var isCartEmpty = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,6 +93,7 @@ class CartFragment : Fragment() {
         progressCart = binding.progressCart
         emptyCartView = binding.emptyCartView
         header2 = binding.header2
+        footer = binding.footer
         rvCartSuggestion = binding.rvCartSuggestion
         suggestionContainer = binding.suggestionContainer
 
@@ -116,7 +118,19 @@ class CartFragment : Fragment() {
                 cartViewModel.showNetworkStatus()
                 if (cartViewModel.backOnline) {
                     cartViewModel.getCartItems(cartViewModel.userToken, "Coffee").collectLatest { data ->
-                        cartCoffeeAdapter.submitData(data)
+                        cartCoffeeAdapter.submitData(lifecycle, data)
+                    }
+
+                    cartViewModel.getCartItems(cartViewModel.userToken, "Tea").collectLatest { data ->
+                        cartTeaAdapter.submitData(lifecycle, data)
+                    }
+
+                    cartViewModel.getCartItems(cartViewModel.userToken, "Juice").collectLatest { data ->
+                        cartJuiceAdapter.submitData(lifecycle, data)
+                    }
+
+                    cartViewModel.getCartItems(cartViewModel.userToken, "MilkTea").collectLatest { data ->
+                        cartMilkTeaAdapter.submitData(lifecycle, data)
                     }
                 }
             }
@@ -151,6 +165,8 @@ class CartFragment : Fragment() {
 
             if (cartCoffeeAdapter.itemCount != 0) {
                 cvCoffee.visibility = View.VISIBLE
+                header2.visibility = View.VISIBLE
+                footer.visibility =View.VISIBLE
                 isCartEmpty = false
             }
             else {
@@ -166,6 +182,7 @@ class CartFragment : Fragment() {
             if (cartTeaAdapter.itemCount != 0) {
                 cvTea.visibility = View.VISIBLE
                 header2.visibility = View.VISIBLE
+                footer.visibility =View.VISIBLE
                 isCartEmpty = false
             }
             else {
@@ -181,6 +198,7 @@ class CartFragment : Fragment() {
             if (cartJuiceAdapter.itemCount != 0) {
                 cvJuice.visibility = View.VISIBLE
                 header2.visibility = View.VISIBLE
+                footer.visibility =View.VISIBLE
                 isCartEmpty = false
             }
             else {
@@ -196,6 +214,7 @@ class CartFragment : Fragment() {
             if (cartMilkTeaAdapter.itemCount != 0) {
                 cvMilkTea.visibility = View.VISIBLE
                 header2.visibility = View.VISIBLE
+                footer.visibility =View.VISIBLE
                 isCartEmpty = false
             }
             else {
@@ -320,32 +339,36 @@ class CartFragment : Fragment() {
             cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
         }
         cartTeaAdapter.onDeselectAllAction = {
+            if (cbTea.isChecked)
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
             cbTea.isChecked = false
-            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
         }
         cartCoffeeAdapter.onSelectAllAction = {
             cbCoffee.isChecked = true
             cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
         }
         cartCoffeeAdapter.onDeselectAllAction = {
+            if (cbCoffee.isChecked)
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
             cbCoffee.isChecked = false
-            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
         }
         cartJuiceAdapter.onSelectAllAction = {
             cbJuice.isChecked = true
             cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
         }
         cartJuiceAdapter.onDeselectAllAction = {
+            if (cbJuice.isChecked)
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
             cbJuice.isChecked = false
-            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
         }
         cartMilkTeaAdapter.onSelectAllAction = {
             cbMilkTea.isChecked = true
             cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
         }
         cartMilkTeaAdapter.onDeselectAllAction = {
+            if (cbMilkTea.isChecked)
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
             cbMilkTea.isChecked = false
-            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
         }
     }
 
@@ -374,4 +397,6 @@ class CartFragment : Fragment() {
             Log.d("checkAll", "${cartViewModel.numOfSelectedRv.value}")
         }
     }
+
+
 }
