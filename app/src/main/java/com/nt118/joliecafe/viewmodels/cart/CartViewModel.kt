@@ -11,6 +11,7 @@ import com.nt118.joliecafe.models.CartItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,6 +28,7 @@ class CartViewModel @Inject constructor(
     var userToken = ""
     var networkStatus = false
     var backOnline = false
+    var cartCount: MutableStateFlow<Int> = MutableStateFlow(0) // cái này để đếm xem bao nhiêu RV chạy xong rồi
 
     fun getCartItems(token: String, type: String): Flow<PagingData<CartItem>> {
         return if (token.isNotEmpty()) {
@@ -34,10 +36,10 @@ class CartViewModel @Inject constructor(
                 repository.remote.getCartItems(token, type).cachedIn(viewModelScope)
             } catch (e: Exception) {
                 e.printStackTrace()
-                flowOf()
+                flowOf(PagingData.empty())
             }
         } else {
-            flowOf()
+            flowOf(PagingData.empty())
         }
     }
 
@@ -58,5 +60,4 @@ class CartViewModel @Inject constructor(
             }
         }
     }
-    
 }
