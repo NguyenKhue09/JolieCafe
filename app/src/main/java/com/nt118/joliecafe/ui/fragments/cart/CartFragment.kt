@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.firebase.auth.FirebaseAuth
@@ -74,6 +75,9 @@ class CartFragment : Fragment() {
         cartViewModel.readBackOnline.asLiveData().observe(viewLifecycleOwner) {
             cartViewModel.backOnline = it
         }
+        cartViewModel.numOfSelectedRv.asLiveData().observe(viewLifecycleOwner) {
+            binding.cbCheckAll.isChecked = it == 4
+        }
 
         val diffCallback = CartItemComparator
         val rvCoffee: RecyclerView = binding.rvCoffee
@@ -92,16 +96,18 @@ class CartFragment : Fragment() {
         suggestionContainer = binding.suggestionContainer
 
         rvCartSuggestion.adapter = CartSuggestionAdapter()
-        cartCoffeeAdapter = CartAdapter(requireActivity(), diffCallback)
-        cartTeaAdapter = CartAdapter(requireActivity(), diffCallback)
-        cartJuiceAdapter = CartAdapter(requireActivity(), diffCallback)
-        cartMilkTeaAdapter = CartAdapter(requireActivity(), diffCallback)
+        cartCoffeeAdapter = CartAdapter(diffCallback)
+        cartTeaAdapter = CartAdapter(diffCallback)
+        cartJuiceAdapter = CartAdapter(diffCallback)
+        cartMilkTeaAdapter = CartAdapter(diffCallback)
         rvCoffee.adapter = cartCoffeeAdapter
         rvTea.adapter = cartTeaAdapter
         rvJuice.adapter = cartJuiceAdapter
         rvMilkTea.adapter = cartMilkTeaAdapter
 
         getData()
+        checkboxHandler()
+        checkAllHandler()
 
         lifecycleScope.launchWhenStarted {
             networkListener = NetworkListener()
@@ -132,6 +138,7 @@ class CartFragment : Fragment() {
 
     private fun getData() {
         cartViewModel.cartCount.asLiveData().observe(viewLifecycleOwner) {
+            cartViewModel.numOfSelectedRv.value = it
             if (it >= 4) {
                 cartEmptyHandler()
             }
@@ -240,5 +247,131 @@ class CartFragment : Fragment() {
         progressCart.visibility = View.GONE
         rvCartSuggestion.visibility = View.VISIBLE
         suggestionContainer.visibility = View.VISIBLE
+    }
+
+    private fun checkboxHandler() {
+        val cbTea = binding.cbTea
+        val cbCoffee = binding.cbCoffee
+        val cbJuice = binding.cbJuice
+        val cbMilkTea = binding.cbMilkTea
+
+        cbTea.setOnClickListener {
+            if (cvTea.visibility == View.GONE) return@setOnClickListener
+            if (cbTea.isChecked) {
+                binding.rvTea.itemAnimator = null
+                cartTeaAdapter.checkAllCheckbox()
+                binding.rvTea.itemAnimator = DefaultItemAnimator()
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
+            } else {
+                binding.rvTea.itemAnimator = null
+                cartTeaAdapter.uncheckAllCheckbox()
+                binding.rvTea.itemAnimator = DefaultItemAnimator()
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
+            }
+        }
+
+        cbCoffee.setOnClickListener {
+            if (cvCoffee.visibility == View.GONE) return@setOnClickListener
+            if (cbCoffee.isChecked) {
+                binding.rvCoffee.itemAnimator = null
+                cartCoffeeAdapter.checkAllCheckbox()
+                binding.rvCoffee.itemAnimator = DefaultItemAnimator()
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
+            } else {
+                binding.rvCoffee.itemAnimator = null
+                cartCoffeeAdapter.uncheckAllCheckbox()
+                binding.rvCoffee.itemAnimator = DefaultItemAnimator()
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
+            }
+        }
+
+        cbJuice.setOnClickListener {
+            if (cvJuice.visibility == View.GONE) return@setOnClickListener
+            if (cbJuice.isChecked) {
+                binding.rvJuice.itemAnimator = null
+                cartJuiceAdapter.checkAllCheckbox()
+                binding.rvJuice.itemAnimator = DefaultItemAnimator()
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
+            } else {
+                binding.rvJuice.itemAnimator = null
+                cartJuiceAdapter.uncheckAllCheckbox()
+                binding.rvJuice.itemAnimator = DefaultItemAnimator()
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
+            }
+        }
+
+        cbMilkTea.setOnClickListener {
+            if (cvMilkTea.visibility == View.GONE) return@setOnClickListener
+            if (cbMilkTea.isChecked) {
+                binding.rvMilkTea.itemAnimator = null
+                cartMilkTeaAdapter.checkAllCheckbox()
+                binding.rvMilkTea.itemAnimator = DefaultItemAnimator()
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
+            } else {
+                binding.rvMilkTea.itemAnimator = null
+                cartMilkTeaAdapter.uncheckAllCheckbox()
+                binding.rvMilkTea.itemAnimator = DefaultItemAnimator()
+                cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
+            }
+        }
+
+        cartTeaAdapter.onSelectAllAction = {
+            cbTea.isChecked = true
+            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
+        }
+        cartTeaAdapter.onDeselectAllAction = {
+            cbTea.isChecked = false
+            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
+        }
+        cartCoffeeAdapter.onSelectAllAction = {
+            cbCoffee.isChecked = true
+            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
+        }
+        cartCoffeeAdapter.onDeselectAllAction = {
+            cbCoffee.isChecked = false
+            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
+        }
+        cartJuiceAdapter.onSelectAllAction = {
+            cbJuice.isChecked = true
+            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
+        }
+        cartJuiceAdapter.onDeselectAllAction = {
+            cbJuice.isChecked = false
+            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
+        }
+        cartMilkTeaAdapter.onSelectAllAction = {
+            cbMilkTea.isChecked = true
+            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.plus(1)
+        }
+        cartMilkTeaAdapter.onDeselectAllAction = {
+            cbMilkTea.isChecked = false
+            cartViewModel.numOfSelectedRv.value = cartViewModel.numOfSelectedRv.value.minus(1)
+        }
+    }
+
+    private fun checkAllHandler() {
+        binding.cbCheckAll.setOnClickListener {
+            if (binding.cbCheckAll.isChecked) {
+                if (!binding.cbCoffee.isChecked)
+                    binding.cbCoffee.performClick()
+                if (!binding.cbTea.isChecked)
+                    binding.cbTea.performClick()
+                if (!binding.cbJuice.isChecked)
+                    binding.cbJuice.performClick()
+                if (!binding.cbMilkTea.isChecked)
+                    binding.cbMilkTea.performClick()
+            } else {
+                if(binding.cbCoffee.isChecked)
+                    binding.cbCoffee.performClick()
+                if(binding.cbTea.isChecked)
+                    binding.cbTea.performClick()
+                if(binding.cbJuice.isChecked)
+                    binding.cbJuice.performClick()
+                if(binding.cbMilkTea.isChecked)
+                    binding.cbMilkTea.performClick()
+            }
+            Log.d("cartCount", "${cartViewModel.cartCount.value}")
+            Log.d("checkAll", "${cartViewModel.numOfSelectedRv.value}")
+        }
     }
 }

@@ -1,8 +1,10 @@
 package com.nt118.joliecafe.adapter
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CheckBox
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nt118.joliecafe.databinding.ItemCartBinding
@@ -12,9 +14,14 @@ import coil.load
 import com.nt118.joliecafe.R
 
 class CartAdapter(
-    private val mActivity: Activity,
     diffCallback: DiffUtil.ItemCallback<CartItem>,
 ) : PagingDataAdapter<CartItem, CartAdapter.ViewHolder>(diffCallback) {
+
+    private var isSelectAll = false
+    private var isDeselectAll = false
+    var onSelectAllAction: (() -> Unit)? = null
+    var onDeselectAllAction: (() -> Unit)? = null
+    private var numOfCheckedItem = 0
 
     class ViewHolder(var binding: ItemCartBinding) : RecyclerView.ViewHolder(binding.root) {
         companion object {
@@ -40,6 +47,45 @@ class CartAdapter(
             holder.binding.tvProductName.text = cartItem.productDetail.name
             holder.binding.tvProductDescription.text = cartItem.productDetail.description
             holder.binding.tvAmount.text = cartItem.quantity.toString()
+            if (isSelectAll) {
+                holder.binding.cbItemSelect.isChecked = true
+            } else if (isDeselectAll) {
+                holder.binding.cbItemSelect.isChecked = false
+            }
+            holder.binding.cbItemSelect.setOnClickListener {
+                isSelectAll = false
+                isDeselectAll = false
+                if ((it as CheckBox).isChecked) {
+                    numOfCheckedItem++
+                } else {
+                    numOfCheckedItem--
+                }
+
+                if (numOfCheckedItem == itemCount) {
+                    isSelectAll = true
+                    onSelectAllAction?.invoke()
+                }
+                if (numOfCheckedItem == 0) {
+                    isDeselectAll = true
+                    onDeselectAllAction?.invoke()
+                }
+            }
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun checkAllCheckbox() {
+        isSelectAll = true
+        isDeselectAll = false
+        numOfCheckedItem = itemCount
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun uncheckAllCheckbox() {
+        isDeselectAll = true
+        isSelectAll = false
+        numOfCheckedItem = 0
+        notifyDataSetChanged()
     }
 }

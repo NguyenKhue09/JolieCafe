@@ -54,11 +54,12 @@
         android:visibility="gone">
 
         <CheckBox
+            android:id="@+id/cb_check_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Check all"
+            android:text="@string/check_all"
             style="@style/SmallCheckBox"
-            android:checked="true"/>
+            android:checked="false"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -102,6 +103,7 @@
                     android:orientation="vertical">
 
                     <CheckBox
+                        android:id="@+id/cb_tea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/RegularCheckBox"
@@ -138,6 +140,7 @@
                     android:orientation="vertical">
 
                     <CheckBox
+                        android:id="@+id/cb_coffee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/RegularCheckBox"
@@ -172,6 +175,7 @@
                     android:orientation="vertical">
 
                     <CheckBox
+                        android:id="@+id/cb_juice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/RegularCheckBox"
@@ -207,6 +211,7 @@
                     android:orientation="vertical">
 
                     <CheckBox
+                        android:id="@+id/cb_milk_tea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/RegularCheckBox"
