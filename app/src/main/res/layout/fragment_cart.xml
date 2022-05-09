@@ -8,6 +8,16 @@
     tools:context=".ui.fragments.cart.CartFragment"
     android:background="@color/grey_primary">
 
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="true"
+        android:id="@+id/progress_cart"
+        app:indicatorColor="@color/grey_primary_variant"/>
+
     <LinearLayout
         android:id="@+id/header1"
         android:orientation="horizontal"
@@ -41,14 +51,15 @@
         android:layout_below="@id/header1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <CheckBox
+            android:id="@+id/cb_check_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Check all"
+            android:text="@string/check_all"
             style="@style/SmallCheckBox"
-            android:checked="true"/>
+            android:checked="false"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -80,6 +91,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_shape"
                 android:backgroundTint="#4B413A"
+                android:visibility="gone"
                 style="@style/CardView"
                 android:layout_marginBottom="15dp"
                 app:cardCornerRadius="9dp">
@@ -91,6 +103,7 @@
                     android:orientation="vertical">
 
                     <CheckBox
+                        android:id="@+id/cb_tea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/RegularCheckBox"
@@ -117,7 +130,8 @@
                 android:backgroundTint="#4B413A"
                 style="@style/CardView"
                 android:layout_marginBottom="15dp"
-                app:cardCornerRadius="9dp">
+                app:cardCornerRadius="9dp"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -126,6 +140,7 @@
                     android:orientation="vertical">
 
                     <CheckBox
+                        android:id="@+id/cb_coffee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/RegularCheckBox"
@@ -143,13 +158,15 @@
 
             </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView
+                android:id="@+id/cv_juice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_shape"
                 android:backgroundTint="#4B413A"
                 style="@style/CardView"
                 android:layout_marginBottom="15dp"
-                app:cardCornerRadius="9dp">
+                app:cardCornerRadius="9dp"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -158,6 +175,7 @@
                     android:orientation="vertical">
 
                     <CheckBox
+                        android:id="@+id/cb_juice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/RegularCheckBox"
@@ -176,13 +194,15 @@
 
             </androidx.cardview.widget.CardView>
             <androidx.cardview.widget.CardView
+                android:id="@+id/cv_milk_tea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_shape"
                 android:backgroundTint="#4B413A"
                 style="@style/CardView"
                 android:layout_marginBottom="15dp"
-                app:cardCornerRadius="9dp">
+                app:cardCornerRadius="9dp"
+                android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -191,6 +211,7 @@
                     android:orientation="vertical">
 
                     <CheckBox
+                        android:id="@+id/cb_milk_tea"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/RegularCheckBox"
@@ -220,7 +241,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -236,18 +257,18 @@
                 android:text="Total: " />
 
             <TextView
+                style="@style/RegularNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/RegularNumber"
                 android:layout_gravity="center_vertical"
-                android:text="990.000"/>
+                android:text="990.000" />
 
             <TextView
+                style="@style/RegularText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/RegularText"
                 android:layout_gravity="center_vertical"
-                android:text=" VND"/>
+                android:text=" VND" />
 
         </LinearLayout>
 
@@ -264,7 +285,7 @@
 
     <LinearLayout
         android:id="@+id/empty_cart_view"
-        android:layout_above="@id/suggest_container"
+        android:layout_above="@id/suggestion_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -296,7 +317,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/suggest_container"
+        android:id="@+id/suggestion_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -317,7 +338,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_cart_suggestion" />
+            tools:listitem="@layout/item_cart_suggestion"/>
 
     </LinearLayout>
 
