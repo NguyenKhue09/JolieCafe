@@ -30,9 +30,9 @@ class CatagoriesBottomSheetFragment : BottomSheetDialogFragment() {
             this.dismiss()
         }
 
-        val dialog = dialog as BottomSheetDialog
-        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        dialog.behavior.isDraggable = false
+//        val dialog = dialog as BottomSheetDialog
+//        dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+//        dialog.behavior.isDraggable = false
 
         return binding.root
     }
