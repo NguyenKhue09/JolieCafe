@@ -31,6 +31,7 @@
             android:text="My cart ("
             android:textColor="@color/text_color_2"/>
         <TextView
+            android:id="@+id/tv_item_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/BigNumber"

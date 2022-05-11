@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -56,6 +57,7 @@ class CartFragment : Fragment() {
     private lateinit var rvCartSuggestion: RecyclerView
     private lateinit var suggestionContainer: LinearLayout
     private lateinit var footer: FrameLayout
+    private lateinit var tvItemCount: TextView
     private var isCartEmpty = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +81,9 @@ class CartFragment : Fragment() {
         cartViewModel.numOfSelectedRv.asLiveData().observe(viewLifecycleOwner) {
             binding.cbCheckAll.isChecked = it == 4
         }
+        cartViewModel.itemCount.asLiveData().observe(viewLifecycleOwner) {
+            tvItemCount.text = it.toString()
+        }
 
         val diffCallback = CartItemComparator
         val rvCoffee: RecyclerView = binding.rvCoffee
@@ -96,6 +101,7 @@ class CartFragment : Fragment() {
         footer = binding.footer
         rvCartSuggestion = binding.rvCartSuggestion
         suggestionContainer = binding.suggestionContainer
+        tvItemCount = binding.tvItemCount
 
         rvCartSuggestion.adapter = CartSuggestionAdapter()
         cartCoffeeAdapter = CartAdapter(diffCallback)
@@ -168,6 +174,7 @@ class CartFragment : Fragment() {
                 header2.visibility = View.VISIBLE
                 footer.visibility =View.VISIBLE
                 isCartEmpty = false
+                cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartCoffeeAdapter.itemCount)
             }
             else {
                 cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
@@ -184,6 +191,7 @@ class CartFragment : Fragment() {
                 header2.visibility = View.VISIBLE
                 footer.visibility =View.VISIBLE
                 isCartEmpty = false
+                cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartTeaAdapter.itemCount)
             }
             else {
                 cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
@@ -200,6 +208,7 @@ class CartFragment : Fragment() {
                 header2.visibility = View.VISIBLE
                 footer.visibility =View.VISIBLE
                 isCartEmpty = false
+                cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartJuiceAdapter.itemCount)
             }
             else {
                 cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
@@ -216,6 +225,7 @@ class CartFragment : Fragment() {
                 header2.visibility = View.VISIBLE
                 footer.visibility =View.VISIBLE
                 isCartEmpty = false
+                cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartMilkTeaAdapter.itemCount)
             }
             else {
                 cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
@@ -224,6 +234,9 @@ class CartFragment : Fragment() {
 
         lifecycleScope.launch {
             cartViewModel.readUserToken.collectLatest { token ->
+                cartViewModel.itemCount.value = 0
+                cartViewModel.cartCount.value = 0
+                cartViewModel.numOfSelectedRv.value = 0
                 cartViewModel.userToken = token
 
                 withContext(Dispatchers.IO) {
@@ -273,6 +286,11 @@ class CartFragment : Fragment() {
         val cbCoffee = binding.cbCoffee
         val cbJuice = binding.cbJuice
         val cbMilkTea = binding.cbMilkTea
+
+        cbTea.isChecked = false
+        cbCoffee.isChecked = false
+        cbJuice.isChecked = false
+        cbMilkTea.isChecked = false
 
         cbTea.setOnClickListener {
             if (cvTea.visibility == View.GONE) return@setOnClickListener
@@ -398,5 +416,32 @@ class CartFragment : Fragment() {
         }
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        binding.cbTea.apply {
+            isChecked = false
+            jumpDrawablesToCurrentState()
+        }
+        binding.cbCoffee.apply {
+            isChecked = false
+            jumpDrawablesToCurrentState()
+        }
+        binding.cbJuice.apply {
+            isChecked = false
+            jumpDrawablesToCurrentState()
+        }
+        binding.cbMilkTea.apply {
+            isChecked = false
+            jumpDrawablesToCurrentState()
+        }
+    }
+
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        binding.cbTea.isChecked = false
+//        binding.cbCoffee.isChecked = false
+//        binding.cbJuice.isChecked = false
+//        binding.cbMilkTea.isChecked = false
+//    }
 
 }

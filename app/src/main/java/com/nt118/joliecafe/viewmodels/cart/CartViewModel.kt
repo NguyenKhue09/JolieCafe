@@ -30,6 +30,7 @@ class CartViewModel @Inject constructor(
     var backOnline = false
     var cartCount: MutableStateFlow<Int> = MutableStateFlow(0) // cái này để đếm xem bao nhiêu RV chạy xong rồi
     var numOfSelectedRv: MutableStateFlow<Int> = MutableStateFlow(0)
+    var itemCount: MutableStateFlow<Int> = MutableStateFlow(0)
 
     fun getCartItems(token: String, type: String): Flow<PagingData<CartItem>> {
         return if (token.isNotEmpty()) {
