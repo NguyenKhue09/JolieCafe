@@ -3,7 +3,9 @@ package com.nt118.joliecafe.ui.activities.address_book
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.LiveData
@@ -13,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.AddressBookAdapter
@@ -55,9 +58,12 @@ class AddressBookActivity : AppCompatActivity() {
 
         val diffCallBack = AddressItemComparator
         val addressesRecyclerView = binding.addressRecyclerView
+
         addressBookAdapter = AddressBookAdapter(differCallback = diffCallBack, addressBookActivity = this)
+
         addressesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         addressesRecyclerView.adapter = addressBookAdapter
+
 
         lifecycleScope.launchWhenStarted {
             addressViewModel.readUserToken.collectLatest { token ->

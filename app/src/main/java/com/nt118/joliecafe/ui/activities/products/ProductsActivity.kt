@@ -140,6 +140,13 @@ class ProductsActivity : AppCompatActivity() {
     }
 
     private fun setCatagoriesAdapterProducts(position:Int) {
+
+        lifecycleScope.launchWhenStarted {
+            productsViewModel.readUserToken.collectLatest { token ->
+                productsViewModel.userToken = token
+            }
+        }
+
         lifecycleScope.launchWhenStarted {
             networkListener = NetworkListener()
             networkListener.checkNetworkAvailability(this@ProductsActivity)
@@ -175,12 +182,6 @@ class ProductsActivity : AppCompatActivity() {
                 }
             } else {
                 productsViewModel.showNetworkStatus()
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            productsViewModel.readUserToken.collectLatest { token ->
-                productsViewModel.userToken = token
             }
         }
     }

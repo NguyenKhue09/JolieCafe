@@ -9,10 +9,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
 import com.nt118.joliecafe.models.*
+import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -23,13 +25,17 @@ class HomeViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ) : AndroidViewModel(application) {
 
+    var getUserInfosResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
+
     var readBackOnline = dataStoreRepository.readBackOnline
     var readUserToken = dataStoreRepository.readUserToken
+    var readIsUserFaceOrGGLogin = dataStoreRepository.readIsUserFaceOrGGLogin
 
     var userToken = ""
 
     var networkStatus = false
     var backOnline = false
+    var isFaceOrGGLogin = false
 
 
     fun getProducts(productQuery: Map<String, String>, token: String): Flow<PagingData<Product>> {
@@ -50,20 +56,59 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun handleTokenEmpty() {
-        val currentUser = FirebaseAuth.getInstance().currentUser
+    fun getUserInfos(token: String) =
         viewModelScope.launch {
-            if (currentUser != null && networkStatus) {
-                println("Token empty")
-                val data = mutableMapOf<String, String>()
-                val user = FirebaseAuth.getInstance().currentUser
-                data["_id"] = user!!.uid
-                data["fullname"] = user.displayName ?: ""
-                data["email"] = user.email ?: ""
-                val response = repository.remote.createUser(data = data)
-                handleGetTokenResponse(response)
+            getUserInfosResponse.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.getUserInfos(token = "Bearer $token")
+                getUserInfosResponse.value = handleApiResponse(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                getUserInfosResponse.value = ApiResult.Error(e.message)
             }
         }
+
+    private fun handleApiResponse(response: Response<ApiResponseSingleData<User>>): ApiResult<User> {
+        val result = response.body()
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+            response.isSuccessful -> {
+                //saveUserToken(result!!.data!!.token)
+                ApiResult.Success(result!!.data!!)
+            }
+            else -> {
+                ApiResult.Error(response.message())
+            }
+        }
+    }
+
+    private fun handleTokenEmpty() {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+
+        val userName = if (currentUser != null) {
+            currentUser.displayName
+        } else getUserInfosResponse.value?.data?.fullName
+
+        userName?.let { name ->
+            viewModelScope.launch {
+                if (currentUser != null && networkStatus) {
+                    println("Token empty")
+                    val data = mutableMapOf<String, String>()
+                    val user = FirebaseAuth.getInstance().currentUser
+                    data["_id"] = user!!.uid
+                    data["fullname"] = name
+                    data["email"] = user.email ?: ""
+                    val response = repository.remote.createUser(data = data)
+                    handleGetTokenResponse(response)
+                }
+            }
+        }
+
     }
 
     private fun handleGetTokenResponse(response: retrofit2.Response<ApiResponseSingleData<User>>) {

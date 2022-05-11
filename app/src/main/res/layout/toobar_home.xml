@@ -44,25 +44,25 @@
             android:id="@+id/tvScores"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3000"
-            android:textSize="11sp"
-            android:fontFamily="@font/montserrat_regular"
             android:layout_below="@id/tvName"
-            android:layout_toEndOf="@id/carViewAvatar"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="4dp"/>
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/carViewAvatar"
+            android:fontFamily="@font/montserrat_regular"
+            android:text="3000"
+            android:textSize="11sp" />
 
         <TextView
             android:id="@+id/tvCoin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/tvScores"
             android:layout_below="@id/tvName"
-            android:text="coin"
-            android:textSize="11sp"
-            android:fontFamily="@font/raleway_regular"
+            android:layout_marginStart="3dp"
             android:layout_marginTop="3dp"
-            android:layout_marginStart="3dp"/>
+            android:layout_toEndOf="@id/tvScores"
+            android:fontFamily="@font/raleway_regular"
+            android:text="coin"
+            android:textSize="11sp" />
 
         <ImageView
             android:id="@+id/imgNotification"
