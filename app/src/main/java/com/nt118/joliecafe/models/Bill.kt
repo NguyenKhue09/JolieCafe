@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Bill(
+    val id: String,
     val userInfo: User,
     val products: List<BillProduct>,
     val address: Address,

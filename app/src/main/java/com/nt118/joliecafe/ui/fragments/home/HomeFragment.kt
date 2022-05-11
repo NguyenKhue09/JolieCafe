@@ -18,7 +18,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import coil.load
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.BestSellerAdapter
 import com.nt118.joliecafe.adapter.CategorieAdapter
@@ -27,9 +29,11 @@ import com.nt118.joliecafe.adapter.SlideAdapter
 import com.nt118.joliecafe.databinding.FragmentHomeBinding
 import com.nt118.joliecafe.models.CategorieModel
 import com.nt118.joliecafe.models.SliderItem
+import com.nt118.joliecafe.models.User
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.notifications.NotificationActivity
 import com.nt118.joliecafe.ui.activities.products.ProductsActivity
+import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
 import com.nt118.joliecafe.viewmodels.home.HomeViewModel
@@ -43,6 +47,7 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val homeViewModel by viewModels<HomeViewModel>()
+    private var currentUser: FirebaseUser? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -54,9 +59,15 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val currentUser = FirebaseAuth.getInstance().currentUser
+        currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser == null) {
             startActivity(Intent(requireContext(), LoginActivity::class.java))
+        }
+
+        lifecycleScope.launchWhenStarted {
+            homeViewModel.readIsUserFaceOrGGLogin.collectLatest {
+                homeViewModel.isFaceOrGGLogin = it
+            }
         }
     }
 
@@ -162,6 +173,7 @@ class HomeFragment : Fragment() {
         lifecycleScope.launchWhenStarted {
             homeViewModel.readUserToken.collectLatest { token ->
                 homeViewModel.userToken = token
+                homeViewModel.getUserInfos(homeViewModel.userToken)
                 homeViewModel.getProducts(
                     productQuery = mapOf(
                         "type" to "Coffee"
@@ -193,7 +205,41 @@ class HomeFragment : Fragment() {
         }
 
 
+        homeViewModel.getUserInfosResponse.observe(viewLifecycleOwner) { useData ->
+            when(useData) {
+                is ApiResult.Success -> {
+                    setUserData(user = useData.data!!)
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(requireContext(), "Get your data infos failed!. Please login again", Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
+        }
+
         return root
+    }
+
+    private fun setUserData(user: User) {
+        val toolbar = binding.toolbarHome
+        if (homeViewModel.isFaceOrGGLogin) {
+            toolbar.tvName.text = currentUser?.displayName ?: "You"
+            toolbar.imgAvatar.load(
+                uri = currentUser?.photoUrl
+            ) {
+                crossfade(600)
+                error(R.drawable.placeholder_image)
+            }
+        } else {
+            toolbar.tvName.text = user.fullName
+            toolbar.imgAvatar.load(
+                uri = user.thumbnail
+            ) {
+                crossfade(600)
+                error(R.drawable.placeholder_image)
+            }
+        }
+        toolbar.tvScores.text = user.coins.toString()
     }
 
     override fun onDestroyView() {
@@ -233,13 +279,4 @@ class HomeFragment : Fragment() {
 
         return  item
     }
-
-    private fun fetDataBestSaler() : ArrayList<String> {
-        val item = ArrayList<String>()
-        for (i in 0 until 5) {
-            item.add("$i")
-        }
-        return item
-    }
-
 }

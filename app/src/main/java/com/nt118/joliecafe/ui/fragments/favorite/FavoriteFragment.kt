@@ -27,7 +27,9 @@ import com.nt118.joliecafe.util.ProductComparator
 import com.nt118.joliecafe.util.extenstions.observeOnce
 import com.nt118.joliecafe.viewmodels.favorite.FavoriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FavoriteFragment : Fragment() {
