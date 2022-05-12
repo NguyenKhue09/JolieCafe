@@ -77,7 +77,7 @@ class ProfileActivity : AppCompatActivity() {
 
         binding.btnGetImage.setOnClickListener {
             if (!args.isFaceOrGGLogin) {
-                val bottomSheet = ProfileBottomSheetFragment()
+                val bottomSheet = ProfileBottomSheetFragment(profileActivityViewModel =  profileActivityViewModel)
                 bottomSheet.show(supportFragmentManager, "TAG")
                 bottomSheet.userImageUri.observeOnce(this) {
                     it?.let {

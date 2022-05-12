@@ -58,9 +58,10 @@ android {
 
 dependencies {
     // Camera X
-    implementation 'androidx.camera:camera-core:1.0.2'
-    implementation 'androidx.camera:camera-lifecycle:1.0.2'
-    implementation "androidx.camera:camera-camera2:1.0.2"
+    implementation 'androidx.camera:camera-core:1.1.0-rc01'
+    implementation 'androidx.camera:camera-lifecycle:1.1.0-rc01'
+    implementation "androidx.camera:camera-camera2:1.1.0-rc01"
+    implementation 'androidx.camera:camera-view:1.1.0-rc01'
 
     // paging 3
     def paging_version = "3.1.1"

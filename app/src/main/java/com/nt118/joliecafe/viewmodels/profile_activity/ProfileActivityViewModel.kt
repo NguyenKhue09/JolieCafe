@@ -37,9 +37,11 @@ class ProfileActivityViewModel@Inject constructor(
 
     fun updateUserInfos(token: String, newUserData: Map<String, String>) =
         viewModelScope.launch {
+            println("Call api")
             updateUserDataResponse.value = ApiResult.Loading()
             try {
                 val response = repository.remote.updateUserInfos(token = token, newUserData = newUserData)
+                println(response)
                 updateUserDataResponse.value = handleApiResponse(response = response)
             } catch (e: Exception) {
                 e.printStackTrace()
