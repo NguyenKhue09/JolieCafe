@@ -3,39 +3,43 @@ package com.nt118.joliecafe.ui.fragments.profile_bottom_sheet
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.provider.Settings
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
+import androidx.core.view.marginTop
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.nt118.joliecafe.BuildConfig
-import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.FragmentProfileBottomSheetBinding
 import com.nt118.joliecafe.firebase.firebasefirestore.FirebaseStorage
 import com.nt118.joliecafe.util.ApiResult
@@ -44,17 +48,19 @@ import com.nt118.joliecafe.viewmodels.profile_activity.ProfileActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-typealias LumaListener = (luma: Double) -> Unit
 
 @AndroidEntryPoint
-class ProfileBottomSheetFragment : BottomSheetDialogFragment() {
+class ProfileBottomSheetFragment(
+    private val profileActivityViewModel: ProfileActivityViewModel
+) : BottomSheetDialogFragment() {
 
     private var _binding: FragmentProfileBottomSheetBinding? = null
     private val binding get() = _binding!!
-    private val profileActivityViewModel: ProfileActivityViewModel by viewModels()
 
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
@@ -68,6 +74,12 @@ class ProfileBottomSheetFragment : BottomSheetDialogFragment() {
         super.onCreate(savedInstanceState)
         firebaseStorage = FirebaseStorage()
         cameraExecutor = Executors.newSingleThreadExecutor()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val behavior = BottomSheetBehavior.from(requireView().parent as View)
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     override fun onCreateView(
@@ -122,6 +134,10 @@ class ProfileBottomSheetFragment : BottomSheetDialogFragment() {
             } else {
                 requestAllPermission()
             }
+        }
+
+        binding.imageCaptureButton.setOnClickListener {
+            takePhoto()
         }
 
         profileActivityViewModel.updateUserDataResponse.observe(this) { userInfos ->
@@ -231,12 +247,14 @@ class ProfileBottomSheetFragment : BottomSheetDialogFragment() {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager() && REQUIRED_PERMISSIONS.all {
                 ContextCompat.checkSelfPermission(
-                    requireContext(), it) == PackageManager.PERMISSION_GRANTED
+                    requireContext(), it
+                ) == PackageManager.PERMISSION_GRANTED
             }
         } else {
             REQUIRED_PERMISSIONS.all {
                 ContextCompat.checkSelfPermission(
-                    requireContext(), it) == PackageManager.PERMISSION_GRANTED
+                    requireContext(), it
+                ) == PackageManager.PERMISSION_GRANTED
             }
         }
     }
@@ -250,9 +268,65 @@ class ProfileBottomSheetFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun takePhoto() {}
+    private fun takePhoto() {
+        // Get a stable reference of the modifiable image capture use case
+        val imageCapture = imageCapture ?: return
+
+        // Create time stamped name and MediaStore entry.
+        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
+            .format(System.currentTimeMillis())
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/JolieCafe")
+            }
+        }
+
+        // Create output options object which contains file + metadata
+        val outputOptions = ImageCapture.OutputFileOptions
+            .Builder(
+                requireContext().contentResolver,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                contentValues
+            )
+            .build()
+
+        // Set up image capture listener, which is triggered after photo has
+        // been taken
+        imageCapture.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(requireContext()),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onError(exc: ImageCaptureException) {
+                    Toast.makeText(requireContext(), exc.message, Toast.LENGTH_SHORT).show()
+                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                }
+
+                override fun
+                        onImageSaved(output: ImageCapture.OutputFileResults) {
+                    val msg = "Photo capture succeeded: ${output.savedUri}"
+                    userImageUri.value = output.savedUri
+
+                    output.savedUri?.let {
+                        firebaseStorage.uploadFile(
+                            file = it,
+                            fileName = "$name.jpg",
+                            root = (FirebaseAuth.getInstance().currentUser?.uid ?: ""),
+                            profileBottomSheetFragment = this@ProfileBottomSheetFragment
+                        )
+                    }
+
+                    setLayoutForAction(false)
+                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, msg)
+                }
+            }
+        )
+    }
 
     private fun startCamera() {
+        setLayoutForAction(true)
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
         cameraProviderFuture.addListener({
@@ -263,8 +337,10 @@ class ProfileBottomSheetFragment : BottomSheetDialogFragment() {
             val preview = Preview.Builder()
                 .build()
                 .also {
-                    //it.setSurfaceProvider(viewBinding.viewFinder.surfaceProvider)
+                    it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
                 }
+
+            imageCapture = ImageCapture.Builder().build()
 
             // Select back camera as a default
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -275,13 +351,38 @@ class ProfileBottomSheetFragment : BottomSheetDialogFragment() {
 
                 // Bind use cases to camera
                 cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview)
+                    this, cameraSelector, preview, imageCapture
+                )
 
-            } catch(exc: Exception) {
+            } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
 
         }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    private fun setLayoutForAction(isTakeImage: Boolean) {
+        if (isTakeImage) {
+            TransitionManager.beginDelayedTransition(
+                binding.profileImageBottomSheetAction,
+                AutoTransition()
+            )
+            binding.imagePreview.visibility = View.VISIBLE
+            println(binding.textView2.marginTop)
+            binding.imagePreview.layoutParams.height = (
+                    Resources.getSystem().displayMetrics.heightPixels -
+                            binding.textView2.height -
+                            binding.textView2.marginTop * 2
+                    )
+            binding.actionLayout.visibility = View.GONE
+        } else {
+            TransitionManager.beginDelayedTransition(
+                binding.profileImageBottomSheetAction,
+                AutoTransition()
+            )
+            binding.actionLayout.visibility = View.VISIBLE
+            binding.imagePreview.visibility = View.GONE
+        }
     }
 
     private var getPermissionsLauncher =
@@ -313,8 +414,9 @@ class ProfileBottomSheetFragment : BottomSheetDialogFragment() {
 
     companion object {
         val uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID)
+
         @RequiresApi(Build.VERSION_CODES.R)
-        val intent   =
+        val intent =
             Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri)
 
         private const val TAG = "JolieCafe"
