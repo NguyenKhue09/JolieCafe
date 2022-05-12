@@ -13,12 +13,13 @@
         android:layout_height="wrap_content">
 
 
-            <com.makeramen.roundedimageview.RoundedImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imgAvatar"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
                 android:src="@drawable/avatar"
-                app:riv_corner_radius="90dp"
+                app:shapeAppearanceOverlay="@style/CornerSize50Percent"
+                android:scaleType="centerCrop"
                 tools:ignore="ContentDescription" />
 
 
