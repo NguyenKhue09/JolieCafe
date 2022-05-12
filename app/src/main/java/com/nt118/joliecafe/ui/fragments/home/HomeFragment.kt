@@ -227,6 +227,7 @@ class HomeFragment : Fragment() {
             toolbar.imgAvatar.load(
                 uri = currentUser?.photoUrl
             ) {
+                placeholder(R.drawable.placeholder_image)
                 crossfade(600)
                 error(R.drawable.placeholder_image)
             }
@@ -235,6 +236,7 @@ class HomeFragment : Fragment() {
             toolbar.imgAvatar.load(
                 uri = user.thumbnail
             ) {
+                placeholder(R.drawable.placeholder_image)
                 crossfade(600)
                 error(R.drawable.placeholder_image)
             }
