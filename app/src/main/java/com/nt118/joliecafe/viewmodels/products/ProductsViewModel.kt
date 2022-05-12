@@ -91,23 +91,6 @@ class ProductsViewModel @Inject constructor(
         }
     }
 
-    private fun <T> handleApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
-        println(response)
-        return when {
-            response.message().toString().contains("timeout") -> {
-                ApiResult.Error("Timeout")
-            }
-            response.code() == 500 -> {
-                ApiResult.Error(response.message())
-            }
-            response.isSuccessful -> {
-                ApiResult.NullDataSuccess()
-            }
-            else -> {
-                ApiResult.Error(response.message())
-            }
-        }
-    }
 
     private fun saveUserToken(userToken: String) =
         viewModelScope.launch(Dispatchers.IO) {

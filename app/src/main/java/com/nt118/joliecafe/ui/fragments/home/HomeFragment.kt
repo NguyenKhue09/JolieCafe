@@ -138,9 +138,16 @@ class HomeFragment : Fragment() {
         recyclerView.adapter = categorieAdapter
         categorieAdapter.setOnClickListener(object : CategorieAdapter.onItemClickListener{
             override fun onItemClick(position: Int) {
-                val intent = Intent(activity,ProductsActivity::class.java)
-                intent.putExtra("position",position)
-                startActivity(intent)
+                if(position == 7)
+                {
+                    val intent = Intent(activity, ProductsActivity::class.java)
+                    intent.putExtra("position", 0)
+                    startActivity(intent)
+                } else {
+                    val intent = Intent(activity, ProductsActivity::class.java)
+                    intent.putExtra("position", position)
+                    startActivity(intent)
+                }
             }
         })
 
