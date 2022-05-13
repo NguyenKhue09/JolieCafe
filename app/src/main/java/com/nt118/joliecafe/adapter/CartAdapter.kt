@@ -2,9 +2,12 @@ package com.nt118.joliecafe.adapter
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.CheckBox
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nt118.joliecafe.databinding.ItemCartBinding
@@ -12,8 +15,12 @@ import com.nt118.joliecafe.models.CartItem
 import androidx.recyclerview.widget.DiffUtil
 import coil.load
 import com.nt118.joliecafe.R
+import com.nt118.joliecafe.viewmodels.cart.CartViewModel
+import java.text.NumberFormat
+import java.util.*
 
 class CartAdapter(
+    private val mActivity: Activity,
     diffCallback: DiffUtil.ItemCallback<CartItem>,
 ) : PagingDataAdapter<CartItem, CartAdapter.ViewHolder>(diffCallback) {
 
@@ -21,6 +28,7 @@ class CartAdapter(
     private var isDeselectAll = false
     var onSelectAllAction: (() -> Unit)? = null
     var onDeselectAllAction: (() -> Unit)? = null
+    val viewModel = ViewModelProvider(mActivity as ViewModelStoreOwner)[CartViewModel::class.java]
     private var numOfCheckedItem = 0
 
     class ViewHolder(var binding: ItemCartBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -31,6 +39,8 @@ class CartAdapter(
                 return ViewHolder(binding)
             }
         }
+
+        var cartItem: CartItem? = null
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,8 +48,8 @@ class CartAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val cartItem = getItem(position)
-        cartItem?.let {
+        holder.cartItem = getItem(position)
+        holder.cartItem?.let { cartItem ->
             holder.binding.ivThumbnail.load(cartItem.productDetail.thumbnail) {
                 crossfade(600)
                 error(R.drawable.placeholder_image)
@@ -47,6 +57,10 @@ class CartAdapter(
             holder.binding.tvProductName.text = cartItem.productDetail.name
             holder.binding.tvProductDescription.text = cartItem.productDetail.description
             holder.binding.tvAmount.text = cartItem.quantity.toString()
+            holder.binding.tvPrice.text = mActivity.getString(
+                R.string.product_price,
+                NumberFormat.getNumberInstance(Locale.US).format(cartItem.price)
+            )
             if (isSelectAll) {
                 holder.binding.cbItemSelect.isChecked = true
             } else if (isDeselectAll) {
@@ -73,6 +87,16 @@ class CartAdapter(
                     else -> onDeselectAllAction?.invoke()
                 }
             }
+
+            holder.binding.btnDecreaseQuantity.setOnClickListener {
+                handleQuantityChange(cartItem.quantity - 1, cartItem)
+                holder.binding.tvAmount.text = cartItem.quantity.toString()
+            }
+
+            holder.binding.btnIncreaseQuantity.setOnClickListener {
+                handleQuantityChange(cartItem.quantity + 1, cartItem)
+                holder.binding.tvAmount.text = cartItem.quantity.toString()
+            }
         }
     }
 
@@ -92,9 +116,12 @@ class CartAdapter(
         notifyDataSetChanged()
     }
 
-    fun resetCounter() {
-        isSelectAll = false
-        isDeselectAll = false
-        numOfCheckedItem = 0
+    private fun handleQuantityChange(quantity: Int, cartItem: CartItem) {
+        if (quantity < 1) {
+            viewModel.deleteCartItem(cartItem.productId, token = viewModel.userToken)
+        } else {
+            cartItem.quantity = quantity
+        }
     }
+
 }

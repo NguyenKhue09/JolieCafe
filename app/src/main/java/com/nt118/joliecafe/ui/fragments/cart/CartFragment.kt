@@ -25,6 +25,7 @@ import com.nt118.joliecafe.adapter.CartAdapter
 import com.nt118.joliecafe.databinding.FragmentCartBinding
 import com.nt118.joliecafe.ui.activities.checkout.CheckoutActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
+import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.CartItemComparator
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.viewmodels.cart.CartViewModel
@@ -39,6 +40,7 @@ import kotlinx.coroutines.withContext
 class CartFragment : Fragment() {
 
     private var _binding: FragmentCartBinding? = null
+    private val MAX_TYPE = 4
     private val binding get() = _binding!!
     private val currentUser: FirebaseUser? by lazy { FirebaseAuth.getInstance().currentUser }
     private lateinit var networkListener: NetworkListener
@@ -79,10 +81,17 @@ class CartFragment : Fragment() {
             cartViewModel.backOnline = it
         }
         cartViewModel.numOfSelectedRv.asLiveData().observe(viewLifecycleOwner) {
-            binding.cbCheckAll.isChecked = it == 4
+            binding.cbCheckAll.isChecked = it == MAX_TYPE
         }
         cartViewModel.itemCount.asLiveData().observe(viewLifecycleOwner) {
             tvItemCount.text = it.toString()
+        }
+        cartViewModel.deleteCartItemResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResult.Loading -> progressCart.visibility = View.VISIBLE
+                is ApiResult.Success -> getData()
+                else -> return@observe
+            }
         }
 
         val diffCallback = CartItemComparator
@@ -104,15 +113,16 @@ class CartFragment : Fragment() {
         tvItemCount = binding.tvItemCount
 
         rvCartSuggestion.adapter = CartSuggestionAdapter()
-        cartCoffeeAdapter = CartAdapter(diffCallback)
-        cartTeaAdapter = CartAdapter(diffCallback)
-        cartJuiceAdapter = CartAdapter(diffCallback)
-        cartMilkTeaAdapter = CartAdapter(diffCallback)
+        cartCoffeeAdapter = CartAdapter(requireActivity(), diffCallback)
+        cartTeaAdapter = CartAdapter(requireActivity(), diffCallback)
+        cartJuiceAdapter = CartAdapter(requireActivity(), diffCallback)
+        cartMilkTeaAdapter = CartAdapter(requireActivity(), diffCallback)
         rvCoffee.adapter = cartCoffeeAdapter
         rvTea.adapter = cartTeaAdapter
         rvJuice.adapter = cartJuiceAdapter
         rvMilkTea.adapter = cartMilkTeaAdapter
 
+        init()
         getData()
         checkboxHandler()
         checkAllHandler()
@@ -156,19 +166,26 @@ class CartFragment : Fragment() {
         _binding = null
     }
 
-    private fun getData() {
-        cartViewModel.cartCount.asLiveData().observe(viewLifecycleOwner) {
+    private fun init() {
+        cartViewModel.cartEmptyCount.asLiveData().observe(viewLifecycleOwner) {
             cartViewModel.numOfSelectedRv.value = it
-            if (it >= 4) {
+            if (it >= MAX_TYPE) {
                 cartEmptyHandler()
             }
         }
 
+        cartViewModel.cartCount.asLiveData().observe(viewLifecycleOwner) {
+            if (it >= MAX_TYPE) {
+                progressCart.visibility = View.GONE
+            }
+        }
+
         cartCoffeeAdapter.addLoadStateListener {
-            Log.d("CartFragment", "cartCount: ${cartViewModel.cartCount.value}")
+            Log.d("CartFragment", "cartCount: ${cartViewModel.cartEmptyCount.value}")
             if (it.refresh is LoadState.Loading)
                 return@addLoadStateListener
 
+            cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
             if (cartCoffeeAdapter.itemCount != 0) {
                 cvCoffee.visibility = View.VISIBLE
                 header2.visibility = View.VISIBLE
@@ -177,15 +194,16 @@ class CartFragment : Fragment() {
                 cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartCoffeeAdapter.itemCount)
             }
             else {
-                cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
+                cartViewModel.cartEmptyCount.value = cartViewModel.cartEmptyCount.value.plus(1)
             }
         }
 
         cartTeaAdapter.addLoadStateListener {
-            Log.d("CartFragment", "cartCount: ${cartViewModel.cartCount.value}")
+            Log.d("CartFragment", "cartCount: ${cartViewModel.cartEmptyCount.value}")
             if (it.refresh is LoadState.Loading)
                 return@addLoadStateListener
 
+            cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
             if (cartTeaAdapter.itemCount != 0) {
                 cvTea.visibility = View.VISIBLE
                 header2.visibility = View.VISIBLE
@@ -194,15 +212,16 @@ class CartFragment : Fragment() {
                 cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartTeaAdapter.itemCount)
             }
             else {
-                cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
+                cartViewModel.cartEmptyCount.value = cartViewModel.cartEmptyCount.value.plus(1)
             }
         }
 
         cartJuiceAdapter.addLoadStateListener {
-            Log.d("CartFragment", "cartCount: ${cartViewModel.cartCount.value}")
+            Log.d("CartFragment", "cartCount: ${cartViewModel.cartEmptyCount.value}")
             if (it.refresh is LoadState.Loading)
                 return@addLoadStateListener
 
+            cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
             if (cartJuiceAdapter.itemCount != 0) {
                 cvJuice.visibility = View.VISIBLE
                 header2.visibility = View.VISIBLE
@@ -211,15 +230,16 @@ class CartFragment : Fragment() {
                 cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartJuiceAdapter.itemCount)
             }
             else {
-                cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
+                cartViewModel.cartEmptyCount.value = cartViewModel.cartEmptyCount.value.plus(1)
             }
         }
 
         cartMilkTeaAdapter.addLoadStateListener {
-            Log.d("CartFragment", "cartCount: ${cartViewModel.cartCount.value}")
+            Log.d("CartFragment", "cartCount: ${cartViewModel.cartEmptyCount.value}")
             if (it.refresh is LoadState.Loading)
                 return@addLoadStateListener
 
+            cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
             if (cartMilkTeaAdapter.itemCount != 0) {
                 cvMilkTea.visibility = View.VISIBLE
                 header2.visibility = View.VISIBLE
@@ -228,15 +248,19 @@ class CartFragment : Fragment() {
                 cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartMilkTeaAdapter.itemCount)
             }
             else {
-                cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
+                cartViewModel.cartEmptyCount.value = cartViewModel.cartEmptyCount.value.plus(1)
             }
         }
+    }
+
+    private fun getData() {
 
         lifecycleScope.launch {
             cartViewModel.readUserToken.collectLatest { token ->
                 cartViewModel.itemCount.value = 0
-                cartViewModel.cartCount.value = 0
+                cartViewModel.cartEmptyCount.value = 0
                 cartViewModel.numOfSelectedRv.value = 0
+                cartViewModel.cartCount.value = 0
                 cartViewModel.userToken = token
 
                 withContext(Dispatchers.IO) {
@@ -276,7 +300,6 @@ class CartFragment : Fragment() {
 
     private fun cartEmptyHandler() {
         emptyCartView.visibility = View.VISIBLE
-        progressCart.visibility = View.GONE
         rvCartSuggestion.visibility = View.VISIBLE
         suggestionContainer.visibility = View.VISIBLE
     }
@@ -411,7 +434,7 @@ class CartFragment : Fragment() {
                 if(binding.cbMilkTea.isChecked)
                     binding.cbMilkTea.performClick()
             }
-            Log.d("cartCount", "${cartViewModel.cartCount.value}")
+            Log.d("cartCount", "${cartViewModel.cartEmptyCount.value}")
             Log.d("checkAll", "${cartViewModel.numOfSelectedRv.value}")
         }
     }
@@ -435,13 +458,5 @@ class CartFragment : Fragment() {
             jumpDrawablesToCurrentState()
         }
     }
-
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        binding.cbTea.isChecked = false
-//        binding.cbCoffee.isChecked = false
-//        binding.cbJuice.isChecked = false
-//        binding.cbMilkTea.isChecked = false
-//    }
 
 }

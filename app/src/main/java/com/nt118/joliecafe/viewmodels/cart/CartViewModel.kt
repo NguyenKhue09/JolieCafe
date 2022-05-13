@@ -1,19 +1,24 @@
 package com.nt118.joliecafe.viewmodels.cart
 
 import android.app.Application
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
+import com.nt118.joliecafe.models.ApiResponseSingleData
 import com.nt118.joliecafe.models.CartItem
+import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import retrofit2.Response
+import retrofit2.http.Body
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,9 +33,11 @@ class CartViewModel @Inject constructor(
     var userToken = ""
     var networkStatus = false
     var backOnline = false
-    var cartCount: MutableStateFlow<Int> = MutableStateFlow(0) // cái này để đếm xem bao nhiêu RV chạy xong rồi
+    var cartEmptyCount: MutableStateFlow<Int> = MutableStateFlow(0) // cái này để đếm xem bao nhiêu RV trống
+    var cartCount: MutableStateFlow<Int> = MutableStateFlow(0) // bộ đếm RV chạy xong
     var numOfSelectedRv: MutableStateFlow<Int> = MutableStateFlow(0)
     var itemCount: MutableStateFlow<Int> = MutableStateFlow(0)
+    var deleteCartItemResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
 
     fun getCartItems(token: String, type: String): Flow<PagingData<CartItem>> {
         return if (token.isNotEmpty()) {
@@ -45,11 +52,59 @@ class CartViewModel @Inject constructor(
         }
     }
 
+    suspend fun updateCartItem(newCartItemData: Map<String, String>, token: String) {
+        try {
+            if (token.isEmpty()) Throwable("Unauthorized")
+            repository.remote.updateCartItem(newCartItemData, token)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun deleteCartItem(productId: String, token: String) {
+        Log.d("CartViewModel", "deleteCartItem: $productId")
+        viewModelScope.launch {
+            deleteCartItemResponse.value = ApiResult.Loading()
+            Log.d("CartViewModel", "deleteCartItem: loading")
+            try {
+                if (token.isEmpty()) Throwable("Unauthorized")
+                val response = repository.remote.deleteCartItem(productId, token)
+                deleteCartItemResponse.value = handleApiResponse(response)
+                Log.d("CartViewModel", "deleteCartItem: done")
+            } catch (e: Exception) {
+                e.printStackTrace()
+                deleteCartItemResponse.value = ApiResult.Error(e.message)
+            }
+        }
+    }
+
     private fun saveBackOnline(backOnline: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveBackOnline(backOnline)
         }
     }
+    private fun <T> handleApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+            response.isSuccessful -> {
+                val result = response.body()
+                if(result != null) {
+                    ApiResult.Success(result.data!!)
+                } else {
+                    ApiResult.Error("Address not found!")
+                }
+            }
+            else -> {
+                ApiResult.Error(response.message())
+            }
+        }
+    }
+
 
     fun showNetworkStatus() {
         if (!networkStatus) {

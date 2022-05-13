@@ -104,6 +104,20 @@ interface JolieCafeApi {
         @QueryMap cartQuery: Map<String, String>,
     ): ApiResponseMultiData<CartItem>
 
+    @Headers("Content-Type: application/json")
+    @PUT("$API_GATEWAY/cart/update")
+    suspend fun updateCartItem(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, String>,
+    ): Response<ApiResponseSingleData<CartItem>>
+
+    @Headers("Content-Type: application/json")
+    @DELETE("$API_GATEWAY/cart/delete/{productId}")
+    suspend fun deleteCartItem(
+        @Header("Authorization") token: String,
+        @Path("productId") productId: String,
+    ): Response<ApiResponseSingleData<Unit>>
+
     // End of Cart API
 
 
