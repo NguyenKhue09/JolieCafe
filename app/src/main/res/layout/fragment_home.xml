@@ -13,7 +13,7 @@
         android:id="@+id/toolbarHome"
         layout="@layout/toobar_home" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:clipToPadding="false"
         android:paddingTop="15dp"
         android:scrollbars="none"
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"/>
 
         </RelativeLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/home_CircularProgressIndicator"

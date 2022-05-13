@@ -14,6 +14,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -155,7 +156,7 @@ class HomeFragment : Fragment() {
         val diffCallBack = ProductComparator
         val recyclerViewBS = binding.recyclerViewBestSeller
         val bestSellerAdapter = BestSellerAdapter(requireActivity(), diffCallBack = diffCallBack)
-        recyclerViewBS.layoutManager = GridLayoutManager(requireContext(),1)
+        recyclerViewBS.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerViewBS.adapter = bestSellerAdapter
 
         lifecycleScope.launchWhenStarted {

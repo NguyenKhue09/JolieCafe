@@ -39,12 +39,6 @@ class ProductAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-
-        holder.binding.itemCard.setOnClickListener {
-            val intent = Intent(activity, DetailActivity::class.java)
-            activity.startActivity(intent)
-        }
-
         val product = getItem(position)
         product?.let {
             holder.binding.itemImgProduct.load(product.thumbnail) {
@@ -55,6 +49,11 @@ class ProductAdapter(
             holder.binding.tvNameProduct.text = product.name
             holder.binding.itemPriceProduct.text = product.originPrice.toString()
             holder.binding.tvCategoriesProduct.text = product.type
+
+            holder.binding.itemCard.setOnClickListener {
+                val intent = Intent(activity, DetailActivity::class.java)
+                activity.startActivity(intent)
+            }
         }
     }
 

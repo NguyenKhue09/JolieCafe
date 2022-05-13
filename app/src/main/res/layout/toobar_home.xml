@@ -17,7 +17,6 @@
                 android:id="@+id/imgAvatar"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
-                android:src="@drawable/avatar"
                 app:shapeAppearanceOverlay="@style/CornerSize50Percent"
                 android:scaleType="centerCrop"
                 tools:ignore="ContentDescription" />
@@ -27,7 +26,6 @@
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hi, Latte!"
             android:textSize="16sp"
             android:textColor="@color/grey_primary_variant"
             android:layout_toEndOf="@id/imgAvatar"
@@ -44,7 +42,6 @@
             android:layout_marginTop="4dp"
             android:layout_toEndOf="@id/imgAvatar"
             android:fontFamily="@font/montserrat_regular"
-            android:text="3000"
             android:textSize="11sp" />
 
         <TextView
