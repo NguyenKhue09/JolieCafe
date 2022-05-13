@@ -48,6 +48,9 @@ class ProductsActivity : AppCompatActivity() {
         val bundle : Bundle? = intent.extras
         val position = bundle!!.getInt("position")
 
+        productsViewModel.setTabSelected(tab = Constants.listTabContentFavorite[position])
+        setCatagoriesAdapterProducts(position)
+
         // back home
         binding.iconBackHome.setOnClickListener {
             onBackPressed()
@@ -71,7 +74,7 @@ class ProductsActivity : AppCompatActivity() {
         recyclerViewProduct.layoutManager = GridLayoutManager(this,2)
         recyclerViewProduct.adapter = productAdapter
 
-        initTabPageData(position)
+
         handlePagingAdapterState()
 
 
@@ -116,28 +119,7 @@ class ProductsActivity : AppCompatActivity() {
         }
     }
 
-    private fun initTabPageData(position:Int ) {
-        networkListener = NetworkListener()
-        networkListener.checkNetworkAvailability(this)
-            .asLiveData().observeOnce(this) { status ->
-                productsViewModel.networkStatus = status
-                if (productsViewModel.networkStatus) {
-                    lifecycleScope.launchWhenStarted {
-                        productsViewModel.getProducts(
-                            productQuery = mapOf(
-                                "type" to Constants.listTabContentFavorite[position]
-                            ),
-                            token = productsViewModel.userToken
-                        ).collectLatest { data ->
-                            selectedTab = Constants.listTabContentFavorite[0]
-                            productAdapter.submitData(data)
-                        }
-                    }
-                } else {
-                    productsViewModel.showNetworkStatus()
-                }
-            }
-    }
+
 
     private fun setCatagoriesAdapterProducts(position:Int) {
 
