@@ -49,7 +49,7 @@
         android:layout_marginHorizontal="20dp"
         android:background="@drawable/searchview_background"
         android:backgroundTint="@color/grey_opacity60_primary"/>
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/searchView"
@@ -88,10 +88,8 @@
                 android:layout_marginTop="3dp"
                 android:layout_marginEnd="8dp" />
 
-
-
         </RelativeLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/categories_CircularProgressIndicator"
