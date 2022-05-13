@@ -110,5 +110,19 @@ class RemoteDataSource @Inject constructor(
         ).flow
     }
 
+    suspend fun updateCartItem(
+        newCartItemData: Map<String, String>,
+        token: String
+    ): Response<ApiResponseSingleData<CartItem>> {
+        return jolieCafeApi.updateCartItem(body = newCartItemData, token = "Bearer $token")
+    }
+
+    suspend fun deleteCartItem(
+        productId: String,
+        token: String
+    ): Response<ApiResponseSingleData<Unit>> {
+        return jolieCafeApi.deleteCartItem(productId = productId, token = "Bearer $token")
+    }
+
 
 }

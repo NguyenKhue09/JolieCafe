@@ -9,14 +9,13 @@
     android:background="@color/grey_primary">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress_cart"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:indeterminate="true"
-        android:id="@+id/progress_cart"
-        app:indicatorColor="@color/grey_primary_variant"/>
+        android:elevation="10dp"
+        app:indicatorColor="@color/grey_primary_variant" />
 
     <LinearLayout
         android:id="@+id/header1"
