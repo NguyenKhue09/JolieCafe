@@ -68,13 +68,11 @@ class ProductsViewModel @Inject constructor(
         viewModelScope.launch {
             if (currentUser != null && networkStatus) {
                 println("Token empty")
-                val data = mutableMapOf<String, String>()
                 val user = FirebaseAuth.getInstance().currentUser
-                data["_id"] = user!!.uid
-                data["fullname"] = user.displayName ?: ""
-                data["email"] = user.email ?: ""
-                val response = repository.remote.createUser(data = data)
-                handleGetTokenResponse(response)
+                user?.let {
+                    val response = repository.remote.userLogin(userId = user.uid)
+                    handleGetTokenResponse(response)
+                }
             }
         }
     }

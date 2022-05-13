@@ -167,7 +167,7 @@ class HomeFragment : Fragment() {
                     if(homeViewModel.backOnline) {
                         homeViewModel.getProducts(
                             productQuery = mapOf(
-                                "type" to "Coffee"
+                                "type" to "All"
                             ),
                             token = homeViewModel.userToken
                         ).collectLatest { data ->
@@ -183,7 +183,7 @@ class HomeFragment : Fragment() {
                 homeViewModel.getUserInfos(homeViewModel.userToken)
                 homeViewModel.getProducts(
                     productQuery = mapOf(
-                        "type" to "Coffee"
+                        "type" to "All"
                     ),
                     token = token
                 ).collectLatest { data ->
