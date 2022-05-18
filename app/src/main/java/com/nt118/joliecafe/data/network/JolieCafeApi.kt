@@ -112,7 +112,7 @@ interface JolieCafeApi {
     ): Response<ApiResponseSingleData<CartItem>>
 
     @Headers("Content-Type: application/json")
-    @DELETE("$API_GATEWAY/cart/delete/{productId}")
+    @DELETE("$API_GATEWAY/cart/remove/{productId}")
     suspend fun deleteCartItem(
         @Header("Authorization") token: String,
         @Path("productId") productId: String,
