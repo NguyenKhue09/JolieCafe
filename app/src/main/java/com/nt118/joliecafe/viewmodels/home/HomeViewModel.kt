@@ -89,29 +89,18 @@ class HomeViewModel @Inject constructor(
 
     private fun handleTokenEmpty() {
         val currentUser = FirebaseAuth.getInstance().currentUser
-
-        val userName = if (currentUser != null) {
-            currentUser.displayName
-        } else getUserInfosResponse.value?.data?.fullName
-
-        userName?.let { name ->
-            viewModelScope.launch {
-                if (currentUser != null && networkStatus) {
-                    println("Token empty")
-                    val data = mutableMapOf<String, String>()
-                    val user = FirebaseAuth.getInstance().currentUser
-                    data["_id"] = user!!.uid
-                    data["fullname"] = name
-                    data["email"] = user.email ?: ""
-                    val response = repository.remote.createUser(data = data)
-                    handleGetTokenResponse(response)
-                }
+        viewModelScope.launch {
+            if (currentUser != null && networkStatus) {
+                println("Token empty")
+                val user = FirebaseAuth.getInstance().currentUser
+                val response = repository.remote.userLogin(userId = user!!.uid)
+                handleGetTokenResponse(response)
             }
-        }
 
+        }
     }
 
-    private fun handleGetTokenResponse(response: retrofit2.Response<ApiResponseSingleData<User>>) {
+    private fun handleGetTokenResponse(response: Response<ApiResponseSingleData<User>>) {
         val result = response.body()
         when {
             response.isSuccessful -> {
