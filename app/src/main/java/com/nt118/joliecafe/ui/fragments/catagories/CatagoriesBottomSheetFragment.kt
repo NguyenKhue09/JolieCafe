@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -27,6 +28,7 @@ import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.viewmodels.address_book.AddressBookViewModel
 import com.nt118.joliecafe.viewmodels.catagories_bottom_sheet.CatagoriesBottomSheetViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class CatagoriesBottomSheetFragment( private val  product: Product) : BottomSheetDialogFragment() {
@@ -82,6 +84,15 @@ class CatagoriesBottomSheetFragment( private val  product: Product) : BottomShee
             binding.lychee.visibility = View.VISIBLE
             binding.priceCrunch.visibility = View.VISIBLE
 
+        }
+
+
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(requireContext()).collect { status ->
+                addCartViewModel.networkStatus = status
+                addCartViewModel.showNetworkStatus()
+            }
         }
 
         binding.btnAddToCard.setOnClickListener {
