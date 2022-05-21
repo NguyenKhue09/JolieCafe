@@ -91,21 +91,16 @@ class CatagoriesBottomSheetFragment( private val  product: Product) : BottomShee
             val quantity = "1"
             val price = product.originPrice.toString()
 
-
-            val error = listOf(productId, size, quantity, price).any { it != null }
-
-            if (!error) {
-                if (addCartViewModel.networkStatus) {
-                    val newCart = mapOf(
-                        "productId" to productId,
-                        "size" to size,
-                        "quantity" to quantity,
-                        "price" to price,
-                    )
-                    addNewCart(addressData = newCart)
-                } else {
-                    addCartViewModel.showNetworkStatus()
-                }
+            if (addCartViewModel.networkStatus) {
+                val newCart = mapOf(
+                    "productId" to productId,
+                    "size" to size,
+                    "quantity" to quantity,
+                    "price" to price,
+                )
+                addNewCart(addressData = newCart)
+            } else {
+                addCartViewModel.showNetworkStatus()
             }
 
             this.dismiss()
