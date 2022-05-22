@@ -13,8 +13,7 @@ import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ItemRvBestsallerBinding
 import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.ui.activities.detail.DetailActivity
-import com.nt118.joliecafe.ui.fragments.catagories.CatagoriesBottomSheetFragment
-import com.nt118.joliecafe.util.ItemDiffUtil
+import com.nt118.joliecafe.ui.fragments.catagories.CategoriesBottomSheetFragment
 
 
 class BestSellerAdapter(
@@ -55,7 +54,7 @@ class BestSellerAdapter(
 
             holder.binding.btnAddCard.setOnClickListener {
                 val ft = (activity as AppCompatActivity).supportFragmentManager.beginTransaction()
-                val bottomSheet = CatagoriesBottomSheetFragment(product)
+                val bottomSheet = CategoriesBottomSheetFragment(product)
                 bottomSheet.show(ft, "TAG")
             }
 
