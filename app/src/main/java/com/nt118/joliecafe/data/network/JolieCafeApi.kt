@@ -123,7 +123,7 @@ interface JolieCafeApi {
     suspend fun addCart(
         @Body body: Map<String, String>,
         @Header("Authorization") token: String
-    ): Response<ApiResponseSingleData<CartItem>>
+    ): Response<ApiResponseSingleData<Unit>>
 
     // End of Cart API
 
