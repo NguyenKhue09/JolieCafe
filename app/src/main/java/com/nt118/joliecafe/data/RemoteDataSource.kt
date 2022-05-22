@@ -128,7 +128,7 @@ class RemoteDataSource @Inject constructor(
     suspend fun addCart(
         data: Map<String, String>,
         token: String
-    ): Response<ApiResponseSingleData<CartItem>> {
+    ): Response<ApiResponseSingleData<Unit>> {
         return jolieCafeApi.addCart(body = data, token = "Bearer $token")
     }
 

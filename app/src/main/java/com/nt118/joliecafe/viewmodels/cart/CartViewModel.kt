@@ -94,7 +94,7 @@ class CartViewModel @Inject constructor(
             response.isSuccessful -> {
                 val result = response.body()
                 if(result != null) {
-                    ApiResult.Success(result.data!!)
+                    ApiResult.NullDataSuccess()
                 } else {
                     ApiResult.Error("Address not found!")
                 }

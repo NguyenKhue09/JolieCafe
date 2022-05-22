@@ -2,6 +2,7 @@ package com.nt118.joliecafe.ui.fragments.catagories
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -122,7 +123,6 @@ class CatagoriesBottomSheetFragment( private val  product: Product) : BottomShee
                     "price" to price,
                 )
                 addNewCart(cartData = newCart)
-                this.dismiss()
             } else {
                 addCartViewModel.showNetworkStatus()
             }
@@ -132,20 +132,23 @@ class CatagoriesBottomSheetFragment( private val  product: Product) : BottomShee
     }
 
     private fun handleApiResponse() {
-        addCartViewModel.addCartResponse.observe(this) { response ->
+        addCartViewModel.addCartResponse.observe(viewLifecycleOwner) { response ->
+            Log.d("Bottom Shit", "handleApiResponse: call")
             when (response) {
                 is ApiResult.Loading -> {
 
                 }
-                is ApiResult.Success -> {
+                is ApiResult.NullDataSuccess -> {
                     Toast.makeText(
                         context,
-                        "Add new cart successful",
+                        "Add new cart successfully",
                         Toast.LENGTH_SHORT
                     ).show()
+                    this@CatagoriesBottomSheetFragment.dismiss()
                 }
                 is ApiResult.Error -> {
                     Toast.makeText(context, response.message, Toast.LENGTH_SHORT).show()
+                    this@CatagoriesBottomSheetFragment.dismiss()
                 }
                 else -> {}
             }
@@ -153,6 +156,7 @@ class CatagoriesBottomSheetFragment( private val  product: Product) : BottomShee
     }
 
     private fun addNewCart(cartData: Map<String, String>) {
+        Log.d("Bottom Shit", "addNewCart: ${cartData.values}")
         addCartViewModel.addCart(
                 data = cartData,
                 token = addCartViewModel.userToken
