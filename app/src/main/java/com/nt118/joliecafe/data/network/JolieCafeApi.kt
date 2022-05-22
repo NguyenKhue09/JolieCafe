@@ -118,6 +118,13 @@ interface JolieCafeApi {
         @Path("productId") productId: String,
     ): Response<ApiResponseSingleData<Unit>>
 
+    @Headers("Content-Type: application/json")
+    @POST("$API_GATEWAY/cart/add")
+    suspend fun addCart(
+        @Body body: Map<String, String>,
+        @Header("Authorization") token: String
+    ): Response<ApiResponseSingleData<CartItem>>
+
     // End of Cart API
 
 

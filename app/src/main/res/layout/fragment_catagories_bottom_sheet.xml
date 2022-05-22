@@ -12,6 +12,7 @@
         android:id="@+id/item_img_product"
         android:layout_width="65dp"
         android:layout_height="65dp"
+        android:scaleType="centerCrop"
         android:background="@drawable/item_image_custom_bg"
         android:src="@drawable/e"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +55,7 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintHeight_max="400dp"
         android:layout_marginTop="24dp"
         android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
@@ -126,7 +128,6 @@
                 android:fontFamily="@font/raleway_regular"
                 android:layout_marginTop="24dp"
                 android:text="Sugar:"
-                android:visibility="gone"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/chip_group_size" />
@@ -138,7 +139,6 @@
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_sugar">
@@ -189,7 +189,6 @@
                 android:layout_marginTop="24dp"
                 android:fontFamily="@font/raleway_regular"
                 android:text="Ice:"
-                android:visibility="gone"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/radio_group_sugar" />
@@ -201,7 +200,6 @@
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_ice">
@@ -455,6 +453,17 @@
         android:textColor="@color/text_color"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_price"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/raleway_regular"
+        android:text=" VNĐ"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"
+        android:layout_marginTop="3dp"
+        app:layout_constraintStart_toEndOf="@+id/price_product"
         app:layout_constraintTop_toBottomOf="@+id/tv_price" />
 
     <androidx.appcompat.widget.AppCompatButton

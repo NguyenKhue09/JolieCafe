@@ -43,11 +43,7 @@ class BestSellerAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.binding.btnAddCard.setOnClickListener {
-            val ft = (activity as AppCompatActivity).supportFragmentManager.beginTransaction()
-            val bottomSheet = CatagoriesBottomSheetFragment()
-            bottomSheet.show(ft, "TAG")
-        }
+
 
         holder.binding.itemCard.setOnClickListener {
             val intent = Intent(activity, DetailActivity::class.java)
@@ -56,6 +52,13 @@ class BestSellerAdapter(
 
         val product = getItem(position)
         product?.let {
+
+            holder.binding.btnAddCard.setOnClickListener {
+                val ft = (activity as AppCompatActivity).supportFragmentManager.beginTransaction()
+                val bottomSheet = CatagoriesBottomSheetFragment(product)
+                bottomSheet.show(ft, "TAG")
+            }
+
             holder.binding.itemImg.load(product.thumbnail) {
                 crossfade(600)
                 error(R.drawable.placeholder_image)

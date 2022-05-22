@@ -100,7 +100,7 @@ class AddressBookActivity : AppCompatActivity() {
             setAddNewAddressState()
         }
 
-        binding.btnSave.setOnClickListener {
+        binding.btnSave.setOnClickListener  {
             // function save new address here
 
             val name = binding.etName.text.toString()
