@@ -89,8 +89,8 @@ class CartFragment : Fragment() {
         cartViewModel.deleteCartItemResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResult.Loading -> progressCart.visibility = View.VISIBLE
-                is ApiResult.Success -> getData()
-                else -> return@observe
+                is ApiResult.NullDataSuccess -> getData()
+                else -> Log.d("CartFragment", "delete cart error: ${it.message}")
             }
         }
 
@@ -113,10 +113,10 @@ class CartFragment : Fragment() {
         tvItemCount = binding.tvItemCount
 
         rvCartSuggestion.adapter = CartSuggestionAdapter()
-        cartCoffeeAdapter = CartAdapter(requireActivity(), diffCallback)
-        cartTeaAdapter = CartAdapter(requireActivity(), diffCallback)
-        cartJuiceAdapter = CartAdapter(requireActivity(), diffCallback)
-        cartMilkTeaAdapter = CartAdapter(requireActivity(), diffCallback)
+        cartCoffeeAdapter = CartAdapter(requireActivity(), diffCallback, cartViewModel)
+        cartTeaAdapter = CartAdapter(requireActivity(), diffCallback, cartViewModel)
+        cartJuiceAdapter = CartAdapter(requireActivity(), diffCallback, cartViewModel)
+        cartMilkTeaAdapter = CartAdapter(requireActivity(), diffCallback, cartViewModel)
         rvCoffee.adapter = cartCoffeeAdapter
         rvTea.adapter = cartTeaAdapter
         rvJuice.adapter = cartJuiceAdapter
@@ -254,6 +254,11 @@ class CartFragment : Fragment() {
     }
 
     private fun getData() {
+
+        cvJuice.visibility = View.GONE
+        cvMilkTea.visibility = View.GONE
+        cvTea.visibility = View.GONE
+        cvCoffee.visibility = View.GONE
 
         lifecycleScope.launch {
             cartViewModel.readUserToken.collectLatest { token ->

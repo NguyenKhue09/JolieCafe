@@ -35,7 +35,7 @@ class CatagoriesBottomSheetViewModel @Inject constructor(
     var networkStatus = false
     var backOnline = false
 
-    var addCartResponse: MutableLiveData<ApiResult<CartItem>> = MutableLiveData()
+    var addCartResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
 
     fun addCart(data: Map<String, String>, token: String)  =
         viewModelScope.launch {
@@ -66,7 +66,7 @@ class CatagoriesBottomSheetViewModel @Inject constructor(
             response.isSuccessful -> {
                 val result = response.body()
                 if(result != null) {
-                    ApiResult.Success(result.data!!)
+                    ApiResult.NullDataSuccess()
                 } else {
                     ApiResult.Error("Address not found!")
                 }

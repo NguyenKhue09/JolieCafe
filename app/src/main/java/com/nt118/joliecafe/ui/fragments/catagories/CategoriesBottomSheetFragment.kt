@@ -2,6 +2,7 @@ package com.nt118.joliecafe.ui.fragments.catagories
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -116,7 +117,6 @@ class CategoriesBottomSheetFragment(private val  product: Product) : BottomSheet
                     "price" to price,
                 )
                 addNewCart(cartData = newCart)
-                this.dismiss()
             } else {
                 addCartViewModel.showNetworkStatus()
             }
@@ -126,20 +126,23 @@ class CategoriesBottomSheetFragment(private val  product: Product) : BottomSheet
     }
 
     private fun handleApiResponse() {
-        addCartViewModel.addCartResponse.observe(this) { response ->
+        addCartViewModel.addCartResponse.observe(viewLifecycleOwner) { response ->
+            Log.d("Bottom Shit", "handleApiResponse: call")
             when (response) {
                 is ApiResult.Loading -> {
 
                 }
-                is ApiResult.Success -> {
+                is ApiResult.NullDataSuccess -> {
                     Toast.makeText(
                         context,
                         "Add new cart successfully",
                         Toast.LENGTH_SHORT
                     ).show()
+                    this@CategoriesBottomSheetFragment.dismiss()
                 }
                 is ApiResult.Error -> {
                     Toast.makeText(context, response.message, Toast.LENGTH_SHORT).show()
+                    this@CategoriesBottomSheetFragment.dismiss()
                 }
                 else -> {}
             }
@@ -147,6 +150,7 @@ class CategoriesBottomSheetFragment(private val  product: Product) : BottomSheet
     }
 
     private fun addNewCart(cartData: Map<String, String>) {
+        Log.d("Bottom Shit", "addNewCart: ${cartData.values}")
         addCartViewModel.addCart(
                 data = cartData,
                 token = addCartViewModel.userToken

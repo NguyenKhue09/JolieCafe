@@ -22,13 +22,13 @@ import java.util.*
 class CartAdapter(
     private val mActivity: Activity,
     diffCallback: DiffUtil.ItemCallback<CartItem>,
+    val viewModel: CartViewModel
 ) : PagingDataAdapter<CartItem, CartAdapter.ViewHolder>(diffCallback) {
 
     private var isSelectAll = false
     private var isDeselectAll = false
     var onSelectAllAction: (() -> Unit)? = null
     var onDeselectAllAction: (() -> Unit)? = null
-    val viewModel = ViewModelProvider(mActivity as ViewModelStoreOwner)[CartViewModel::class.java]
     private var numOfCheckedItem = 0
 
     class ViewHolder(var binding: ItemCartBinding) : RecyclerView.ViewHolder(binding.root) {
