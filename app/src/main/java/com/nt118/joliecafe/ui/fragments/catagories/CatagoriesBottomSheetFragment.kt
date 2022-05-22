@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.core.view.children
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -27,6 +28,8 @@ import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.viewmodels.address_book.AddressBookViewModel
 import com.nt118.joliecafe.viewmodels.catagories_bottom_sheet.CatagoriesBottomSheetViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CatagoriesBottomSheetFragment( private val  product: Product) : BottomSheetDialogFragment() {
@@ -35,7 +38,6 @@ class CatagoriesBottomSheetFragment( private val  product: Product) : BottomShee
     private val currentUser = FirebaseAuth.getInstance().currentUser
     private lateinit var networkListener: NetworkListener
     private val addCartViewModel by viewModels<CatagoriesBottomSheetViewModel>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (currentUser == null) {
@@ -84,33 +86,47 @@ class CatagoriesBottomSheetFragment( private val  product: Product) : BottomShee
 
         }
 
+
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(requireContext()).collect { status ->
+                addCartViewModel.networkStatus = status
+                addCartViewModel.showNetworkStatus()
+            }
+        }
+        lifecycleScope.launch {
+            addCartViewModel.readUserToken.collectLatest { token ->
+                addCartViewModel.userToken = token
+            }
+        }
+
         binding.btnAddToCard.setOnClickListener {
 
             val productId = product.id
-            val size = binding.chipGroupSize.children.filter { (it as Chip).isChecked }.map { (it as Chip).text.toString()}.toString()
-            val quantity = "1"
-            val price = product.originPrice.toString()
-
-
-            val error = listOf(productId, size, quantity, price).any { it != null }
-
-            if (!error) {
-                if (addCartViewModel.networkStatus) {
-                    val newCart = mapOf(
-                        "productId" to productId,
-                        "size" to size,
-                        "quantity" to quantity,
-                        "price" to price,
-                    )
-                    addNewCart(addressData = newCart)
-                } else {
-                    addCartViewModel.showNetworkStatus()
-                }
+            val size = if(binding.chipSizeL.isChecked){
+                binding.chipSizeL.text.toString()
+            } else if (binding.chipSizeS.isChecked) {
+                binding.chipSizeS.text.toString()
+            } else {
+                binding.chipSizeM.text.toString()
             }
+            val quantity = "1"
+            val price = product.originPrice.toInt().toString()
 
-            this.dismiss()
+
+            if (addCartViewModel.networkStatus) {
+                val newCart = mapOf(
+                    "productId" to productId,
+                    "size" to size,
+                    "quantity" to quantity,
+                    "price" to price,
+                )
+                addNewCart(cartData = newCart)
+                this.dismiss()
+            } else {
+                addCartViewModel.showNetworkStatus()
+            }
         }
-
         handleApiResponse()
         return binding.root
     }
@@ -136,11 +152,11 @@ class CatagoriesBottomSheetFragment( private val  product: Product) : BottomShee
         }
     }
 
-    private fun addNewCart(addressData: Map<String, String>) {
+    private fun addNewCart(cartData: Map<String, String>) {
         addCartViewModel.addCart(
-                data = addressData,
+                data = cartData,
                 token = addCartViewModel.userToken
-            )
+        )
     }
 
 }
