@@ -1,6 +1,7 @@
 package com.nt118.joliecafe.data.network
 
 import com.nt118.joliecafe.models.*
+import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants.Companion.API_GATEWAY
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -124,6 +125,12 @@ interface JolieCafeApi {
         @Body body: Map<String, String>,
         @Header("Authorization") token: String
     ): Response<ApiResponseSingleData<Unit>>
+
+    @Headers("Content-Type: application/json")
+    @GET("$API_GATEWAY/cart/all")
+    suspend fun getAllCartItems(
+        @Header("Authorization") token: String
+    ): Response<ApiResult<List<CartItem>>>
 
     // End of Cart API
 
