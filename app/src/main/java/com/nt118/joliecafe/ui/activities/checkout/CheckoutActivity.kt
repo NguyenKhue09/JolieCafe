@@ -5,8 +5,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.asLiveData
@@ -15,9 +17,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.R
+import com.nt118.joliecafe.adapter.CheckoutAdapter
 import com.nt118.joliecafe.databinding.ActivityCheckoutBinding
 import com.nt118.joliecafe.ui.activities.order_detail.OrderDetailActivity
+import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.util.NumberUtil
 import com.nt118.joliecafe.viewmodels.checkout.CheckoutViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -42,9 +47,28 @@ class CheckoutActivity : AppCompatActivity() {
         val btnCancel: MaterialButton = binding.btnCancel
         val voucherContainer: CardView = binding.voucherContainer
         val tvUseJolieCoin: TextView = binding.tvUseJolieCoin
+        val progressCart = binding.progressCart
+        val tvSubtotalDetail = binding.tvSubtotalDetail
 
         checkoutViewModel.readBackOnline.asLiveData().observe(this) {
             checkoutViewModel.backOnline = it
+        }
+
+        checkoutViewModel.getCartResponse.observe(this) { response ->
+            when (response) {
+                is ApiResult.Loading -> progressCart.visibility = View.VISIBLE
+                is ApiResult.Success -> {
+                    progressCart.visibility = View.GONE
+                    val adapter = CheckoutAdapter(response.data!!, this)
+                    rvProduct.adapter = adapter
+                    tvSubtotalDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(adapter.getTotalPrice()))
+                }
+                is ApiResult.Error -> {
+                    progressCart.visibility = View.GONE
+                    Toast.makeText(this, "Failed to get cart items", Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
         }
 
         lifecycleScope.launchWhenStarted {
@@ -53,8 +77,6 @@ class CheckoutActivity : AppCompatActivity() {
                 checkoutViewModel.getAllCartItems(token)
             }
         }
-
-        rvProduct.adapter = CheckoutAdapter()
 
         btnNavBack.setOnClickListener {
             finish()

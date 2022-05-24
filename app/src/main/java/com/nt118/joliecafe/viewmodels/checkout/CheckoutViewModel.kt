@@ -46,7 +46,7 @@ class CheckoutViewModel@Inject constructor(
         }
 
 
-    private fun <T> handleApiResponse(response: Response<ApiResult<T>>): ApiResult<T> {
+    private fun <T> handleApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
         return when {
             response.message().toString().contains("timeout") -> {
                 ApiResult.Error("Timeout")

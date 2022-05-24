@@ -130,7 +130,7 @@ interface JolieCafeApi {
     @GET("$API_GATEWAY/cart/all")
     suspend fun getAllCartItems(
         @Header("Authorization") token: String
-    ): Response<ApiResult<List<CartItem>>>
+    ): Response<ApiResponseSingleData<List<CartItem>>>
 
     // End of Cart API
 

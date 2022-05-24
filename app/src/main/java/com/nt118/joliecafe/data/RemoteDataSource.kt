@@ -135,7 +135,7 @@ class RemoteDataSource @Inject constructor(
 
     suspend fun getAllCartItems(
         token: String
-    ): Response<ApiResult<List<CartItem>>> {
+    ): Response<ApiResponseSingleData<List<CartItem>>> {
         return jolieCafeApi.getAllCartItems(token = "Bearer $token")
     }
 
