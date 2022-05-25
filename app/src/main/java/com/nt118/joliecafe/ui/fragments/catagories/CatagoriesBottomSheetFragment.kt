@@ -23,6 +23,7 @@ import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.FragmentCatagoriesBottomSheetBinding
 import com.nt118.joliecafe.databinding.FragmentProfileBottomSheetBinding
 import com.nt118.joliecafe.models.Product
+import com.nt118.joliecafe.ui.activities.checkout.CheckoutActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.NetworkListener
@@ -126,8 +127,37 @@ class CatagoriesBottomSheetFragment( private val  product: Product) : BottomShee
             } else {
                 addCartViewModel.showNetworkStatus()
             }
+            handleApiResponse()
         }
-        handleApiResponse()
+
+        binding.btnPurchase.setOnClickListener {
+            val productId = product.id
+            val size = if(binding.chipSizeL.isChecked){
+                binding.chipSizeL.text.toString()
+            } else if (binding.chipSizeS.isChecked) {
+                binding.chipSizeS.text.toString()
+            } else {
+                binding.chipSizeM.text.toString()
+            }
+            val quantity = "1"
+            val price = product.originPrice.toInt().toString()
+
+
+            if (addCartViewModel.networkStatus) {
+                val newCart = mapOf(
+                    "productId" to productId,
+                    "size" to size,
+                    "quantity" to quantity,
+                    "price" to price,
+                )
+                addNewCart(cartData = newCart)
+                startActivity(Intent(context, CheckoutActivity::class.java))
+            } else {
+                addCartViewModel.showNetworkStatus()
+            }
+            handleApiResponse()
+        }
+
         return binding.root
     }
 
