@@ -50,12 +50,12 @@ class CartAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.cartItem = getItem(position)
         holder.cartItem?.let { cartItem ->
-            holder.binding.ivThumbnail.load(cartItem.productDetail.thumbnail) {
+            holder.binding.ivThumbnail.load(cartItem.productId.thumbnail) {
                 crossfade(600)
                 error(R.drawable.placeholder_image)
             }
-            holder.binding.tvProductName.text = cartItem.productDetail.name
-            holder.binding.tvProductDescription.text = cartItem.productDetail.description
+            holder.binding.tvProductName.text = cartItem.productId.name
+            holder.binding.tvProductDescription.text = cartItem.productId.description
             holder.binding.tvAmount.text = cartItem.quantity.toString()
             holder.binding.tvPrice.text = mActivity.getString(
                 R.string.product_price,
@@ -118,7 +118,7 @@ class CartAdapter(
 
     private fun handleQuantityChange(quantity: Int, cartItem: CartItem) {
         if (quantity < 1) {
-            viewModel.deleteCartItem(cartItem.productId, token = viewModel.userToken)
+            viewModel.deleteCartItem(cartItem.productId.id, token = viewModel.userToken)
         } else {
             cartItem.quantity = quantity
         }
