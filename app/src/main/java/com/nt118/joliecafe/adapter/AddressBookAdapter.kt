@@ -49,19 +49,11 @@ class AddressBookAdapter(
 
             addressBookActivity.readDefaultAddressId.observeForever(defaultAddressIdObserver)
 
-            updateStatusObserver = Observer<Boolean> {
-                if(it) {
-                    setActiveElementForUpdateAddress(
-                        holder = holder,
-                        isEnable = false,
-                        isVisible = View.GONE
-                    )
-                }
-            }
-            addressBookActivity.updateAddressStatus.observeForever(updateStatusObserver)
 
             holder.binding.isDefaultAddress.setOnCheckedChangeListener { _, isChecked ->
+                //addressBookActivity.updateAddressStatus.observeForever(updateStatusObserver)
                 if (isChecked) {
+                    createObserverEdit(holder = holder)
                     addressBookActivity.updateUserInfos(newData = mapOf(
                         "defaultAddress" to address.id
                     ))
@@ -86,6 +78,7 @@ class AddressBookAdapter(
                 )
             }
             holder.binding.btnSave.setOnClickListener {
+                createObserverEdit(holder = holder)
                 validateAddressNewData(holder = holder, addressId = address.id)
             }
         }
@@ -112,7 +105,7 @@ class AddressBookAdapter(
         holder.binding.etPhoneLayout.isEnabled = isEnable
         holder.binding.etAddressLayout.isEnabled = isEnable
 
-        if(!isEnable && ::updateStatusObserver.isInitialized) addressBookActivity.updateAddressStatus.removeObserver(updateStatusObserver)
+        removeObserverEdit(isEnable = isEnable)
     }
 
     private fun setAddressData(holder: ViewHolder, addressItem: Address) {
@@ -170,6 +163,23 @@ class AddressBookAdapter(
         holder.binding.etNameLayout.error = null
         holder.binding.etPhoneLayout.error = null
         holder.binding.etAddressLayout.error = null
+    }
+
+    private  fun createObserverEdit(holder: ViewHolder){
+        updateStatusObserver = Observer<Boolean> {
+            if(it) {
+                setActiveElementForUpdateAddress(
+                    holder = holder,
+                    isEnable = false,
+                    isVisible = View.GONE
+                )
+            }
+        }
+        addressBookActivity.updateAddressStatus.observeForever(updateStatusObserver)
+    }
+
+    private fun removeObserverEdit(isEnable: Boolean) {
+        if(!isEnable && ::updateStatusObserver.isInitialized) addressBookActivity.updateAddressStatus.removeObserver(updateStatusObserver)
     }
 
     fun removeAddressDefaultIdObserver() {
