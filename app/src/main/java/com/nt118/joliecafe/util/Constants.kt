@@ -16,6 +16,7 @@ class Constants {
         const val PREFERENCES_USER_TOKEN = "userToken"
         const val PREFERENCES_USER_AUTH_TYPE = "isFaceOrGGLogin"
         const val PREFERENCES_IS_USER_DATA_CHANGE = "isUserDataChange"
+        const val PREFERENCES_USER_DEFAULT_ADDRESS_ID = "defaultAddressId"
         const val API_GATEWAY = "/api/v1/jolie-cafe"
         const val PAGE_SIZE = 10
     }

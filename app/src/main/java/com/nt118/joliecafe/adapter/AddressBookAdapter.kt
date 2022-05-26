@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.AddressBookItemLayoutBinding
 import com.nt118.joliecafe.models.Address
 import com.nt118.joliecafe.ui.activities.address_book.AddressBookActivity
@@ -17,7 +18,8 @@ class AddressBookAdapter(
     private val addressBookActivity: AddressBookActivity
 ) : PagingDataAdapter<Address, AddressBookAdapter.ViewHolder>(differCallback) {
 
-    private lateinit var nameObserver: Observer<Boolean>
+    private lateinit var updateStatusObserver: Observer<Boolean>
+    private lateinit var defaultAddressIdObserver: Observer<String>
     private var error = false
 
     class ViewHolder(var binding: AddressBookItemLayoutBinding) :
@@ -34,7 +36,40 @@ class AddressBookAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val address = getItem(position)
         address?.let { addressItem ->
+
+            defaultAddressIdObserver = Observer<String> { id ->
+                holder.binding.isDefaultAddress.isChecked = (id == address.id)
+                holder.binding.isDefaultAddress.isClickable = id != address.id
+                if(id == address.id) {
+                    holder.binding.cardAddAddress.strokeWidth = 4
+                } else {
+                    holder.binding.cardAddAddress.strokeWidth = 0
+                }
+            }
+
+            addressBookActivity.readDefaultAddressId.observeForever(defaultAddressIdObserver)
+
+            updateStatusObserver = Observer<Boolean> {
+                if(it) {
+                    setActiveElementForUpdateAddress(
+                        holder = holder,
+                        isEnable = false,
+                        isVisible = View.GONE
+                    )
+                }
+            }
+            addressBookActivity.updateAddressStatus.observeForever(updateStatusObserver)
+
+            holder.binding.isDefaultAddress.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    addressBookActivity.updateUserInfos(newData = mapOf(
+                        "defaultAddress" to address.id
+                    ))
+                }
+            }
+
             setAddressData(holder, addressItem)
+
             holder.binding.btnEdit.setOnClickListener {
                 setActiveElementForUpdateAddress(
                     holder = holder,
@@ -51,20 +86,7 @@ class AddressBookAdapter(
                 )
             }
             holder.binding.btnSave.setOnClickListener {
-                validateAddressNewData(holder = holder, addressId = addressItem.id)
-
-                nameObserver = Observer<Boolean> {
-                    if(it) {
-                        setActiveElementForUpdateAddress(
-                            holder = holder,
-                            isEnable = false,
-                            isVisible = View.GONE
-                        )
-                    }
-                }
-
-
-                addressBookActivity.updateAddressStatus.observeForever(nameObserver)
+                validateAddressNewData(holder = holder, addressId = address.id)
             }
         }
     }
@@ -90,7 +112,7 @@ class AddressBookAdapter(
         holder.binding.etPhoneLayout.isEnabled = isEnable
         holder.binding.etAddressLayout.isEnabled = isEnable
 
-        if(!isEnable) addressBookActivity.updateAddressStatus.removeObserver(nameObserver)
+        if(!isEnable && ::updateStatusObserver.isInitialized) addressBookActivity.updateAddressStatus.removeObserver(updateStatusObserver)
     }
 
     private fun setAddressData(holder: ViewHolder, addressItem: Address) {
@@ -148,5 +170,9 @@ class AddressBookAdapter(
         holder.binding.etNameLayout.error = null
         holder.binding.etPhoneLayout.error = null
         holder.binding.etAddressLayout.error = null
+    }
+
+    fun removeAddressDefaultIdObserver() {
+        addressBookActivity.readDefaultAddressId.removeObserver(defaultAddressIdObserver)
     }
 }
