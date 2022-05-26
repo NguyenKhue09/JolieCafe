@@ -9,11 +9,13 @@ import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_BACK_ONLINE
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_IS_USER_DATA_CHANGE
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_NAME
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_USER_AUTH_TYPE
+import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_USER_DEFAULT_ADDRESS_ID
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_USER_TOKEN
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
@@ -30,6 +32,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         val userToken = stringPreferencesKey(PREFERENCES_USER_TOKEN)
         val isFaceOrGGLogin = booleanPreferencesKey(PREFERENCES_USER_AUTH_TYPE)
         val isUserDataChange = booleanPreferencesKey(PREFERENCES_IS_USER_DATA_CHANGE)
+        val defaultAddressId = stringPreferencesKey(PREFERENCES_USER_DEFAULT_ADDRESS_ID)
     }
 
     private val dataStore: DataStore<Preferences> = context.dataStore
@@ -59,6 +62,12 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         }
     }
 
+    suspend fun saveUserDefaultAddressId(addressId: String) {
+        dataStore.edit { preferences ->
+            preferences[PreferenceKeys.defaultAddressId] = addressId
+        }
+    }
+
     val readBackOnline: Flow<Boolean> = dataStore.data
         .catch { exception ->
             if (exception is IOException) {
@@ -70,7 +79,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         .map { preferences ->
             val backOnline = preferences[PreferenceKeys.backOnline] ?: false
             backOnline
-        }
+        }.distinctUntilChanged()
 
     val readUserToken: Flow<String> = dataStore.data
         .catch { exception ->
@@ -83,7 +92,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         .map { preferences ->
             val userToken = preferences[PreferenceKeys.userToken] ?: ""
             userToken
-        }
+        }.distinctUntilChanged()
 
     val readIsUserFaceOrGGLogin: Flow<Boolean> = dataStore.data
         .catch { exception ->
@@ -96,7 +105,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         .map { preferences ->
             val isFaceOrGGLogin = preferences[PreferenceKeys.isFaceOrGGLogin] ?: false
             isFaceOrGGLogin
-        }
+        }.distinctUntilChanged()
 
     val readIsUserDataChange: Flow<Boolean> = dataStore.data
         .catch { exception ->
@@ -109,5 +118,18 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         .map { preferences ->
             val isUserDataChange = preferences[PreferenceKeys.isUserDataChange] ?: false
             isUserDataChange
+        }.distinctUntilChanged()
+
+    val readUserDefaultAddressId: Flow<String> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw  exception
+            }
         }
+        .map { preferences ->
+            val defaultAddressId = preferences[PreferenceKeys.defaultAddressId] ?: ""
+            defaultAddressId
+        }.distinctUntilChanged()
 }
