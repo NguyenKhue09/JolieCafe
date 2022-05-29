@@ -24,7 +24,6 @@ class LoginViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository
 ) : AndroidViewModel(application) {
 
-
     var readBackOnline = dataStoreRepository.readBackOnline
 
 
@@ -61,8 +60,6 @@ class LoginViewModel @Inject constructor(
 
         }
 
-
-
     private fun saveBackOnline(backOnline: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveBackOnline(backOnline)
@@ -78,6 +75,11 @@ class LoginViewModel @Inject constructor(
             dataStoreRepository.saveIsUserFaceOrGGLogin(isUserFaceOrGGLogin)
         }
 
+    private fun saveDefaultAddressId(defaultAddressId: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveUserDefaultAddressId(addressId = defaultAddressId)
+        }
+
     private fun handleApiResponse(response: Response<ApiResponseSingleData<User>>): ApiResult<User> {
         val result = response.body()
         return when {
@@ -89,6 +91,7 @@ class LoginViewModel @Inject constructor(
             }
             response.isSuccessful -> {
                 saveUserToken(result!!.data!!.token)
+                saveDefaultAddressId(defaultAddressId = result.data?.defaultAddress ?: "")
                 ApiResult.Success(result.data!!)
             }
             else -> {

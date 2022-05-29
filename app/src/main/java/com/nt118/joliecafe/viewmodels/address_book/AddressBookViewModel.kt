@@ -18,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
@@ -31,11 +32,13 @@ class AddressBookViewModel@Inject constructor(
 
     var readBackOnline = dataStoreRepository.readBackOnline
     var readUserToken = dataStoreRepository.readUserToken
+    var readDefaultAddress = dataStoreRepository.readUserDefaultAddressId
 
     var addNewAddressResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
     var addNewDefaultAddressResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
     var deleteAddressResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
     var updateAddressResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
+    var updateUserDataResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
     private var _updateAddressStatus: MutableLiveData<Boolean> = MutableLiveData()
     val updateAddressStatus: LiveData<Boolean> = _updateAddressStatus
 
@@ -50,11 +53,11 @@ class AddressBookViewModel@Inject constructor(
                 repository.remote.getAddresses(token = token).cachedIn(viewModelScope)
             } catch (e: Exception) {
                 e.printStackTrace()
-                flowOf()
+                flowOf(PagingData.empty())
             }
 
         } else {
-            flowOf()
+            flowOf(PagingData.empty())
         }
     }
 
@@ -110,9 +113,23 @@ class AddressBookViewModel@Inject constructor(
             }
         }
 
+    fun updateUserInfos(token: String, newUserData: Map<String, String>) =
+        viewModelScope.launch {
+            updateUserDataResponse.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.updateUserInfos(token = token, newUserData = newUserData)
+                println(response)
+                updateUserDataResponse.value = handleApiResponse(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                updateUserDataResponse.value = ApiResult.Error(e.message)
+            }
+        }
+
     fun setUpdateAddressStatus(status: Boolean) {
         _updateAddressStatus.value = status
     }
+
     private fun <T> handleApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
         return when {
             response.message().toString().contains("timeout") -> {
@@ -138,6 +155,11 @@ class AddressBookViewModel@Inject constructor(
     private fun saveBackOnline(backOnline: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveBackOnline(backOnline)
+        }
+
+    fun saveDefaultAddressId(defaultAddressId: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveUserDefaultAddressId(addressId = defaultAddressId)
         }
 
     fun showNetworkStatus() {

@@ -28,8 +28,9 @@
     <string name="delete_address_item_text_body">Do you really want to delete this address?</string>
     <string name="current_password">Current password</string>
     <string name="quantity">Quantity:</string>
+    <string name="quantity_checkout">Quantity: %1$d</string>
     <string name="notifications">Notifications</string>
     <string name="language">Language</string>
     <string name="camera">Camera</string>
-    <string name="product_price">%s VND</string>
+    <string name="product_price">%1$s VND</string>
 </resources>
