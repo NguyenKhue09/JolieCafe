@@ -70,7 +70,7 @@ class ProductsActivity : AppCompatActivity() {
         // RecyclerView product
         val diffCallBack = ProductComparator
         val recyclerViewProduct = binding.recyclerViewProduct
-         productAdapter = ProductAdapter( this, diffCallBack = diffCallBack)
+         productAdapter = ProductAdapter( this, diffCallBack = diffCallBack, productsViewModel = productsViewModel)
         recyclerViewProduct.layoutManager = GridLayoutManager(this,2)
         recyclerViewProduct.adapter = productAdapter
 
