@@ -30,12 +30,12 @@ class CheckoutAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = dataset[position]
-        holder.ivThumbnail.load(item.productId.thumbnail) {
+        holder.ivThumbnail.load(item.productDetail.thumbnail) {
             crossfade(600)
             error(R.drawable.placeholder_image)
         }
-        holder.tvProductName.text = item.productId.name
-        holder.tvProductDescription.text = item.productId.description
+        holder.tvProductName.text = item.productDetail.name
+        holder.tvProductDescription.text = item.productDetail.description
         holder.tvQuantity.text = mContext.getString(R.string.quantity_checkout, item.quantity)
         holder.tvPrice.text = mContext.getString(R.string.product_price, NumberUtil.addSeparator(item.price))
     }

@@ -8,8 +8,10 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
+import com.nt118.joliecafe.models.ApiResponseMultiData
 import com.nt118.joliecafe.models.ApiResponseSingleData
 import com.nt118.joliecafe.models.CartItem
+import com.nt118.joliecafe.models.CartItemByCategory
 import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -34,9 +36,10 @@ class CartViewModel @Inject constructor(
     var networkStatus = false
     var backOnline = false
     var cartEmptyCount: MutableStateFlow<Int> = MutableStateFlow(0) // cái này để đếm xem bao nhiêu RV trống
-    var cartCount: MutableStateFlow<Int> = MutableStateFlow(0) // bộ đếm RV chạy xong
+//    var cartCount: MutableStateFlow<Int> = MutableStateFlow(0) // bộ đếm RV chạy xong
     var numOfSelectedRv: MutableStateFlow<Int> = MutableStateFlow(0)
     var itemCount: MutableStateFlow<Int> = MutableStateFlow(0)
+    var getCartItemV2Response: MutableLiveData<ApiResult<List<CartItemByCategory>>> = MutableLiveData()
     var deleteCartItemResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
 
     fun getCartItems(token: String, type: String): Flow<PagingData<CartItem>> {
@@ -74,6 +77,43 @@ class CartViewModel @Inject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
                 deleteCartItemResponse.value = ApiResult.Error(e.message)
+            }
+        }
+    }
+
+    fun getCartItemV2(token: String) =
+        viewModelScope.launch {
+            getCartItemV2Response.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.getCartItemsV2(token)
+                getCartItemV2Response.value = handleApiMultiResponse(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                getCartItemV2Response.value = ApiResult.Error(e.message.toString())
+            }
+        }
+
+    private fun handleApiMultiResponse(response: Response<ApiResponseMultiData<CartItemByCategory>>): ApiResult<List<CartItemByCategory>> {
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+
+            response.isSuccessful -> {
+                val result = response.body()
+                if (result != null) {
+                    ApiResult.Success(result.data!!)
+                } else {
+                    ApiResult.Error("Cart not found!")
+                }
+            }
+
+            else -> {
+                ApiResult.Error(response.message())
             }
         }
     }
