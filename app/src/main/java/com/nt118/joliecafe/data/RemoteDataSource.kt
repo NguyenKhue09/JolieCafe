@@ -139,5 +139,10 @@ class RemoteDataSource @Inject constructor(
         return jolieCafeApi.getAllCartItems(token = "Bearer $token")
     }
 
+    suspend fun getCartItemsV2(
+        token: String
+    ): Response<ApiResponseMultiData<CartItemByCategory>> {
+        return jolieCafeApi.getCartItemsV2(token = "Bearer $token")
+    }
 
 }

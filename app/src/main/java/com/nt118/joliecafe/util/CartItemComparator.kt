@@ -5,7 +5,7 @@ import com.nt118.joliecafe.models.CartItem
 
 object CartItemComparator : DiffUtil.ItemCallback<CartItem>() {
     override fun areItemsTheSame(oldItem: CartItem, newItem: CartItem): Boolean {
-        return oldItem.productId.id == newItem.productId.id
+        return oldItem.productId == newItem.productId
     }
 
     override fun areContentsTheSame(oldItem: CartItem, newItem: CartItem): Boolean {
