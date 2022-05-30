@@ -12,10 +12,12 @@ import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ItemRvProductBinding
 import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.ui.activities.detail.DetailActivity
+import com.nt118.joliecafe.viewmodels.products.ProductsViewModel
 
 class ProductAdapter(
         private val activity: Activity,
-        diffCallBack: DiffUtil.ItemCallback<Product>
+        diffCallBack: DiffUtil.ItemCallback<Product>,
+        productsViewModel: ProductsViewModel
     ) : PagingDataAdapter<Product, ProductAdapter.ViewHolder>(diffCallBack) {
     class ViewHolder(var binding: ItemRvProductBinding) :
         RecyclerView.ViewHolder(binding.root) {
