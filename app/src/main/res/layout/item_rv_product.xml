@@ -64,7 +64,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/img_card" />
 
             <ImageView
-                android:id="@+id/imageView_product"
+                android:id="@+id/img_favorite"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginTop="12dp"
@@ -72,6 +72,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_name_product"
                 app:layout_constraintTop_toBottomOf="@+id/img_card" />
+
+            <ImageView
+                android:id="@+id/img_favorite_choose"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                android:src="@drawable/ic_favorite_fill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_name_product"
+                app:layout_constraintTop_toBottomOf="@+id/img_card"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/tv_categories_product"
