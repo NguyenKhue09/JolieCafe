@@ -132,6 +132,12 @@ interface JolieCafeApi {
         @Header("Authorization") token: String
     ): Response<ApiResponseSingleData<List<CartItem>>>
 
+    @Headers("Content-Type: application/json")
+    @GET("$API_GATEWAY/cart/get-cart-v2")
+    suspend fun getCartItemsV2(
+        @Header("Authorization") token: String
+    ): Response<ApiResponseMultiData<CartItemByCategory>>
+
     // End of Cart API
 
 

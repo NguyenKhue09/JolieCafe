@@ -33,4 +33,6 @@
     <string name="language">Language</string>
     <string name="camera">Camera</string>
     <string name="product_price">%1$s VND</string>
+    <string name="milk_shake">Milk shake</string>
+    <string name="pasty">Pasty</string>
 </resources>

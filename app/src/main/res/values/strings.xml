@@ -89,4 +89,6 @@
     <string name="voucher_description">Orders from 100.000 VND</string>
     <string name="product_price">%1$s VND</string>
     <string name="check_all">Check all</string>
+    <string name="milk_shake">Milk shake</string>
+    <string name="pasty">Pasty</string>
 </resources>

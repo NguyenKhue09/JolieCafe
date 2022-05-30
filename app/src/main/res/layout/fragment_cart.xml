@@ -230,6 +230,79 @@
 
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_milk_shake"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_shape"
+                android:backgroundTint="#4B413A"
+                style="@style/CardView"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="9dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/CartViewPadding"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/cb_milk_shake"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/RegularCheckBox"
+                        android:text="@string/milk_shake"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_milk_shake"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="2"
+                        tools:listitem="@layout/item_cart"
+                        android:nestedScrollingEnabled="false"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_pasty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rounded_shape"
+                android:backgroundTint="#4B413A"
+                style="@style/CardView"
+                android:layout_marginBottom="15dp"
+                app:cardCornerRadius="9dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/CartViewPadding"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/cb_pasty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="@style/RegularCheckBox"
+                        android:text="@string/pasty"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_pasty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="2"
+                        tools:listitem="@layout/item_cart"
+                        android:nestedScrollingEnabled="false"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
