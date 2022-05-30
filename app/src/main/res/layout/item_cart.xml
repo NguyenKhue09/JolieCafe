@@ -49,6 +49,9 @@
             android:layout_height="wrap_content"
             style="@style/SmallText"
             android:text="With milk"
+            android:lines="1"
+            android:ellipsize="end"
+            android:maxWidth="130dp"
             tools:ignore="HardcodedText" />
         <TextView
             android:id="@+id/tv_price"

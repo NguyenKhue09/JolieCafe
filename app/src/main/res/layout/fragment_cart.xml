@@ -70,7 +70,7 @@
 
     </FrameLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/container"
         android:layout_below="@id/header2"
         android:layout_width="wrap_content"
@@ -112,7 +112,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_tea"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:itemCount="3"
                         tools:listitem="@layout/item_cart"
@@ -149,7 +149,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_coffee"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:itemCount="2"
                         tools:listitem="@layout/item_cart"/>
@@ -184,7 +184,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_juice"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:itemCount="2"
                         tools:listitem="@layout/item_cart"
@@ -220,7 +220,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_milk_tea"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:itemCount="2"
                         tools:listitem="@layout/item_cart"
@@ -257,7 +257,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_milk_shake"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:itemCount="2"
                         tools:listitem="@layout/item_cart"
@@ -294,7 +294,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_pasty"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:itemCount="2"
                         tools:listitem="@layout/item_cart"
@@ -306,7 +306,7 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 
     <FrameLayout
