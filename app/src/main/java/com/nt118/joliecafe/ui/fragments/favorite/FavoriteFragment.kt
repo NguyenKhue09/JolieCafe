@@ -68,10 +68,6 @@ class FavoriteFragment : Fragment() {
 
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
-        favoriteViewModel.readBackOnline.asLiveData().observe(viewLifecycleOwner) {
-            favoriteViewModel.backOnline = it
-        }
-
 
         val diffUtil = FavoriteProductComparator
         favoriteItemAdapter = FavoriteItemAdapter(
@@ -79,7 +75,10 @@ class FavoriteFragment : Fragment() {
             diffUtil = diffUtil
         )
 
+        updateNetworkStatus()
+        updateBackOnlineStatus()
         observerNetworkMessage()
+
         addTabContent()
         onTabSelected()
         recyclerViewLayout()
@@ -91,14 +90,29 @@ class FavoriteFragment : Fragment() {
         return binding.root
     }
 
-    private fun initTabPageData() {
+    private fun updateBackOnlineStatus() {
+        favoriteViewModel.readBackOnline.asLiveData().observe(viewLifecycleOwner) {
+            favoriteViewModel.backOnline = it
+        }
+    }
+
+    private fun updateNetworkStatus() {
         networkListener = NetworkListener()
+        networkListener.checkNetworkAvailability(requireContext())
+            .asLiveData().observe(viewLifecycleOwner) { status ->
+                favoriteViewModel.networkStatus = status
+                favoriteViewModel.showNetworkStatus()
+                backOnlineRecallFavoriteProducts()
+            }
+    }
+
+    private fun initTabPageData() {
         networkListener.checkNetworkAvailability(requireContext())
             .asLiveData().observeOnce(viewLifecycleOwner) { status ->
                 favoriteViewModel.networkStatus = status
+                favoriteViewModel.showNetworkStatus()
                 if (favoriteViewModel.networkStatus) {
                     lifecycleScope.launchWhenStarted {
-                        println("call init")
                         favoriteViewModel.getUserFavoriteProducts(
                             productQuery = mapOf(
                                 "type" to listTabContentFavorite[0]
@@ -109,8 +123,6 @@ class FavoriteFragment : Fragment() {
                             submitFavoriteData(data = data)
                         }
                     }
-                } else {
-                    favoriteViewModel.showNetworkStatus()
                 }
             }
     }
@@ -144,10 +156,18 @@ class FavoriteFragment : Fragment() {
     private fun observerNetworkMessage() {
         favoriteViewModel.networkMessage.observe(viewLifecycleOwner) { message ->
             if (!favoriteViewModel.networkStatus) {
-                showSnackBar(message = message, status = SNACK_BAR_STATUS_DISABLE, icon = R.drawable.ic_wifi_off)
+                showSnackBar(
+                    message = message,
+                    status = SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_wifi_off
+                )
             } else if (favoriteViewModel.networkStatus) {
                 if (favoriteViewModel.backOnline) {
-                    showSnackBar(message = message, status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_wifi)
+                    showSnackBar(
+                        message = message,
+                        status = SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_wifi
+                    )
                 }
             }
         }
@@ -160,27 +180,24 @@ class FavoriteFragment : Fragment() {
         recyclerViewBS.adapter = favoriteItemAdapter
     }
 
-    private fun setFavoriteAdapterProducts() {
+    private fun backOnlineRecallFavoriteProducts() {
         lifecycleScope.launchWhenStarted {
-            networkListener = NetworkListener()
-            networkListener.checkNetworkAvailability(requireContext())
-                .collect { status ->
-                    favoriteViewModel.networkStatus = status
-                    favoriteViewModel.showNetworkStatus()
-                    if (favoriteViewModel.backOnline) {
-                        favoriteViewModel.getUserFavoriteProducts(
-                            productQuery = mapOf(
-                                "type" to listTabContentFavorite[binding.tabLayoutFavorite.selectedTabPosition]
-                            ),
-                            token = favoriteViewModel.userToken
-                        ).collectLatest { data ->
-                            selectedTab = listTabContentFavorite[binding.tabLayoutFavorite.selectedTabPosition]
-                            submitFavoriteData(data = data)
-                        }
-                    }
+            if (favoriteViewModel.backOnline) {
+                favoriteViewModel.getUserFavoriteProducts(
+                    productQuery = mapOf(
+                        "type" to listTabContentFavorite[binding.tabLayoutFavorite.selectedTabPosition]
+                    ),
+                    token = favoriteViewModel.userToken
+                ).collectLatest { data ->
+                    selectedTab =
+                        listTabContentFavorite[binding.tabLayoutFavorite.selectedTabPosition]
+                    submitFavoriteData(data = data)
                 }
+            }
         }
+    }
 
+    private fun setFavoriteAdapterProducts() {
         favoriteViewModel.tabSelected.observe(viewLifecycleOwner) { tab ->
             if (favoriteViewModel.networkStatus) {
                 lifecycleScope.launchWhenStarted {
@@ -194,11 +211,8 @@ class FavoriteFragment : Fragment() {
                         submitFavoriteData(data = data)
                     }
                 }
-            } else {
-                favoriteViewModel.showNetworkStatus()
             }
         }
-
         lifecycleScope.launchWhenStarted {
             favoriteViewModel.readUserToken.collectLatest { token ->
                 println("update token")
@@ -212,16 +226,18 @@ class FavoriteFragment : Fragment() {
     }
 
     fun removeUserFavoriteProduct(favoriteProductId: String) {
-        favoriteViewModel.removeUserFavoriteProduct(token = favoriteViewModel.userToken, favoriteProductId = favoriteProductId)
+        favoriteViewModel.removeUserFavoriteProduct(
+            token = favoriteViewModel.userToken,
+            favoriteProductId = favoriteProductId
+        )
     }
 
     private fun handlePagingAdapterState() {
         favoriteItemAdapter.addLoadStateListener { loadState ->
-            if (loadState.refresh is LoadState.Loading){
+            if (loadState.refresh is LoadState.Loading) {
                 binding.favCircularProgressIndicator.visibility = View.VISIBLE
                 binding.emptyFavList.root.visibility = View.INVISIBLE
-            }
-            else{
+            } else {
                 checkFavItemEmpty()
                 tabAppearance(tab = selectedTab)
                 binding.favCircularProgressIndicator.visibility = View.INVISIBLE
@@ -235,7 +251,11 @@ class FavoriteFragment : Fragment() {
                 }
                 error?.let {
                     //Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
-                    showSnackBar(message = it.error.message!!, status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
+                    if(favoriteViewModel.networkStatus) showSnackBar(
+                        message = it.error.message!!,
+                        status = SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
                 }
             }
         }
@@ -264,12 +284,20 @@ class FavoriteFragment : Fragment() {
                 }
                 is ApiResult.NullDataSuccess -> {
                     //Toast.makeText(requireContext(), "Remove favorite product successful", Toast.LENGTH_SHORT).show()
-                    showSnackBar(message = "Remove favorite product successful", status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_success)
+                    showSnackBar(
+                        message = "Remove favorite product successful",
+                        status = SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
                     favoriteItemAdapter.refresh()
                 }
                 is ApiResult.Error -> {
                     //Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
-                    showSnackBar(message = "Remove favorite product failed!", status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
+                    showSnackBar(
+                        message = "Remove favorite product failed!",
+                        status = SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
                 }
                 else -> {}
             }
@@ -279,7 +307,7 @@ class FavoriteFragment : Fragment() {
     private fun showSnackBar(message: String, status: Int, icon: Int) {
         val drawable = requireContext().getDrawable(icon)
 
-        val snackBarContentColor = when(status) {
+        val snackBarContentColor = when (status) {
             SNACK_BAR_STATUS_SUCCESS -> R.color.text_color_2
             SNACK_BAR_STATUS_DISABLE -> R.color.dark_text_color
             SNACK_BAR_STATUS_ERROR -> R.color.error_color
