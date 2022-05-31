@@ -79,4 +79,5 @@
         android:background="@drawable/searchview_background"
         android:backgroundTint="@color/grey_opacity60_primary"/>
 
+
 </LinearLayout>
