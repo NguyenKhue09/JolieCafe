@@ -61,8 +61,8 @@
                 android:layout_height="42dp"
                 android:background="@drawable/circle_button_bg"
                 android:src="@drawable/ic_camera"
-                android:translationY="15dp"
                 android:translationX="15dp"
+                android:translationY="15dp"
                 app:layout_constraintBottom_toBottomOf="@+id/user_img"
                 app:layout_constraintEnd_toEndOf="@+id/user_img">
 

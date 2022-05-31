@@ -33,6 +33,8 @@ class FavoriteViewModel @Inject constructor(
 
     val removeUserFavoriteProductResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
 
+    val networkMessage = MutableLiveData<String>()
+
     private var _tabSelected = MutableLiveData<String>()
     val tabSelected: LiveData<String> = _tabSelected
 
@@ -54,12 +56,12 @@ class FavoriteViewModel @Inject constructor(
                 ).cachedIn(viewModelScope)
             } catch (e: Exception) {
                 e.printStackTrace()
-                flowOf()
+                flowOf(PagingData.empty())
             }
         } else {
             println("Token empty")
             handleTokenEmpty()
-            flowOf()
+            flowOf(PagingData.empty())
         }
     }
 
@@ -140,11 +142,13 @@ class FavoriteViewModel @Inject constructor(
 
     fun showNetworkStatus() {
         if (!networkStatus) {
-            Toast.makeText(getApplication(), "No Internet Connection", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(getApplication(), "No Internet Connection", Toast.LENGTH_SHORT).show()
             saveBackOnline(true)
+            networkMessage.value = "No Internet Connection"
         } else if (networkStatus) {
             if (backOnline) {
-                Toast.makeText(getApplication(), "We're back online", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(getApplication(), "We're back online", Toast.LENGTH_SHORT).show()
+                networkMessage.value = "We're back online"
                 saveBackOnline(false)
             }
         }

@@ -19,5 +19,9 @@ class Constants {
         const val PREFERENCES_USER_DEFAULT_ADDRESS_ID = "defaultAddressId"
         const val API_GATEWAY = "/api/v1/jolie-cafe"
         const val PAGE_SIZE = 10
+
+        const val SNACK_BAR_STATUS_SUCCESS = 1
+        const val SNACK_BAR_STATUS_DISABLE = 0
+        const val SNACK_BAR_STATUS_ERROR = -1
     }
 }       

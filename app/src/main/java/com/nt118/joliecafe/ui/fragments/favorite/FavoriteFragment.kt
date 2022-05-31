@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -13,18 +14,25 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.FavoriteItemAdapter
 import com.nt118.joliecafe.databinding.FragmentFavoriteBinding
 import com.nt118.joliecafe.models.FavoriteProduct
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.util.ApiResult
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_DISABLE
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_ERROR
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_SUCCESS
 import com.nt118.joliecafe.util.Constants.Companion.listTabContentFavorite
 import com.nt118.joliecafe.util.FavoriteProductComparator
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
 import com.nt118.joliecafe.util.extenstions.observeOnce
+import com.nt118.joliecafe.util.extenstions.setCustomBackground
+import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.favorite.FavoriteViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -71,6 +79,7 @@ class FavoriteFragment : Fragment() {
             diffUtil = diffUtil
         )
 
+        observerNetworkMessage()
         addTabContent()
         onTabSelected()
         recyclerViewLayout()
@@ -89,6 +98,7 @@ class FavoriteFragment : Fragment() {
                 favoriteViewModel.networkStatus = status
                 if (favoriteViewModel.networkStatus) {
                     lifecycleScope.launchWhenStarted {
+                        println("call init")
                         favoriteViewModel.getUserFavoriteProducts(
                             productQuery = mapOf(
                                 "type" to listTabContentFavorite[0]
@@ -128,6 +138,18 @@ class FavoriteFragment : Fragment() {
                 tag = it
                 text = it
             })
+        }
+    }
+
+    private fun observerNetworkMessage() {
+        favoriteViewModel.networkMessage.observe(viewLifecycleOwner) { message ->
+            if (!favoriteViewModel.networkStatus) {
+                showSnackBar(message = message, status = SNACK_BAR_STATUS_DISABLE, icon = R.drawable.ic_wifi_off)
+            } else if (favoriteViewModel.networkStatus) {
+                if (favoriteViewModel.backOnline) {
+                    showSnackBar(message = message, status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_wifi)
+                }
+            }
         }
     }
 
@@ -179,6 +201,7 @@ class FavoriteFragment : Fragment() {
 
         lifecycleScope.launchWhenStarted {
             favoriteViewModel.readUserToken.collectLatest { token ->
+                println("update token")
                 favoriteViewModel.userToken = token
             }
         }
@@ -211,7 +234,8 @@ class FavoriteFragment : Fragment() {
                     else -> null
                 }
                 error?.let {
-                    Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
+                    //Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
+                    showSnackBar(message = it.error.message!!, status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
                 }
             }
         }
@@ -239,17 +263,44 @@ class FavoriteFragment : Fragment() {
                 is ApiResult.Loading -> {
                 }
                 is ApiResult.NullDataSuccess -> {
-                    Toast.makeText(requireContext(), "Remove favorite product successful", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(requireContext(), "Remove favorite product successful", Toast.LENGTH_SHORT).show()
+                    showSnackBar(message = "Remove favorite product successful", status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_success)
                     favoriteItemAdapter.refresh()
                 }
                 is ApiResult.Error -> {
-                    Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                    showSnackBar(message = "Remove favorite product failed!", status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
                 }
                 else -> {}
             }
         }
     }
 
+    private fun showSnackBar(message: String, status: Int, icon: Int) {
+        val drawable = requireContext().getDrawable(icon)
+
+        val snackBarContentColor = when(status) {
+            SNACK_BAR_STATUS_SUCCESS -> R.color.text_color_2
+            SNACK_BAR_STATUS_DISABLE -> R.color.dark_text_color
+            SNACK_BAR_STATUS_ERROR -> R.color.error_color
+            else -> R.color.text_color_2
+        }
+
+
+        val snackBar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setAction("Ok") {
+            }
+            .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.grey_primary))
+            .setTextColor(ContextCompat.getColor(requireContext(), snackBarContentColor))
+            .setIcon(
+                drawable = drawable!!,
+                colorTint = ContextCompat.getColor(requireContext(), snackBarContentColor),
+                iconPadding = resources.getDimensionPixelOffset(R.dimen.small_margin)
+            )
+            .setCustomBackground(requireContext().getDrawable(R.drawable.snackbar_normal_custom_bg)!!)
+
+        snackBar.show()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
