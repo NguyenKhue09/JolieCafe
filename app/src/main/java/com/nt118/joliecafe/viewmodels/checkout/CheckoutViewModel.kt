@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
+import com.nt118.joliecafe.models.Address
 import com.nt118.joliecafe.models.ApiResponseSingleData
 import com.nt118.joliecafe.models.CartItem
 import com.nt118.joliecafe.util.ApiResult
@@ -24,12 +25,15 @@ class CheckoutViewModel@Inject constructor(
 ):AndroidViewModel(application) {
     var readBackOnline = dataStoreRepository.readBackOnline
     var readUserToken = dataStoreRepository.readUserToken
+    var readUserDefaultAddressId = dataStoreRepository.readUserDefaultAddressId
 
-    var getCartResponse: MutableLiveData<ApiResult<List<CartItem>>> = MutableLiveData()
+    val getCartResponse: MutableLiveData<ApiResult<List<CartItem>>> = MutableLiveData()
+    val getAddressByIdResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
 
     var userToken = ""
     var networkStatus = false
     var backOnline = false
+    var userDefaultAddressId = ""
 
     fun getAllCartItems(token: String) =
         viewModelScope.launch {
@@ -43,6 +47,17 @@ class CheckoutViewModel@Inject constructor(
             }
         }
 
+    fun getAddressById(token: String, addressId: String) =
+        viewModelScope.launch {
+            getAddressByIdResponse.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.getAddressById(token, addressId)
+                getAddressByIdResponse.value = handleApiResponse(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                getAddressByIdResponse.value = ApiResult.Error(e.message.toString())
+            }
+        }
 
     private fun <T> handleApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
         return when {

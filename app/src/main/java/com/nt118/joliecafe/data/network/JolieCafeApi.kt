@@ -96,6 +96,13 @@ interface JolieCafeApi {
         @Header("Authorization") token: String
     ): Response<ApiResponseSingleData<Address>>
 
+    @Headers("Content-Type: application/json")
+    @GET("$API_GATEWAY/address/{addressId}")
+    suspend fun getAddressById(
+        @Header("Authorization") token: String,
+        @Path("addressId") addressId: String
+    ): Response<ApiResponseSingleData<Address>>
+
     // Cart API
 
     @Headers("Content-Type: application/json")

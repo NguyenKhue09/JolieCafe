@@ -111,6 +111,10 @@ class RemoteDataSource @Inject constructor(
         ).flow
     }
 
+    suspend fun getAddressById(token: String, addressId: String): Response<ApiResponseSingleData<Address>> {
+        return jolieCafeApi.getAddressById(token = "Bearer $token", addressId = addressId)
+    }
+
     suspend fun updateCartItem(
         newCartItemData: Map<String, String>,
         token: String
