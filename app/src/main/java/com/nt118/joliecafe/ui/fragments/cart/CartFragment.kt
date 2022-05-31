@@ -115,7 +115,6 @@ class CartFragment : Fragment() {
                         emptyCartView.visibility = View.GONE
                         header2.visibility = View.VISIBLE
                         footer.visibility = View.VISIBLE
-
                         fetchDataFromApi(data)
                     }
                 }
