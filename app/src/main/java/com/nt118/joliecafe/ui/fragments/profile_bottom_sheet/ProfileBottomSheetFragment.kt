@@ -21,7 +21,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
@@ -38,12 +37,20 @@ import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.BuildConfig
+import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.FragmentProfileBottomSheetBinding
 import com.nt118.joliecafe.firebase.firebasefirestore.FirebaseStorage
 import com.nt118.joliecafe.util.ApiResult
+import com.nt118.joliecafe.util.Constants
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_DISABLE
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_ERROR
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_SUCCESS
 import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.util.extenstions.setCustomBackground
+import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.profile_activity.ProfileActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -88,26 +95,46 @@ class ProfileBottomSheetFragment(
     ): View {
         _binding = FragmentProfileBottomSheetBinding.inflate(layoutInflater, container, false)
 
-        profileActivityViewModel.readBackOnline.asLiveData().observe(viewLifecycleOwner) {
-            profileActivityViewModel.backOnline = it
-        }
+        observerUserUpdateDataResponse()
 
-        lifecycleScope.launchWhenStarted {
-            networkListener = NetworkListener()
-            networkListener.checkNetworkAvailability(requireContext())
-                .collect { status ->
-                    profileActivityViewModel.networkStatus = status
-                    profileActivityViewModel.showNetworkStatus()
+        updateBackOnlineStatus()
+
+        updateNetworkStatus()
+
+        handleButtonClicked()
+
+        return binding.root
+    }
+
+    private fun observerUserUpdateDataResponse() {
+        profileActivityViewModel.updateUserDataResponse.observe(this) { userInfos ->
+            when (userInfos) {
+                is ApiResult.Loading -> {
+
                 }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            profileActivityViewModel.readUserToken.collectLatest { token ->
-                profileActivityViewModel.userToken = token
+                is ApiResult.Success -> {
+                    showSnackBar(
+                        message = "Update data success",
+                        status = SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
+                    profileActivityViewModel.saveIsUserDataChange(true)
+                    this.dismiss()
+                }
+                is ApiResult.Error -> {
+                    showSnackBar(
+                        message = "Update data failed!",
+                        status = SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
+                    profileActivityViewModel.saveIsUserDataChange(false)
+                }
+                else -> {}
             }
         }
+    }
 
-
+    private fun handleButtonClicked() {
         binding.btnDismiss.setOnClickListener {
             this.dismiss()
         }
@@ -139,28 +166,23 @@ class ProfileBottomSheetFragment(
         binding.imageCaptureButton.setOnClickListener {
             takePhoto()
         }
+    }
 
-        profileActivityViewModel.updateUserDataResponse.observe(this) { userInfos ->
-            when (userInfos) {
-                is ApiResult.Loading -> {
-
+    private fun updateNetworkStatus() {
+        lifecycleScope.launchWhenStarted {
+            networkListener = NetworkListener()
+            networkListener.checkNetworkAvailability(requireContext())
+                .collect { status ->
+                    profileActivityViewModel.networkStatus = status
+                    profileActivityViewModel.showNetworkStatus()
                 }
-                is ApiResult.Success -> {
-                    Toast.makeText(requireContext(), "Update data success", Toast.LENGTH_SHORT)
-                        .show()
-                    profileActivityViewModel.saveIsUserDataChange(true)
-                    this.dismiss()
-                }
-                is ApiResult.Error -> {
-                    Toast.makeText(requireContext(), "Update data failed!", Toast.LENGTH_SHORT)
-                        .show()
-                    profileActivityViewModel.saveIsUserDataChange(false)
-                }
-                else -> {}
-            }
         }
+    }
 
-        return binding.root
+    private fun updateBackOnlineStatus() {
+        profileActivityViewModel.readBackOnline.asLiveData().observe(viewLifecycleOwner) {
+            profileActivityViewModel.backOnline = it
+        }
     }
 
     fun updateUserData(thumbnail: String) {
@@ -180,18 +202,18 @@ class ProfileBottomSheetFragment(
     private var getFilePermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                Toast.makeText(
-                    context,
-                    "Permission granted",
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackBar(
+                    message = "Permission granted",
+                    status = SNACK_BAR_STATUS_SUCCESS,
+                    icon = R.drawable.ic_success
+                )
                 firebaseStorage.chooseFile(getFile)
             } else {
-                Toast.makeText(
-                    context,
-                    "Oops, you just denied the permission for storage, You can also allow it from settings.",
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackBar(
+                    message = "Oops, you just denied the permission for storage",
+                    status = SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_sad
+                )
             }
         }
 
@@ -214,11 +236,11 @@ class ProfileBottomSheetFragment(
                         )
                     } catch (e: IOException) {
                         e.printStackTrace()
-                        Toast.makeText(
-                            context,
-                            "Get image failed!",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        showSnackBar(
+                            message = "Get image failed!",
+                            status = SNACK_BAR_STATUS_ERROR,
+                            icon = R.drawable.ic_error
+                        )
                     }
                 }
             }
@@ -299,13 +321,17 @@ class ProfileBottomSheetFragment(
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exc: ImageCaptureException) {
-                    Toast.makeText(requireContext(), exc.message, Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Photo capture failed",
+                        status = SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
                 override fun
                         onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val msg = "Photo capture succeeded: ${output.savedUri}"
+                    val msg = "Photo capture success: ${output.savedUri}"
                     userImageUri.value = output.savedUri
 
                     output.savedUri?.let {
@@ -318,7 +344,11 @@ class ProfileBottomSheetFragment(
                     }
 
                     setLayoutForAction(false)
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Photo capture success",
+                        status = SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
                     Log.d(TAG, msg)
                 }
             }
@@ -389,18 +419,18 @@ class ProfileBottomSheetFragment(
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { isGranted ->
             println(isGranted)
             if (!isGranted.containsValue(false)) {
-                Toast.makeText(
-                    context,
-                    "Permissions granted",
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackBar(
+                    message = "Permission granted",
+                    status = SNACK_BAR_STATUS_SUCCESS,
+                    icon = R.drawable.ic_success
+                )
                 startCamera()
             } else {
-                Toast.makeText(
-                    context,
-                    "Oops, you just denied the permission, You can also allow it from settings.",
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackBar(
+                    message = "Oops, you just denied the permission",
+                    status = SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_sad
+                )
             }
         }
 
@@ -411,6 +441,32 @@ class ProfileBottomSheetFragment(
                 // enter you code here
             }
         }
+
+    private fun showSnackBar(message: String, status: Int, icon: Int) {
+        val drawable = requireContext().getDrawable(icon)
+
+        val snackBarContentColor = when (status) {
+            Constants.SNACK_BAR_STATUS_SUCCESS -> R.color.text_color_2
+            Constants.SNACK_BAR_STATUS_DISABLE -> R.color.dark_text_color
+            Constants.SNACK_BAR_STATUS_ERROR -> R.color.error_color
+            else -> R.color.text_color_2
+        }
+
+
+        val snackBar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setAction("Ok") {
+            }
+            .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.grey_primary))
+            .setTextColor(ContextCompat.getColor(requireContext(), snackBarContentColor))
+            .setIcon(
+                drawable = drawable!!,
+                colorTint = ContextCompat.getColor(requireContext(), snackBarContentColor),
+                iconPadding = resources.getDimensionPixelOffset(R.dimen.small_margin)
+            )
+            .setCustomBackground(requireContext().getDrawable(R.drawable.snackbar_normal_custom_bg)!!)
+
+        snackBar.show()
+    }
 
     companion object {
         val uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID)

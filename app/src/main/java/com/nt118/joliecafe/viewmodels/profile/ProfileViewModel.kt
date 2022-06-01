@@ -13,6 +13,7 @@ import com.nt118.joliecafe.models.User
 import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
@@ -29,6 +30,7 @@ class ProfileViewModel @Inject constructor(
     var readIsUserDataChange = dataStoreRepository.readIsUserDataChange
     var readIsUserFaceOrGGLogin = dataStoreRepository.readIsUserFaceOrGGLogin
 
+    val networkMessage = MutableLiveData<String>()
 
     var getUserInfosResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
 
@@ -37,6 +39,14 @@ class ProfileViewModel @Inject constructor(
     var backOnline = false
     var isFaceOrGGLogin = false
 
+    init {
+        viewModelScope.launch {
+            readUserToken.collectLatest { token ->
+                println(token)
+                userToken = token
+            }
+        }
+    }
 
     fun getUserInfos(token: String) =
         viewModelScope.launch {
@@ -115,11 +125,11 @@ class ProfileViewModel @Inject constructor(
 
     fun showNetworkStatus() {
         if (!networkStatus) {
-            Toast.makeText(getApplication(), "No Internet Connection", Toast.LENGTH_SHORT).show()
             saveBackOnline(true)
+            networkMessage.value = "No Internet Connection"
         } else if (networkStatus) {
             if (backOnline) {
-                Toast.makeText(getApplication(), "We're back online", Toast.LENGTH_SHORT).show()
+                networkMessage.value = "We're back online"
                 saveBackOnline(false)
             }
         }

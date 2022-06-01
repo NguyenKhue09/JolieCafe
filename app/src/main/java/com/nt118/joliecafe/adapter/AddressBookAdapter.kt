@@ -183,6 +183,6 @@ class AddressBookAdapter(
     }
 
     fun removeAddressDefaultIdObserver() {
-        addressBookActivity.readDefaultAddressId.removeObserver(defaultAddressIdObserver)
+        if(::defaultAddressIdObserver.isInitialized) addressBookActivity.readDefaultAddressId.removeObserver(defaultAddressIdObserver)
     }
 }
