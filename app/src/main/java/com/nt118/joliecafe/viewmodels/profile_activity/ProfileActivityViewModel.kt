@@ -31,6 +31,8 @@ class ProfileActivityViewModel@Inject constructor(
 
     var updateUserDataResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
 
+    val networkMessage = MutableLiveData<String>()
+
     var userToken = ""
     var networkStatus = false
     var backOnline = false
@@ -84,11 +86,13 @@ class ProfileActivityViewModel@Inject constructor(
 
     fun showNetworkStatus() {
         if (!networkStatus) {
-            Toast.makeText(getApplication(), "No Internet Connection", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(getApplication(), "No Internet Connection", Toast.LENGTH_SHORT).show()
             saveBackOnline(true)
+            networkMessage.value = "No Internet Connection"
         } else if (networkStatus) {
             if (backOnline) {
-                Toast.makeText(getApplication(), "We're back online", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(getApplication(), "We're back online", Toast.LENGTH_SHORT).show()
+                networkMessage.value = "We're back online"
                 saveBackOnline(false)
             }
         }

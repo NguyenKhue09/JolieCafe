@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +16,7 @@ import androidx.navigation.navArgs
 import coil.load
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.R
@@ -29,8 +31,13 @@ import com.nt118.joliecafe.util.Constants
 import com.nt118.joliecafe.util.Constants.Companion.IS_CHANGE_PASSWORD
 import com.nt118.joliecafe.util.Constants.Companion.IS_EDIT
 import com.nt118.joliecafe.util.Constants.Companion.IS_SAVE_CHANGE_PASSWORD
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_DISABLE
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_ERROR
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_SUCCESS
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.extenstions.observeOnce
+import com.nt118.joliecafe.util.extenstions.setCustomBackground
+import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.profile_activity.ProfileActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -53,31 +60,30 @@ class ProfileActivity : AppCompatActivity() {
 
         _binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         setupActionBar()
 
-        profileActivityViewModel.readBackOnline.asLiveData().observe(this) {
-            profileActivityViewModel.backOnline = it
-        }
+        updateNetworkStatus()
+        updateBackOnlineStatus()
+        observerNetworkMessage()
 
-        lifecycleScope.launchWhenStarted {
-            networkListener = NetworkListener()
-            networkListener.checkNetworkAvailability(this@ProfileActivity)
-                .collect { status ->
-                    profileActivityViewModel.networkStatus = status
-                    profileActivityViewModel.showNetworkStatus()
-                }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            profileActivityViewModel.readUserToken.collectLatest { token ->
-                profileActivityViewModel.userToken = token
-            }
-        }
+        observerUserToken()
 
 
+        handlerButtonClicked()
+
+
+        setUserData()
+
+        observerUpdateUserDateResponse()
+
+    }
+
+    private fun handlerButtonClicked() {
         binding.btnGetImage.setOnClickListener {
             if (!args.isFaceOrGGLogin) {
-                val bottomSheet = ProfileBottomSheetFragment(profileActivityViewModel =  profileActivityViewModel)
+                val bottomSheet =
+                    ProfileBottomSheetFragment(profileActivityViewModel = profileActivityViewModel)
                 bottomSheet.show(supportFragmentManager, "TAG")
                 bottomSheet.userImageUri.observeOnce(this) {
                     it?.let {
@@ -90,23 +96,19 @@ class ProfileActivity : AppCompatActivity() {
                     }
                 }
             } else {
-
-                Toast.makeText(
-                    this,
-                    "Login by Google or Facebook can't change avatar!",
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackBar(
+                    message = "Login by Google or Facebook can't change avatar!",
+                    status = SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_sad
+                )
             }
         }
-
 
         binding.tvEdit.setOnClickListener {
             setEditProfile()
             setEditProfileState()
             if (!isEditProfile && profileActivityViewModel.networkStatus) {
                 updateUserData()
-            } else {
-                profileActivityViewModel.showNetworkStatus()
             }
         }
 
@@ -115,11 +117,11 @@ class ProfileActivity : AppCompatActivity() {
                 setChangePassword()
                 setChangePasswordState()
             } else {
-                Toast.makeText(
-                    this,
-                    "Login by Google or Facebook can't change password!",
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackBar(
+                    message = "Login by Google or Facebook can't change password!",
+                    status = SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_sad
+                )
             }
         }
 
@@ -165,13 +167,16 @@ class ProfileActivity : AppCompatActivity() {
                         confirmPassword
                     )
                 ) {
-                    if(profileActivityViewModel.networkStatus) {
+                    if (profileActivityViewModel.networkStatus) {
                         currentUser?.let { firebaseUser ->
                             firebaseUser.updatePassword(password)
                                 .addOnSuccessListener {
 
-                                    Toast.makeText(this, "Change password success!", Toast.LENGTH_SHORT)
-                                        .show()
+                                    showSnackBar(
+                                        message = "Change password success!",
+                                        status = SNACK_BAR_STATUS_SUCCESS,
+                                        icon = R.drawable.ic_success
+                                    )
 
                                     setSaveChangePassword()
                                     setSaveChangePasswordState()
@@ -187,7 +192,10 @@ class ProfileActivity : AppCompatActivity() {
 
                                     // logout
                                     FirebaseAuth.getInstance().signOut()
-                                    FirebaseGoogleAuthentication().signOut(this, mGoogleSignInClient)
+                                    FirebaseGoogleAuthentication().signOut(
+                                        this,
+                                        mGoogleSignInClient
+                                    )
                                     FirebaseFacebookLogin().facebookLoginSignOut()
                                     profileActivityViewModel.saveUserToken(userToken = "")
 
@@ -196,31 +204,31 @@ class ProfileActivity : AppCompatActivity() {
                                     })
                                 }
                                 .addOnFailureListener { _ ->
-                                    Toast.makeText(this, "Change password failed!", Toast.LENGTH_SHORT)
-                                        .show()
+                                    showSnackBar(
+                                        message = "Change password failed!",
+                                        status = SNACK_BAR_STATUS_ERROR,
+                                        icon = R.drawable.ic_sad
+                                    )
                                 }
                         }
-                    } else {
-                        profileActivityViewModel.showNetworkStatus()
                     }
-
                 }
             }
         }
+    }
 
-        setUserData()
-
+    private fun observerUpdateUserDateResponse() {
         profileActivityViewModel.updateUserDataResponse.observe(this) { userInfos ->
             when (userInfos) {
                 is ApiResult.Loading -> {
 
                 }
                 is ApiResult.Success -> {
-                    Toast.makeText(this, "Update data success", Toast.LENGTH_SHORT).show()
+                    showSnackBar(message = "Update data success", status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_success)
                     profileActivityViewModel.saveIsUserDataChange(true)
                 }
                 is ApiResult.Error -> {
-                    Toast.makeText(this, "Update data failed!", Toast.LENGTH_SHORT).show()
+                    showSnackBar(message = "Update data failed!", status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
                     profileActivityViewModel.saveIsUserDataChange(false)
                 }
                 else -> {}
@@ -228,9 +236,52 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun observerUserToken() {
+        lifecycleScope.launchWhenStarted {
+            profileActivityViewModel.readUserToken.collectLatest { token ->
+                profileActivityViewModel.userToken = token
+            }
+        }
+    }
+
+    private fun observerNetworkMessage() {
+        profileActivityViewModel.networkMessage.observe(this) { message ->
+            if (!profileActivityViewModel.networkStatus) {
+                showSnackBar(
+                    message = message,
+                    status = Constants.SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_wifi_off
+                )
+            } else if (profileActivityViewModel.networkStatus) {
+                if (profileActivityViewModel.backOnline) {
+                    showSnackBar(
+                        message = message,
+                        status = Constants.SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_wifi
+                    )
+                }
+            }
+        }
+    }
+
+    private fun updateNetworkStatus() {
+        networkListener = NetworkListener()
+        networkListener.checkNetworkAvailability(this)
+            .asLiveData().observe(this) { status ->
+                profileActivityViewModel.networkStatus = status
+                profileActivityViewModel.showNetworkStatus()
+            }
+    }
+
+    private fun updateBackOnlineStatus() {
+        profileActivityViewModel.readBackOnline.asLiveData().observe(this) {
+            profileActivityViewModel.backOnline = it
+        }
+    }
+
     private fun setUserData() {
         val user = args.user
-        if (!args.isFaceOrGGLogin)  {
+        if (!args.isFaceOrGGLogin) {
             binding.userImg.load(
                 user.thumbnail ?: ""
             ) {
@@ -414,6 +465,32 @@ class ProfileActivity : AppCompatActivity() {
         binding.toolbarProfileActivity.setNavigationOnClickListener {
             onBackPressed()
         }
+    }
+
+    private fun showSnackBar(message: String, status: Int, icon: Int) {
+        val drawable = getDrawable(icon)
+
+        val snackBarContentColor = when (status) {
+            Constants.SNACK_BAR_STATUS_SUCCESS -> R.color.text_color_2
+            Constants.SNACK_BAR_STATUS_DISABLE -> R.color.dark_text_color
+            Constants.SNACK_BAR_STATUS_ERROR -> R.color.error_color
+            else -> R.color.text_color_2
+        }
+
+
+        val snackBar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setAction("Ok") {
+            }
+            .setActionTextColor(ContextCompat.getColor(this, R.color.grey_primary))
+            .setTextColor(ContextCompat.getColor(this, snackBarContentColor))
+            .setIcon(
+                drawable = drawable!!,
+                colorTint = ContextCompat.getColor(this, snackBarContentColor),
+                iconPadding = resources.getDimensionPixelOffset(R.dimen.small_margin)
+            )
+            .setCustomBackground(getDrawable(R.drawable.snackbar_normal_custom_bg)!!)
+
+        snackBar.show()
     }
 
     override fun onDestroy() {

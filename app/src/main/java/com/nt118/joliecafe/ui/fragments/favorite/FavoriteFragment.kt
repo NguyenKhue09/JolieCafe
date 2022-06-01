@@ -68,6 +68,7 @@ class FavoriteFragment : Fragment() {
 
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
+        networkListener = NetworkListener()
 
         val diffUtil = FavoriteProductComparator
         favoriteItemAdapter = FavoriteItemAdapter(
@@ -97,7 +98,6 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun updateNetworkStatus() {
-        networkListener = NetworkListener()
         networkListener.checkNetworkAvailability(requireContext())
             .asLiveData().observe(viewLifecycleOwner) { status ->
                 favoriteViewModel.networkStatus = status

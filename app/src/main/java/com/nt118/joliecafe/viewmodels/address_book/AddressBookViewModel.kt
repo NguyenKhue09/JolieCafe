@@ -17,6 +17,7 @@ import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -42,9 +43,20 @@ class AddressBookViewModel@Inject constructor(
     private var _updateAddressStatus: MutableLiveData<Boolean> = MutableLiveData()
     val updateAddressStatus: LiveData<Boolean> = _updateAddressStatus
 
+    val networkMessage = MutableLiveData<String>()
+
     var userToken = ""
     var networkStatus = false
     var backOnline = false
+
+    init {
+        viewModelScope.launch {
+            readUserToken.collectLatest { token ->
+                println(token)
+                userToken = token
+            }
+        }
+    }
 
     fun getAddresses(token: String): Flow<PagingData<Address>> {
         println(token)
@@ -164,11 +176,13 @@ class AddressBookViewModel@Inject constructor(
 
     fun showNetworkStatus() {
         if (!networkStatus) {
-            Toast.makeText(getApplication(), "No Internet Connection", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(getApplication(), "No Internet Connection", Toast.LENGTH_SHORT).show()
             saveBackOnline(true)
+            networkMessage.value = "No Internet Connection"
         } else if (networkStatus) {
             if (backOnline) {
-                Toast.makeText(getApplication(), "We're back online", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(getApplication(), "We're back online", Toast.LENGTH_SHORT).show()
+                networkMessage.value = "We're back online"
                 saveBackOnline(false)
             }
         }

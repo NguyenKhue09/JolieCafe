@@ -1,21 +1,17 @@
 package com.nt118.joliecafe.ui.activities.address_book
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
-import android.widget.AdapterView
-import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.AddressBookAdapter
@@ -23,13 +19,19 @@ import com.nt118.joliecafe.databinding.ActivityAdressBookBinding
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.util.AddressItemComparator
 import com.nt118.joliecafe.util.ApiResult
+import com.nt118.joliecafe.util.Constants
 import com.nt118.joliecafe.util.Constants.Companion.IS_ADD_NEW_ADDRESS
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_DISABLE
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_ERROR
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_SUCCESS
 import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.util.extenstions.observeOnce
+import com.nt118.joliecafe.util.extenstions.setCustomBackground
+import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.address_book.AddressBookViewModel
-import com.nt118.joliecafe.viewmodels.profile.ProfileViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AddressBookActivity : AppCompatActivity() {
@@ -55,44 +57,24 @@ class AddressBookActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
-        addressViewModel.readBackOnline.asLiveData().observe(this) {
-            addressViewModel.backOnline = it
-        }
+        updateBackOnlineStatus()
+        updateNetworkStatus()
+        observerNetworkMessage()
 
-        val diffCallBack = AddressItemComparator
-        val addressesRecyclerView = binding.addressRecyclerView
+        setupAddressBookAdapter()
 
-        addressBookAdapter = AddressBookAdapter(differCallback = diffCallBack, addressBookActivity = this)
+        initAddressBookAdapterData()
 
-        addressesRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        addressesRecyclerView.adapter = addressBookAdapter
-
-
-        lifecycleScope.launchWhenStarted {
-            addressViewModel.readUserToken.collectLatest { token ->
-                addressViewModel.userToken = token
-                addressViewModel.getAddresses(addressViewModel.userToken).collectLatest {  data ->
-                    addressBookAdapter.submitData(data)
-                }
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            networkListener = NetworkListener()
-            networkListener.checkNetworkAvailability(this@AddressBookActivity)
-                .collect { status ->
-                    addressViewModel.networkStatus = status
-                    addressViewModel.showNetworkStatus()
-                    if(addressViewModel.backOnline) {
-                        addressViewModel.getAddresses(addressViewModel.userToken).collectLatest {  data ->
-                            addressBookAdapter.submitData(data)
-                        }
-                    }
-                }
-        }
 
         setupActionBar()
 
+        handleButtonClicked()
+
+        handleApiResponse()
+        handlePagingAdapterState()
+    }
+
+    private fun handleButtonClicked() {
         binding.btnAddNewAddress.setOnClickListener {
             setAddNewAddress()
             setAddNewAddressState()
@@ -103,7 +85,7 @@ class AddressBookActivity : AppCompatActivity() {
             setAddNewAddressState()
         }
 
-        binding.btnSave.setOnClickListener  {
+        binding.btnSave.setOnClickListener {
             // function save new address here
 
             val name = binding.etName.text.toString()
@@ -143,7 +125,7 @@ class AddressBookActivity : AppCompatActivity() {
                 if (addressErr != null) {
                     binding.etAddressLayout.error = addressErr
                     binding.etAddress.requestFocus()
-                }else {
+                } else {
                     binding.etAddressLayout.error = null
                 }
             }
@@ -151,9 +133,77 @@ class AddressBookActivity : AppCompatActivity() {
             setAddNewAddress()
             setAddNewAddressState()
         }
+    }
 
-        handleApiResponse()
-        handlePagingAdapterState()
+    private fun initAddressBookAdapterData() {
+        networkListener = NetworkListener()
+        networkListener.checkNetworkAvailability(this)
+            .asLiveData().observeOnce(this) { status ->
+                addressViewModel.networkStatus = status
+                getAddressData()
+            }
+    }
+
+    private fun recallDataIfBackOnline() {
+        if(addressViewModel.backOnline) {
+            getAddressData()
+        }
+    }
+
+    private fun getAddressData() {
+        lifecycleScope.launchWhenStarted {
+            addressViewModel.getAddresses(addressViewModel.userToken)
+                .collectLatest { data ->
+                    addressBookAdapter.submitData(data)
+                }
+        }
+    }
+
+    private fun setupAddressBookAdapter() {
+        val diffCallBack = AddressItemComparator
+        val addressesRecyclerView = binding.addressRecyclerView
+        addressBookAdapter =
+            AddressBookAdapter(differCallback = diffCallBack, addressBookActivity = this)
+
+        addressesRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        addressesRecyclerView.adapter = addressBookAdapter
+    }
+
+    private fun observerNetworkMessage() {
+        addressViewModel.networkMessage.observe(this) { message ->
+            if (!addressViewModel.networkStatus) {
+                showSnackBar(
+                    message = message,
+                    status = Constants.SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_wifi_off
+                )
+            } else if (addressViewModel.networkStatus) {
+                if (addressViewModel.backOnline) {
+                    showSnackBar(
+                        message = message,
+                        status = Constants.SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_wifi
+                    )
+                }
+            }
+        }
+    }
+
+    private fun updateNetworkStatus() {
+        networkListener = NetworkListener()
+        networkListener.checkNetworkAvailability(this)
+            .asLiveData().observe(this) { status ->
+                addressViewModel.networkStatus = status
+                addressViewModel.showNetworkStatus()
+                recallDataIfBackOnline()
+            }
+    }
+
+    private fun updateBackOnlineStatus() {
+        addressViewModel.readBackOnline.asLiveData().observe(this) {
+            addressViewModel.backOnline = it
+        }
     }
 
     private fun saveDefaultAddressId(addressId: String) {
@@ -162,10 +212,9 @@ class AddressBookActivity : AppCompatActivity() {
 
     private fun handlePagingAdapterState() {
         addressBookAdapter.addLoadStateListener { loadState ->
-            if (loadState.refresh is LoadState.Loading){
+            if (loadState.refresh is LoadState.Loading) {
                 binding.addressCircularProgressIndicator.visibility = View.VISIBLE
-            }
-            else{
+            } else {
                 binding.addressCircularProgressIndicator.visibility = View.INVISIBLE
                 // getting the error
                 val error = when {
@@ -175,7 +224,12 @@ class AddressBookActivity : AppCompatActivity() {
                     else -> null
                 }
                 error?.let {
-                    Toast.makeText(this, it.error.message, Toast.LENGTH_LONG).show()
+                    if (addressViewModel.networkStatus)
+                        showSnackBar(
+                            message = "Get address data failed!",
+                            status = SNACK_BAR_STATUS_ERROR,
+                            icon = R.drawable.ic_error
+                        )
                 }
             }
         }
@@ -188,11 +242,19 @@ class AddressBookActivity : AppCompatActivity() {
 
                 }
                 is ApiResult.Success -> {
-                    Toast.makeText(this, "Add new address successful", Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Add new address successful",
+                        status = SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
                     addressBookAdapter.refresh()
                 }
                 is ApiResult.Error -> {
-                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Add new address failed!",
+                        status = SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
                 }
                 else -> {}
             }
@@ -204,12 +266,22 @@ class AddressBookActivity : AppCompatActivity() {
 
                 }
                 is ApiResult.Success -> {
-                    Toast.makeText(this, "Add new default address successful", Toast.LENGTH_SHORT).show()
-                    addressViewModel.saveDefaultAddressId(defaultAddressId = response.data?.defaultAddress ?: "")
+                    showSnackBar(
+                        message = "Add new default address successful",
+                        status = SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
+                    addressViewModel.saveDefaultAddressId(
+                        defaultAddressId = response.data?.defaultAddress ?: ""
+                    )
                     addressBookAdapter.refresh()
                 }
                 is ApiResult.Error -> {
-                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Add new default address failed!",
+                        status = SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
                 }
                 else -> {}
             }
@@ -221,30 +293,48 @@ class AddressBookActivity : AppCompatActivity() {
 
                 }
                 is ApiResult.Success -> {
-                    Toast.makeText(this, "Delete address successful", Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Delete address successful",
+                        status = SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
                     addressBookAdapter.refresh()
                 }
                 is ApiResult.Error -> {
-                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Delete address failed!",
+                        status = SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
                 }
                 else -> {}
             }
         }
 
         addressViewModel.updateAddressResponse.observe(this) { response ->
-            val status =  when (response) {
+            val status = when (response) {
                 is ApiResult.Loading -> {
                     false
                 }
                 is ApiResult.Success -> {
-                    Toast.makeText(this, "Updated address successful", Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Update address successful",
+                        status = SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
                     true
                 }
                 is ApiResult.Error -> {
-                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Update address failed!",
+                        status = SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
                     false
                 }
-                else -> {false}
+                else -> {
+                    false
+                }
             }
             addressViewModel.setUpdateAddressStatus(status = status)
         }
@@ -255,12 +345,20 @@ class AddressBookActivity : AppCompatActivity() {
 
                 }
                 is ApiResult.Success -> {
-                    Toast.makeText(this, "Update default address successful", Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Update default address successful",
+                        status = SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
                     saveDefaultAddressId(addressId = response.data?.defaultAddress ?: "")
                     addressViewModel.setUpdateAddressStatus(status = true)
                 }
                 is ApiResult.Error -> {
-                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Update default address failed!",
+                        status = SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
                 }
                 else -> {}
             }
@@ -268,7 +366,7 @@ class AddressBookActivity : AppCompatActivity() {
     }
 
     fun deleteAddress(addressId: String) {
-        if(addressViewModel.networkStatus) {
+        if (addressViewModel.networkStatus) {
             addressViewModel.deleteAddress(
                 addressId = addressId,
                 token = addressViewModel.userToken
@@ -353,6 +451,32 @@ class AddressBookActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         isAddNewAddress = savedInstanceState.getBoolean(IS_ADD_NEW_ADDRESS, false)
         setAddNewAddressState()
+    }
+
+    private fun showSnackBar(message: String, status: Int, icon: Int) {
+        val drawable = getDrawable(icon)
+
+        val snackBarContentColor = when (status) {
+            Constants.SNACK_BAR_STATUS_SUCCESS -> R.color.text_color_2
+            Constants.SNACK_BAR_STATUS_DISABLE -> R.color.dark_text_color
+            Constants.SNACK_BAR_STATUS_ERROR -> R.color.error_color
+            else -> R.color.text_color_2
+        }
+
+
+        val snackBar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setAction("Ok") {
+            }
+            .setActionTextColor(ContextCompat.getColor(this, R.color.grey_primary))
+            .setTextColor(ContextCompat.getColor(this, snackBarContentColor))
+            .setIcon(
+                drawable = drawable!!,
+                colorTint = ContextCompat.getColor(this, snackBarContentColor),
+                iconPadding = resources.getDimensionPixelOffset(R.dimen.small_margin)
+            )
+            .setCustomBackground(getDrawable(R.drawable.snackbar_normal_custom_bg)!!)
+
+        snackBar.show()
     }
 
     override fun onDestroy() {
