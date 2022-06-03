@@ -15,15 +15,10 @@ class NotificationActivity : AppCompatActivity() {
         _binding = ActivityNotificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         recyclerViewLayout()
-
-        //back home
-        binding.iconBackHome.setOnClickListener {
-            onBackPressed()
-        }
     }
 
     private fun recyclerViewLayout() {
-        val recyclerViewNotificationAdapter = binding.recyclerViewNotification
+        val recyclerViewNotificationAdapter = binding.notificationsRv
         val notificationAdapter = NotificationAdapter(fetDataBestSaler())
         recyclerViewNotificationAdapter.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false)
         recyclerViewNotificationAdapter.adapter = notificationAdapter
