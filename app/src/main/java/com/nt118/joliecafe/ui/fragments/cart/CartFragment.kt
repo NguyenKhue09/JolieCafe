@@ -113,6 +113,7 @@ class CartFragment : Fragment() {
                     } else {
                         progressCart.visibility = View.GONE
                         emptyCartView.visibility = View.GONE
+                        suggestionContainer.visibility = View.GONE
                         header2.visibility = View.VISIBLE
                         footer.visibility = View.VISIBLE
                         fetchDataFromApi(data)
@@ -389,6 +390,8 @@ class CartFragment : Fragment() {
         rvCartSuggestion.visibility = View.VISIBLE
         suggestionContainer.visibility = View.VISIBLE
         header2.visibility = View.GONE
+        footer.visibility = View.GONE
+        progressCart.visibility = View.GONE
     }
 
     private fun checkboxHandler() {
