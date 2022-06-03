@@ -22,7 +22,7 @@ import java.util.*
 class CartAdapter(
     private val mActivity: Activity,
     val viewModel: CartViewModel,
-    val dataset: MutableList<CartItem>,
+    private val dataset: MutableList<CartItem>,
 ) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
     private var isSelectAll = false
@@ -124,6 +124,7 @@ class CartAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun fetchData(data: List<CartItem>?) {
         dataset.clear()
         dataset.addAll(data?.toMutableList() ?: mutableListOf())

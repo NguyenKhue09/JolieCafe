@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
@@ -22,8 +23,12 @@ import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.CheckoutAdapter
 import com.nt118.joliecafe.databinding.ActivityCheckoutBinding
 import com.nt118.joliecafe.models.Address
+import com.nt118.joliecafe.models.Bill
+import com.nt118.joliecafe.models.BillProduct
+import com.nt118.joliecafe.models.CartItem
 import com.nt118.joliecafe.ui.activities.order_detail.OrderDetailActivity
 import com.nt118.joliecafe.util.ApiResult
+import com.nt118.joliecafe.util.DateTimeUtil
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.NumberUtil
 import com.nt118.joliecafe.viewmodels.checkout.CheckoutViewModel
@@ -51,6 +56,18 @@ class CheckoutActivity : AppCompatActivity() {
     private lateinit var tvPhoneNumber: TextView
     private lateinit var tvAddress: TextView
     private lateinit var addressContainer: LinearLayout
+    private lateinit var swUseJolieCoin: SwitchCompat
+
+    private val cartItems: List<CartItem> get() = checkoutViewModel.cartItems
+    private var isUseJolieCoin
+        get() = checkoutViewModel.isUseJolieCoin
+        set(value) { checkoutViewModel.isUseJolieCoin = value }
+    private var userAddress
+        get() = checkoutViewModel.userAddress
+        set(value) { checkoutViewModel.userAddress = value }
+    private var totalPrice
+        get() = checkoutViewModel.totalPrice
+        set(value) { checkoutViewModel.totalPrice = value }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +104,8 @@ class CheckoutActivity : AppCompatActivity() {
         tvName = binding.tvName
         tvPhoneNumber = binding.tvPhoneNumber
         tvAddress = binding.tvAddress
+        swUseJolieCoin = binding.swUseJolieCoin
+        swUseJolieCoin.isChecked = isUseJolieCoin
     }
 
     private fun readDataStore() {
@@ -99,25 +118,26 @@ class CheckoutActivity : AppCompatActivity() {
         }
     }
 
-    private fun observe() {
-        checkoutViewModel.getCartResponse.observe(this) { response ->
+    private fun observe() = checkoutViewModel.apply {
+        getCartResponse.observe(this@CheckoutActivity) { response ->
             when (response) {
                 is ApiResult.Loading -> progressCart.visibility = View.VISIBLE
                 is ApiResult.Success -> {
                     progressCart.visibility = View.GONE
-                    val adapter = CheckoutAdapter(response.data!!, this)
+                    val adapter = CheckoutAdapter(response.data!!, this@CheckoutActivity)
                     rvProduct.adapter = adapter
+                    totalPrice = adapter.getTotalPrice()
                     tvSubtotalDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(adapter.getTotalPrice()))
                 }
                 is ApiResult.Error -> {
                     progressCart.visibility = View.GONE
-                    Toast.makeText(this, "Failed to get cart items", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@CheckoutActivity, "Failed to get cart items", Toast.LENGTH_SHORT).show()
                 }
                 else -> {}
             }
         }
 
-        checkoutViewModel.getAddressByIdResponse.observe(this) { response ->
+        getAddressByIdResponse.observe(this@CheckoutActivity) { response ->
             when (response) {
                 is ApiResult.Loading -> {
                     progressAddress.visibility = View.VISIBLE
@@ -130,7 +150,7 @@ class CheckoutActivity : AppCompatActivity() {
                 }
                 is ApiResult.Error -> {
                     progressAddress.visibility = View.GONE
-                    Toast.makeText(this, "Failed to get address", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@CheckoutActivity, "Failed to get address", Toast.LENGTH_SHORT).show()
                 }
                 else -> {}
             }
@@ -143,6 +163,7 @@ class CheckoutActivity : AppCompatActivity() {
         }
 
         btnOrder.setOnClickListener {
+            val bill = createBill()
             startActivity(Intent(this, OrderDetailActivity::class.java))
         }
 
@@ -155,12 +176,57 @@ class CheckoutActivity : AppCompatActivity() {
             intent.putExtra("screenWidth", pxToDp(370f, this).toInt())
             startActivity(intent)
         }
+
+        swUseJolieCoin.setOnClickListener {
+            isUseJolieCoin = swUseJolieCoin.isChecked
+        }
     }
 
     private fun setShippingAddress(address: Address) {
+        userAddress = address
         tvName.text = address.userName
         tvPhoneNumber.text = address.phone
         tvAddress.text = address.address
+    }
+
+    private fun calculateDiscount(): Double {
+        // discount chưa có nên tạm thời coi như JolieCoin là 200
+
+        return if (isUseJolieCoin) {
+            200.0
+        } else {
+            0.0
+        }
+    }
+
+    private fun calculateShippingFee() = 30000.0 // K tính được nên
+
+    private fun createBill(): Bill {
+        val billProductList = mutableListOf<BillProduct>()
+        cartItems.forEach { cartItem ->
+            billProductList.add(BillProduct(
+                cartItem.productDetail,
+                cartItem.size,
+                cartItem.quantity,
+                cartItem.price
+            ))
+        }
+
+        return Bill(
+            id = null,
+            userInfo = currentUser!!.uid,
+            products = billProductList.toList(),
+            address = userAddress!!,
+            totalCost = totalPrice,
+            calculateDiscount(),
+            calculateShippingFee(),
+            emptyList(),
+            scoreApply = 20, // Coi như mỗi lần mua là được 20 điểm
+            paid = false, // Chưa thanh toán
+            paymentMethod = "COD", // Tạm cho ntn nhé
+            orderDate = DateTimeUtil.getCurrentDate(),
+            status = "Pending"
+        )
     }
 
     override fun onDestroy() {

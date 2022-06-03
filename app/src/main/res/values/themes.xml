@@ -16,6 +16,7 @@
         <!-- Customize your theme here. -->
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <item name="colorControlNormal">@color/text_color</item>
+        <item name="android:colorForeground">@color/switch_off_color</item>
     </style>
 
     <style name="roundedImageViewRounded">

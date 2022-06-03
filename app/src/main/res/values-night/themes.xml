@@ -16,15 +16,16 @@
         <!-- Customize your theme here. -->
         <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
         <item name="colorControlNormal">@color/text_color</item>
-    </style>
-
-    <style name="switchColor">
-        <item name="colorControlActivated">@color/text_color_2</item>
+        <item name="android:colorForeground">@color/switch_off_color</item>
     </style>
 
     <style name="roundedImageViewRounded">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="switchColor">
+        <item name="colorControlActivated">@color/text_color_2</item>
     </style>
 
     <style name="AppBottomSheetDialogTheme"
@@ -37,6 +38,7 @@
         <item name="android:background">@drawable/profile_button_custom_bg</item>
     </style>
 
+
     <style name="TextInputLayoutAppearance" parent="Widget.Design.TextInputLayout">
         <item name="android:textColor">@color/white</item>
         <item name="android:textColorHint">@color/white</item>
@@ -45,7 +47,18 @@
         <item name="colorControlHighlight">@color/white</item>
     </style>
 
+    <style name="MyCustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="fontFamily">@font/raleway_regular</item>
+        <item name="android:fontFamily">@font/raleway_regular</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <style name="RegularText" parent="Theme.JolieCafe">
+        <item name="fontFamily">@font/raleway_regular</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="RegularText2" parent="Theme.JolieCafe">
         <item name="fontFamily">@font/raleway_regular</item>
         <item name="android:textSize">16sp</item>
     </style>
@@ -54,10 +67,14 @@
         <item name="android:textSize">12sp</item>
     </style>
     <style name="BigText" parent="Theme.JolieCafe">
-        <item name="fontFamily">@font/montserrat_regular</item>
+        <item name="fontFamily">@font/raleway_regular</item>
         <item name="android:textSize">24sp</item>
     </style>
     <style name="RegularNumber" parent="Theme.JolieCafe">
+        <item name="fontFamily">@font/montserrat_regular</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="RegularNumber2" parent="Theme.JolieCafe">
         <item name="fontFamily">@font/montserrat_regular</item>
         <item name="android:textSize">16sp</item>
     </style>
@@ -80,6 +97,7 @@
         <item name="fontFamily">@font/raleway_regular</item>
         <item name="android:textSize">16sp</item>
     </style>
+
     <style name="CartViewPadding" parent="Theme.JolieCafe">
         <item name="android:paddingLeft">13dp</item>
         <item name="android:paddingRight">13dp</item>
@@ -87,20 +105,28 @@
         <item name="android:paddingBottom">17dp</item>
     </style>
 
-    <style name="MyCustomTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="fontFamily">@font/raleway_variable_font_wght</item>
-        <item name="android:fontFamily">@font/raleway_variable_font_wght</item>
-        <item name="textAllCaps">false</item>
-        <item name="android:textSize">18sp</item>
+    <style name="Theme.JolieCafe.Dialog" parent="Theme.AppCompat.Dialog">
+        <item name="colorPrimary">@color/grey_primary</item>
+        <item name="colorPrimaryVariant">@color/grey_primary_variant</item>
+        <item name="colorOnPrimary">@color/text_color</item>
+        <item name="android:textColor">@color/text_color</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/grey_secondary</item>
+        <item name="colorSecondaryVariant">@color/title_text_color</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSurface">@color/title_text_color</item>
+        <item name="android:windowBackground">@color/grey_primary_variant</item>
     </style>
 
     <style name="customChipStyle"  parent="Widget.MaterialComponents.Chip.Filter">
         <item name="chipBackgroundColor">@color/chip_background_color</item>
         <item name="android:textColor">@color/chip_text_color</item>
     </style>
+
     <style name="customChipStyleDetail"  parent="Widget.MaterialComponents.Chip.Filter">
         <item name="chipBackgroundColor">@color/chip_bg_detail</item>
     </style>
+
     <style name="customChipStyleDetailRank"  parent="Widget.MaterialComponents.Chip.Entry">
         <item name="chipBackgroundColor">@color/chip_bg_detail</item>
     </style>
@@ -111,6 +137,11 @@
         <item name="android:textColorHint">@color/white</item>
         <item name="fontFamily">@font/raleway_regular</item>
         <item name="android:fontFamily">@font/raleway_regular</item>
+    </style>
+
+    <style name="SplashScreen" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splashbackground</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="CornerSize50Percent" parent="">

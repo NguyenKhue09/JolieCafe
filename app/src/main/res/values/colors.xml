@@ -21,4 +21,5 @@
     <color name="title_text_color">#E7A15C</color>
     <color name="error_color">#F24E1E</color>
     <color name="readed">#493b31</color>
+    <color name="switch_off_color">#110F0D</color>
 </resources>
