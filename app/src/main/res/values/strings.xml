@@ -91,4 +91,6 @@
     <string name="check_all">Check all</string>
     <string name="milk_shake">Milk shake</string>
     <string name="pasty">Pasty</string>
+    <string name="all">All</string>
+    <string name="for_you">For you</string>
 </resources>
