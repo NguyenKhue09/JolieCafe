@@ -37,24 +37,11 @@
         app:tabIndicatorColor="@color/grey_primary_variant"
         android:layout_marginTop="25dp"
         app:tabPaddingStart="10dp"
-        app:tabMinWidth="10dp"
-        app:tabContentStart="30dp"
+        app:tabIndicatorFullWidth="false"
         app:tabTextColor="@color/text_color"
         app:tabTextAppearance="@style/MyCustomTabTextAppearance">
 
     </com.google.android.material.tabs.TabLayout>
-
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/fav_CircularProgressIndicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="invisible"
-        app:indicatorColor="@color/text_color_2"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabLayoutFavorite" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/favorite_item_recyclerView"
@@ -72,6 +59,18 @@
         tools:listitem="@layout/item_row_layout">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/fav_CircularProgressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:indicatorColor="@color/text_color_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabLayoutFavorite" />
 
     <include
         android:id="@+id/empty_fav_list"

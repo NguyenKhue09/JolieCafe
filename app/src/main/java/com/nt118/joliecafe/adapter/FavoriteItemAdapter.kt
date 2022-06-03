@@ -1,6 +1,5 @@
 package com.nt118.joliecafe.adapter
 
-import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import coil.load
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ItemRowLayoutBinding
 import com.nt118.joliecafe.models.FavoriteProduct
-import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.ui.activities.detail.DetailActivity
 import com.nt118.joliecafe.ui.fragments.favorite.FavoriteFragment
 
@@ -56,8 +54,9 @@ class FavoriteItemAdapter(
 
             holder.binding.itemName.text = product.name
 
+
             favoriteFragment.context?.let { context ->
-                holder.binding.itemPrice.text = context.getString(R.string.product_price, product.originPrice)
+                holder.binding.itemPrice.text = context.getString(R.string.product_price, product.originPrice.toString())
             }
 
             holder.binding.btnFavorite.setOnClickListener {
