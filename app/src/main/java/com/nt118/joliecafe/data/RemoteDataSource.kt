@@ -3,6 +3,7 @@ package com.nt118.joliecafe.data
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.nt118.joliecafe.data.network.FavProductId
 import com.nt118.joliecafe.data.network.JolieCafeApi
 import com.nt118.joliecafe.data.paging_source.AddressPagingSource
 import com.nt118.joliecafe.data.paging_source.CartItemPagingSource
@@ -147,6 +148,23 @@ class RemoteDataSource @Inject constructor(
         token: String
     ): Response<ApiResponseMultiData<CartItemByCategory>> {
         return jolieCafeApi.getCartItemsV2(token = "Bearer $token")
+    }
+
+    //favorite
+    suspend fun getUserFavoriteProductsId(token: String): Response<ApiResponseMultiData<FavProductId>> {
+        return jolieCafeApi.getUserFavoriteProductsId( token= "Bearer $token")
+    }
+
+
+    suspend fun removeUserFavoriteProductByProductId(token: String, productId: String): Response<ApiResponseSingleData<Unit>> {
+        return jolieCafeApi.removeUserFavoriteProductByProductId(token = "Bearer $token", productId = productId)
+    }
+
+    suspend fun addUserFavoriteProduct(
+        token: String,
+        productId: String,
+    ): Response<ApiResponseSingleData<Unit>> {
+        return jolieCafeApi.addUserFavoriteProduct(token = "Bearer $token" , productId = productId)
     }
 
 }

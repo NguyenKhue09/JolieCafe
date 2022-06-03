@@ -40,7 +40,13 @@ class ProductsViewModel @Inject constructor(
     var networkStatus = false
     var backOnline = false
 
+    //favorite
 
+
+
+
+
+//    products
     fun getProducts(productQuery: Map<String, String>, token: String): Flow<PagingData<Product>> {
         return if (token.isNotEmpty()) {
             try {
