@@ -35,4 +35,6 @@
     <string name="product_price">%1$s VND</string>
     <string name="milk_shake">Milk shake</string>
     <string name="pasty">Pasty</string>
+    <string name="all">All</string>
+    <string name="for_you">For you</string>
 </resources>

@@ -1,67 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingTop="20dp"
     tools:context=".ui.activities.notifications.NotificationActivity">
 
-    <RelativeLayout
-        android:id="@+id/appbar"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_notifications_activity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="UselessParent">
-        <ImageView
-            android:id="@+id/iconBackHome"
-            android:layout_centerVertical="true"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_baseline_arrow_back_24"
-            tools:ignore="ContentDescription" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/grey_primary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tvCategories"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Notifications"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/iconBackHome"
-            android:layout_marginStart="18dp"
-            android:fontFamily="@font/raleway_regular"
-            android:textSize="20sp"
-            android:textColor="@color/grey_primary_variant"/>
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/raleway_medium"
+            android:gravity="center_vertical"
+            android:text="@string/notifications"
+            style="@style/BigText"
+            android:textColor="@color/title_text_color"/>
 
-        <ImageView
-            android:id="@+id/iconCheck"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_check" />
+    </androidx.appcompat.widget.Toolbar>
 
-    </RelativeLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:scrollbars="none"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/notification_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/appbar"
-        android:layout_alignParentBottom="true">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewNotification"
-                android:layout_marginTop="13dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:layout_marginBottom="20dp"
-                android:layout_below="@id/recyclerViewNotification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </RelativeLayout>
-    </androidx.core.widget.NestedScrollView>
+        android:background="#0000"
+        android:textAlignment="textStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_notifications_activity"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/grey_primary_variant"
+        app:tabIndicatorFullWidth="false"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/grey_primary_variant"
+        app:tabTextAppearance="@style/TabText"
+        app:tabTextColor="@color/text_color">
 
-</RelativeLayout>
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/all" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/for_you" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notifications_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/notification_tab_layout">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/notification_CircularProgressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:indicatorColor="@color/text_color_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
