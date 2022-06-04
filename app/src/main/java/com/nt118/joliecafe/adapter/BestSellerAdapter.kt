@@ -14,6 +14,8 @@ import com.nt118.joliecafe.databinding.ItemRvBestsallerBinding
 import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.ui.activities.detail.DetailActivity
 import com.nt118.joliecafe.ui.fragments.catagories.CategoriesBottomSheetFragment
+import java.text.NumberFormat
+import java.util.*
 
 
 class BestSellerAdapter(
@@ -65,7 +67,11 @@ class BestSellerAdapter(
 
             holder.binding.itemName.text = product.name
             holder.binding.itemCategories.text = product.type
-            holder.binding.itemPrice.text = product.originPrice.toString()
+            holder.binding.itemPrice.text = activity.getString(
+                R.string.product_price, NumberFormat.getNumberInstance(
+                    Locale.US
+                ).format(product.originPrice)
+            )
         }
     }
 

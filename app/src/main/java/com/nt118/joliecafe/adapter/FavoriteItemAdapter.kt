@@ -12,6 +12,8 @@ import com.nt118.joliecafe.databinding.ItemRowLayoutBinding
 import com.nt118.joliecafe.models.FavoriteProduct
 import com.nt118.joliecafe.ui.activities.detail.DetailActivity
 import com.nt118.joliecafe.ui.fragments.favorite.FavoriteFragment
+import java.text.NumberFormat
+import java.util.*
 
 class FavoriteItemAdapter(
     private val favoriteFragment: FavoriteFragment,
@@ -56,7 +58,11 @@ class FavoriteItemAdapter(
 
 
             favoriteFragment.context?.let { context ->
-                holder.binding.itemPrice.text = context.getString(R.string.product_price, product.originPrice.toString())
+                holder.binding.itemPrice.text = context.getString(
+                    R.string.product_price, NumberFormat.getNumberInstance(
+                        Locale.US
+                    ).format(product.originPrice)
+                )
             }
 
             holder.binding.btnFavorite.setOnClickListener {

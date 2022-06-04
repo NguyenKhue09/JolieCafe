@@ -21,7 +21,7 @@ class RemoteDataSource @Inject constructor(
         data: MomoPaymentRequestBody,
         token: String
     ): Response<ApiResponseSingleData<Unit>> {
-        return jolieCafeApi.momoRequestPayment(body = data, token = token)
+        return jolieCafeApi.momoRequestPayment(body = data, token = "Bearer $token")
     }
 
     suspend fun createUser(data: Map<String, String>): Response<ApiResponseSingleData<User>> {

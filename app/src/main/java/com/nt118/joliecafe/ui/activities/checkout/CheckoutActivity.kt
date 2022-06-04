@@ -165,22 +165,6 @@ class CheckoutActivity : AppCompatActivity() {
             MoMoParameterNamePayment.EXTRA to ""
         )
 
-//        val eventValue: MutableMap<String, Any> = HashMap()
-//        eventValue["merchantname"] = MERCHANT_NAME
-//        eventValue["merchantcode"] = MERCHANT_CODE
-//        eventValue["amount"] = bill.totalCost.toInt().toString()
-//        eventValue["orderId"] = orderId
-//        eventValue["orderLabel"] = "Mã đơn hàng"
-//        eventValue["merchantnamelabel"] = "Nhà cung cấp"
-//        eventValue["description"] = momoBillDescription
-//        eventValue["fee"] = "0"
-//        eventValue["requestId"] = MERCHANT_CODE + "merchant_billId_" + System.currentTimeMillis()
-//        eventValue["partnerCode"] = MERCHANT_CODE
-//        eventValue[MoMoParameterNamePayment.REQUEST_TYPE] = "payment"
-//        eventValue[MoMoParameterNamePayment.LANGUAGE] = "vi"
-//        eventValue[MoMoParameterNamePayment.EXTRA] = ""
-
-        println(bill.totalCost.toInt())
         //Request momo app
         AppMoMoLibKotlinVersion.getMoMoKotlinInstance().requestMoMoCallBack(this, momoLaunchResultCallBack, eventValue)
     }
@@ -211,13 +195,6 @@ class CheckoutActivity : AppCompatActivity() {
                                 description = momoBillDescription,
                                 bill = bill
                             )
-
-//                            val body = mapOf(
-//                                "customerNumber" to phoneNumber!!,
-//                                "partnerRefId" to orderId,
-//                                "appData" to token,
-//                                "description" to momoBillDescription
-//                            )
 
                             checkoutViewModel.momoPaymentRequest(token = checkoutViewModel.userToken, data = body)
 
@@ -298,11 +275,14 @@ class CheckoutActivity : AppCompatActivity() {
         momoPaymentRequestResponse.observe(this@CheckoutActivity) { response ->
             when (response) {
                 is ApiResult.Loading -> {
+                    binding.checkoutCircularProgressIndicator.visibility = View.VISIBLE
                 }
                 is ApiResult.NullDataSuccess -> {
-                    showSnackBar(message = "Payment successfully", status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_success)
+                    binding.checkoutCircularProgressIndicator.visibility = View.GONE
+                    showSnackBar(message = "Momo payment successfully", status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_success)
                 }
                 is ApiResult.Error -> {
+                    binding.checkoutCircularProgressIndicator.visibility = View.GONE
                     showSnackBar(message = response.message!!, status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
                 }
                 else -> {}

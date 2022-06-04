@@ -22,7 +22,7 @@
     <string name="your_cart_is_empty">Your cart is empty!</string>
     <string name="havent_add_anything">You haven\'t added anything yet.</string>
     <string name="item_name">Latte</string>
-    <string name="item_price">90.0000 VND</string>
+    <string name="item_price">90,0000 VND</string>
     <string name="item_favorite">5</string>
     <string name="dot_center_vertical">•</string>
     <string name="favorite_screen_title">Favorite</string>
