@@ -16,5 +16,6 @@ data class Bill(
     val paid: Boolean,
     val paymentMethod: String,
     val orderDate: String,
-    val status: String
+    val status: String,
+    val orderId: String,
 )

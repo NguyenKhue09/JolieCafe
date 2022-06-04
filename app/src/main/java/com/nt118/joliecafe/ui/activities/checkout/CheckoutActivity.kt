@@ -1,7 +1,9 @@
 package com.nt118.joliecafe.ui.activities.checkout
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -10,31 +12,36 @@ import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.CheckoutAdapter
 import com.nt118.joliecafe.databinding.ActivityCheckoutBinding
-import com.nt118.joliecafe.models.Address
-import com.nt118.joliecafe.models.Bill
-import com.nt118.joliecafe.models.BillProduct
-import com.nt118.joliecafe.models.CartItem
+import com.nt118.joliecafe.models.*
+import com.nt118.joliecafe.payments.momo_payment.AppMoMoLibKotlinVersion
 import com.nt118.joliecafe.ui.activities.address_book.AddressBookActivity
-import com.nt118.joliecafe.ui.activities.order_detail.OrderDetailActivity
-import com.nt118.joliecafe.util.ApiResult
-import com.nt118.joliecafe.util.DateTimeUtil
-import com.nt118.joliecafe.util.NetworkListener
-import com.nt118.joliecafe.util.NumberUtil
+import com.nt118.joliecafe.util.*
+import com.nt118.joliecafe.util.Constants.Companion.MERCHANT_CODE
+import com.nt118.joliecafe.util.Constants.Companion.MERCHANT_NAME
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_ERROR
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_SUCCESS
+import com.nt118.joliecafe.util.extenstions.setCustomBackground
+import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.checkout.CheckoutViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import vn.momo.momo_partner.MoMoParameterNamePayment
 
 @AndroidEntryPoint
 class CheckoutActivity : AppCompatActivity() {
@@ -63,6 +70,9 @@ class CheckoutActivity : AppCompatActivity() {
     private lateinit var tvJolieCoinDetail: TextView
     private lateinit var tvTotalDetail: TextView
 
+    private lateinit var momoBillDescription: String
+    private lateinit var bill: Bill
+
     private val cartItems: List<CartItem> get() = checkoutViewModel.cartItems
     private var isUseJolieCoin
         get() = checkoutViewModel.isUseJolieCoin.value
@@ -83,6 +93,8 @@ class CheckoutActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initViews()
+        initMoMoPayment()
+        configMoMo()
         readDataStore()
         observe()
         setListeners()
@@ -121,6 +133,119 @@ class CheckoutActivity : AppCompatActivity() {
             totalPrice = subTotalPrice!!
         }
     }
+
+    private fun initMoMoPayment() {
+        AppMoMoLibKotlinVersion.getMoMoKotlinInstance().setEnvironment(AppMoMoLibKotlinVersion.Companion.ENVIRONMENT.DEVELOPMENT)
+    }
+
+    private fun configMoMo() {
+        AppMoMoLibKotlinVersion.getMoMoKotlinInstance().setAction(AppMoMoLibKotlinVersion.Companion.ACTION.PAYMENT)
+        AppMoMoLibKotlinVersion.getMoMoKotlinInstance().setActionType(AppMoMoLibKotlinVersion.Companion.ACTION_TYPE.GET_TOKEN)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun requestMoMoPayment() {
+        bill = createBill()
+
+        momoBillDescription = "Thanh toán đơn hàng ${bill.orderId} qua MoMo"
+
+        val eventValue = mutableMapOf<String, Any>(
+            "merchantname" to MERCHANT_NAME,
+            "merchantcode" to MERCHANT_CODE,
+            "amount" to bill.totalCost.toInt(),
+            "orderId" to bill.orderId,
+            "orderLabel" to "Mã đơn hàng",
+            "merchantnamelabel" to "Nhà cung cấp",
+            "fee" to "0",
+            "description" to momoBillDescription,
+            "requestId" to MERCHANT_CODE + "merchant_billId_" + System.currentTimeMillis(),
+            "partnerCode" to MERCHANT_CODE,
+            MoMoParameterNamePayment.REQUEST_TYPE to "payment",
+            MoMoParameterNamePayment.LANGUAGE to "vi",
+            MoMoParameterNamePayment.EXTRA to ""
+        )
+
+//        val eventValue: MutableMap<String, Any> = HashMap()
+//        eventValue["merchantname"] = MERCHANT_NAME
+//        eventValue["merchantcode"] = MERCHANT_CODE
+//        eventValue["amount"] = bill.totalCost.toInt().toString()
+//        eventValue["orderId"] = orderId
+//        eventValue["orderLabel"] = "Mã đơn hàng"
+//        eventValue["merchantnamelabel"] = "Nhà cung cấp"
+//        eventValue["description"] = momoBillDescription
+//        eventValue["fee"] = "0"
+//        eventValue["requestId"] = MERCHANT_CODE + "merchant_billId_" + System.currentTimeMillis()
+//        eventValue["partnerCode"] = MERCHANT_CODE
+//        eventValue[MoMoParameterNamePayment.REQUEST_TYPE] = "payment"
+//        eventValue[MoMoParameterNamePayment.LANGUAGE] = "vi"
+//        eventValue[MoMoParameterNamePayment.EXTRA] = ""
+
+        println(bill.totalCost.toInt())
+        //Request momo app
+        AppMoMoLibKotlinVersion.getMoMoKotlinInstance().requestMoMoCallBack(this, momoLaunchResultCallBack, eventValue)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val momoLaunchResultCallBack =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if ( result.resultCode == Activity.RESULT_OK) {
+                if (result.data != null) {
+                    if (result.data!!.getIntExtra("status", -1) == 0) {
+                        //TOKEN IS AVAILABLE
+
+                        val token = result.data!!.getStringExtra("data") //Token response
+                        val phoneNumber = result.data!!.getStringExtra("phonenumber")
+                        var env = result.data!!.getStringExtra("env")
+                        if (env == null) {
+                            env = "app"
+                        }
+
+                        if (token != null && token != "") {
+                            println(token)
+                            println(phoneNumber)
+
+                            val body = MomoPaymentRequestBody(
+                                customerNumber = phoneNumber!!,
+                                partnerRefId = bill.orderId,
+                                appData = token,
+                                description = momoBillDescription,
+                                bill = bill
+                            )
+
+//                            val body = mapOf(
+//                                "customerNumber" to phoneNumber!!,
+//                                "partnerRefId" to orderId,
+//                                "appData" to token,
+//                                "description" to momoBillDescription
+//                            )
+
+                            checkoutViewModel.momoPaymentRequest(token = checkoutViewModel.userToken, data = body)
+
+
+                            // TODO: send phoneNumber & token to your server side to process payment with MoMo server
+                            // IF Momo popup success, continue to process your order
+                        } else {
+                            showSnackBar(message = getString(R.string.not_receive_info), status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
+                        }
+                    } else if (result.data!!.getIntExtra("status", -1) == 1) {
+                        //TOKEN FAIL
+                        val message =
+                            if (result.data!!.getStringExtra("message") != null) result.data!!.getStringExtra("message") else "Thất bại"
+                        showSnackBar(message = message!!, status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
+                    } else if (result.data!!.getIntExtra("status", -1) == 2) {
+                        //TOKEN FAIL
+                        showSnackBar(message = getString(R.string.not_receive_info), status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
+                    } else {
+                        //TOKEN FAIL
+                        showSnackBar(message = getString(R.string.not_receive_info), status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
+                    }
+                } else {
+                    showSnackBar(message = getString(R.string.not_receive_info), status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
+                }
+            } else {
+                showSnackBar(message = getString(R.string.not_receive_info_err), status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
+            }
+        }
 
     private fun readDataStore() {
         checkoutViewModel.readBackOnline.asLiveData().observe(this) {
@@ -170,6 +295,20 @@ class CheckoutActivity : AppCompatActivity() {
             }
         }
 
+        momoPaymentRequestResponse.observe(this@CheckoutActivity) { response ->
+            when (response) {
+                is ApiResult.Loading -> {
+                }
+                is ApiResult.NullDataSuccess -> {
+                    showSnackBar(message = "Payment successfully", status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_success)
+                }
+                is ApiResult.Error -> {
+                    showSnackBar(message = response.message!!, status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
+                }
+                else -> {}
+            }
+        }
+
         subTotalPrice.observe(this@CheckoutActivity) {
             tvSubtotalDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(it))
         }
@@ -197,8 +336,8 @@ class CheckoutActivity : AppCompatActivity() {
         }
 
         btnOrder.setOnClickListener {
-            val bill = createBill()
-            startActivity(Intent(this, OrderDetailActivity::class.java))
+            requestMoMoPayment()
+            //startActivity(Intent(this, OrderDetailActivity::class.java))
         }
 
         btnCancel.setOnClickListener {
@@ -250,21 +389,22 @@ class CheckoutActivity : AppCompatActivity() {
                 cartItem.price
             ))
         }
-
+        val orderId = RandomString.generateRandomString()
         return Bill(
             id = null,
             userInfo = currentUser!!.uid,
             products = billProductList.toList(),
             address = userAddress!!,
             totalCost = subTotalPrice!!,
-            calculateDiscount(),
-            calculateShippingFee(),
-            emptyList(),
+            discountCost = calculateDiscount(),
+            shippingFee = calculateShippingFee(),
+            voucherApply = emptyList(),
             scoreApply = 20, // Coi như mỗi lần mua là được 20 điểm
             paid = false, // Chưa thanh toán
-            paymentMethod = "COD", // Tạm cho ntn nhé
+            paymentMethod = "MoMo", // Tạm cho ntn nhé
             orderDate = DateTimeUtil.getCurrentDate(),
-            status = "Pending"
+            status = "Pending",
+            orderId = orderId
         )
     }
 
@@ -286,5 +426,31 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun pxToDp(px: Float, context: Context) =
         px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+
+    private fun showSnackBar(message: String, status: Int, icon: Int) {
+        val drawable = getDrawable(icon)
+
+        val snackBarContentColor = when (status) {
+            Constants.SNACK_BAR_STATUS_SUCCESS -> R.color.text_color_2
+            Constants.SNACK_BAR_STATUS_DISABLE -> R.color.dark_text_color
+            Constants.SNACK_BAR_STATUS_ERROR -> R.color.error_color
+            else -> R.color.text_color_2
+        }
+
+
+        val snackBar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setAction("Ok") {
+            }
+            .setActionTextColor(ContextCompat.getColor(this, R.color.grey_primary))
+            .setTextColor(ContextCompat.getColor(this, snackBarContentColor))
+            .setIcon(
+                drawable = drawable!!,
+                colorTint = ContextCompat.getColor(this, snackBarContentColor),
+                iconPadding = resources.getDimensionPixelOffset(R.dimen.small_margin)
+            )
+            .setCustomBackground(getDrawable(R.drawable.snackbar_normal_custom_bg)!!)
+
+        snackBar.show()
+    }
 
 }

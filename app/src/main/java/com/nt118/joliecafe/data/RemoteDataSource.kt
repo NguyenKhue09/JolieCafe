@@ -9,7 +9,6 @@ import com.nt118.joliecafe.data.paging_source.CartItemPagingSource
 import com.nt118.joliecafe.data.paging_source.FavoriteProductPagingSource
 import com.nt118.joliecafe.data.paging_source.ProductPagingSource
 import com.nt118.joliecafe.models.*
-import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants.Companion.PAGE_SIZE
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
@@ -19,9 +18,9 @@ class RemoteDataSource @Inject constructor(
     private val jolieCafeApi: JolieCafeApi
 ) {
     suspend fun momoRequestPayment(
-        data: HashMap<String, Any>,
+        data: MomoPaymentRequestBody,
         token: String
-    ): Response<SuspendUserMoneyResponse> {
+    ): Response<ApiResponseSingleData<Unit>> {
         return jolieCafeApi.momoRequestPayment(body = data, token = token)
     }
 
