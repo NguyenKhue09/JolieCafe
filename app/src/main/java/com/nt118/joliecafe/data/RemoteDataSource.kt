@@ -3,14 +3,12 @@ package com.nt118.joliecafe.data
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.nt118.joliecafe.data.network.FavProductId
 import com.nt118.joliecafe.data.network.JolieCafeApi
 import com.nt118.joliecafe.data.paging_source.AddressPagingSource
 import com.nt118.joliecafe.data.paging_source.CartItemPagingSource
 import com.nt118.joliecafe.data.paging_source.FavoriteProductPagingSource
 import com.nt118.joliecafe.data.paging_source.ProductPagingSource
 import com.nt118.joliecafe.models.*
-import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants.Companion.PAGE_SIZE
 import kotlinx.coroutines.flow.Flow
 import retrofit2.Response

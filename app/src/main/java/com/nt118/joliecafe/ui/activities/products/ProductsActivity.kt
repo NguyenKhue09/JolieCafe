@@ -3,13 +3,16 @@ package com.nt118.joliecafe.ui.activities.products
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.CategorieAdapter
 import com.nt118.joliecafe.adapter.CategoriesProductsAdapter
@@ -17,10 +20,13 @@ import com.nt118.joliecafe.adapter.FavoriteItemAdapter
 import com.nt118.joliecafe.adapter.ProductAdapter
 import com.nt118.joliecafe.databinding.ActivityProductsBinding
 import com.nt118.joliecafe.models.CategorieModel
+import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
 import com.nt118.joliecafe.util.extenstions.observeOnce
+import com.nt118.joliecafe.util.extenstions.setCustomBackground
+import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.products.ProductsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -28,7 +34,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class ProductsActivity : AppCompatActivity() {
-    private val productsViewModel by viewModels<ProductsViewModel>()
+    val productsViewModel by viewModels<ProductsViewModel>()
 
     private var _binding: ActivityProductsBinding? = null
     private val  binding get() = _binding!!
@@ -70,12 +76,14 @@ class ProductsActivity : AppCompatActivity() {
         // RecyclerView product
         val diffCallBack = ProductComparator
         val recyclerViewProduct = binding.recyclerViewProduct
-         productAdapter = ProductAdapter( this, diffCallBack = diffCallBack, productsViewModel = productsViewModel)
+         productAdapter = ProductAdapter( this, diffCallBack = diffCallBack )
         recyclerViewProduct.layoutManager = GridLayoutManager(this,2)
         recyclerViewProduct.adapter = productAdapter
 
 
         handlePagingAdapterState()
+        handleAddFavoriteResponse()
+        handleDeleteFavoriteProductResponse()
 
 
     }
@@ -136,6 +144,7 @@ class ProductsActivity : AppCompatActivity() {
                     productsViewModel.networkStatus = status
                     productsViewModel.showNetworkStatus()
                     if(productsViewModel.backOnline) {
+                        productsViewModel.getFavorite(productsViewModel.userToken)
                         productsViewModel.getProducts(
                             productQuery = mapOf(
                                 "type" to Constants.listTabContentFavorite[position]
@@ -152,6 +161,7 @@ class ProductsActivity : AppCompatActivity() {
         productsViewModel.tabSelected.observe(this) { tab ->
             if (productsViewModel.networkStatus) {
                 lifecycleScope.launchWhenStarted {
+                    productsViewModel.getFavorite(productsViewModel.userToken)
                     productsViewModel.getProducts(
                         productQuery = mapOf(
                             "type" to tab
@@ -167,5 +177,97 @@ class ProductsActivity : AppCompatActivity() {
             }
         }
     }
+
+    //favorite
+    private fun handleAddFavoriteResponse() {
+        productsViewModel.addFavoriteProductResponse.observe(this@ProductsActivity) { response ->
+            Log.d("Bottom Shit", "handleApiResponse: call")
+            when (response) {
+                is ApiResult.Loading -> {
+
+                }
+                is ApiResult.NullDataSuccess -> {
+                    showSnackBar(
+                        message = "Add favorite product successful",
+                        status = Constants.SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun addNewFavorite(productId: String) {
+        productsViewModel.addFavoriteProduct(
+            token = productsViewModel.userToken,
+            productId = productId
+        )
+    }
+
+    fun removeFavoriteProduct(productId: String) {
+        productsViewModel.removeFavoriteProduct(
+            token = productsViewModel.userToken,
+            productId = productId
+        )
+    }
+
+
+    private fun handleDeleteFavoriteProductResponse() {
+        productsViewModel.deleteFavoriteProductResponse.observe(this) { result ->
+            when (result) {
+                is ApiResult.Loading -> {
+                }
+                is ApiResult.NullDataSuccess -> {
+                    //Toast.makeText(requireContext(), "Remove favorite product successful", Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Remove favorite product successful",
+                        status = Constants.SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
+                }
+                is ApiResult.Error -> {
+                    //Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
+                    showSnackBar(
+                        message = "Remove favorite product failed!",
+                        status = Constants.SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun showSnackBar(message: String, status: Int, icon: Int) {
+        val drawable = this.getDrawable(icon)
+
+        val snackBarContentColor = when (status) {
+            Constants.SNACK_BAR_STATUS_SUCCESS -> R.color.text_color_2
+            Constants.SNACK_BAR_STATUS_DISABLE -> R.color.dark_text_color
+            Constants.SNACK_BAR_STATUS_ERROR -> R.color.error_color
+            else -> R.color.text_color_2
+        }
+
+
+        val snackBar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setAction("Ok") {
+            }
+            .setActionTextColor(ContextCompat.getColor(this, R.color.grey_primary))
+            .setTextColor(ContextCompat.getColor(this, snackBarContentColor))
+            .setIcon(
+                drawable = drawable!!,
+                colorTint = ContextCompat.getColor(this, snackBarContentColor),
+                iconPadding = resources.getDimensionPixelOffset(R.dimen.small_margin)
+            )
+            .setCustomBackground(this.getDrawable(R.drawable.snackbar_normal_custom_bg)!!)
+
+        snackBar.show()
+    }
+
+
 
 }

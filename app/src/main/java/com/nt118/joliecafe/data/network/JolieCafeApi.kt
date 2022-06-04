@@ -1,17 +1,10 @@
 package com.nt118.joliecafe.data.network
 
 import com.nt118.joliecafe.models.*
-import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants.Companion.API_GATEWAY
-import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
-import kotlinx.serialization.Serializable
 
-@Serializable
-data class FavProductId (
-    val productId: String
-)
 
 interface JolieCafeApi {
 

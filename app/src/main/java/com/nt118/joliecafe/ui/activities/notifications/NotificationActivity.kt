@@ -17,16 +17,16 @@ class NotificationActivity : AppCompatActivity() {
         recyclerViewLayout()
 
         //back home
-        binding.iconBackHome.setOnClickListener {
-            onBackPressed()
-        }
+//        binding.iconBackHome.setOnClickListener {
+//            onBackPressed()
+//        }
     }
 
     private fun recyclerViewLayout() {
-        val recyclerViewNotificationAdapter = binding.recyclerViewNotification
-        val notificationAdapter = NotificationAdapter(fetDataBestSaler())
-        recyclerViewNotificationAdapter.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false)
-        recyclerViewNotificationAdapter.adapter = notificationAdapter
+//        val recyclerViewNotificationAdapter = binding.recyclerViewNotification
+//        val notificationAdapter = NotificationAdapter(fetDataBestSaler())
+//        recyclerViewNotificationAdapter.layoutManager = LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false)
+//        recyclerViewNotificationAdapter.adapter = notificationAdapter
     }
 
     private fun fetDataBestSaler() : ArrayList<String> {
