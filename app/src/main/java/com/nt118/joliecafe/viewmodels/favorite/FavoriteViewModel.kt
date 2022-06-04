@@ -15,6 +15,7 @@ import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -43,6 +44,14 @@ class FavoriteViewModel @Inject constructor(
     var networkStatus = false
     var backOnline = false
 
+    init {
+        viewModelScope.launch {
+            readUserToken.collectLatest { token ->
+                println(token)
+                userToken = token
+            }
+        }
+    }
 
     fun getUserFavoriteProducts(
         productQuery: Map<String, String>,

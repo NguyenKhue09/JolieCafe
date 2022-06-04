@@ -32,11 +32,8 @@ import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.NumberUtil
 import com.nt118.joliecafe.viewmodels.cart.CartViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class CartFragment : Fragment() {
@@ -405,7 +402,7 @@ class CartFragment : Fragment() {
 //                            cartMilkTeaAdapter.submitData(lifecycle, data)
 //                        }
 //                    }
-                }
+               }
             }
         }
     }
