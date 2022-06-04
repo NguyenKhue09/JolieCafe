@@ -4,15 +4,15 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class NetworkListener: ConnectivityManager.NetworkCallback() {
 
     private val isNetworkAvailable = MutableStateFlow(false)
+    private lateinit var connectivityManager: ConnectivityManager
 
     fun checkNetworkAvailability(context: Context): MutableStateFlow<Boolean> {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         connectivityManager.registerDefaultNetworkCallback(this)
 
@@ -42,6 +42,11 @@ class NetworkListener: ConnectivityManager.NetworkCallback() {
                 isNetworkAvailable
             }
         }
+    }
+
+    fun unregisterNetworkCallback() {
+        println("unregisterNetworkCallback")
+        connectivityManager.unregisterNetworkCallback(this)
     }
 
     override fun onAvailable(network: Network) {

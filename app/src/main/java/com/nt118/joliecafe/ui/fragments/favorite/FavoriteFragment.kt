@@ -107,24 +107,25 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun initTabPageData() {
-        networkListener.checkNetworkAvailability(requireContext())
-            .asLiveData().observeOnce(viewLifecycleOwner) { status ->
-                favoriteViewModel.networkStatus = status
-                favoriteViewModel.showNetworkStatus()
-                if (favoriteViewModel.networkStatus) {
-                    lifecycleScope.launchWhenStarted {
-                        favoriteViewModel.getUserFavoriteProducts(
-                            productQuery = mapOf(
-                                "type" to listTabContentFavorite[0]
-                            ),
-                            token = favoriteViewModel.userToken
-                        ).collectLatest { data ->
-                            selectedTab = listTabContentFavorite[0]
-                            submitFavoriteData(data = data)
-                        }
-                    }
-                }
+//        networkListener.checkNetworkAvailability(requireContext())
+//            .asLiveData().observeOnce(viewLifecycleOwner) { status ->
+//                favoriteViewModel.networkStatus = status
+//                favoriteViewModel.showNetworkStatus()
+//                if (favoriteViewModel.networkStatus) {
+//
+//                }
+//            }
+        lifecycleScope.launchWhenStarted {
+            favoriteViewModel.getUserFavoriteProducts(
+                productQuery = mapOf(
+                    "type" to listTabContentFavorite[0]
+                ),
+                token = favoriteViewModel.userToken
+            ).collectLatest { data ->
+                selectedTab = listTabContentFavorite[0]
+                submitFavoriteData(data = data)
             }
+        }
     }
 
     private fun onTabSelected() {
@@ -333,5 +334,10 @@ class FavoriteFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onStop() {
+        super.onStop()
+        networkListener.unregisterNetworkCallback()
     }
 }

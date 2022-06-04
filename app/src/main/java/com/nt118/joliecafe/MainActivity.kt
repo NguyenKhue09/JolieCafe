@@ -11,7 +11,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.nt118.joliecafe.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 
-const val TOPIC = "/topics/JolieCafeNotificationMainTopic"
+const val TOPIC = "JolieCafeNotificationMainTopic"
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {

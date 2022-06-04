@@ -187,6 +187,7 @@ class ProfileFragment : Fragment() {
                     )
                 }
             }
+        networkListener.unregisterNetworkCallback()
     }
 
     private fun observerGetUserResponse() {
@@ -284,5 +285,10 @@ class ProfileFragment : Fragment() {
             .setCustomBackground(requireContext().getDrawable(R.drawable.snackbar_normal_custom_bg)!!)
 
         snackBar.show()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        networkListener.unregisterNetworkCallback()
     }
 }

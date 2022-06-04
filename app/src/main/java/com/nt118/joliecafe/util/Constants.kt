@@ -27,5 +27,8 @@ class Constants {
         const val MERCHANT_NAME = "JolieCafe"
         const val MERCHANT_CODE = "MOMOJKQ920220323"
         const val MERCHANT_NAME_LABEL = "JolieCafe"
+
+        const val UTC_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        const val LOCAL_TIME_FORMAT = "dd/MM/yyyy"
     }
 }       

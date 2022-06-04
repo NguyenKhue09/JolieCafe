@@ -646,4 +646,8 @@ class CartFragment : Fragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        networkListener.unregisterNetworkCallback()
+    }
 }

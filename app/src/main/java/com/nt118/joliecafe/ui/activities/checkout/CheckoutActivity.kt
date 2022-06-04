@@ -34,6 +34,7 @@ import com.nt118.joliecafe.ui.activities.address_book.AddressBookActivity
 import com.nt118.joliecafe.util.*
 import com.nt118.joliecafe.util.Constants.Companion.MERCHANT_CODE
 import com.nt118.joliecafe.util.Constants.Companion.MERCHANT_NAME
+import com.nt118.joliecafe.util.Constants.Companion.MERCHANT_NAME_LABEL
 import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_ERROR
 import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_SUCCESS
 import com.nt118.joliecafe.util.extenstions.setCustomBackground
@@ -154,8 +155,8 @@ class CheckoutActivity : AppCompatActivity() {
             "merchantcode" to MERCHANT_CODE,
             "amount" to bill.totalCost.toInt(),
             "orderId" to bill.orderId,
-            "orderLabel" to "Mã đơn hàng",
-            "merchantnamelabel" to "Nhà cung cấp",
+            "orderLabel" to bill.orderId,
+            "merchantnamelabel" to MERCHANT_NAME_LABEL,
             "fee" to "0",
             "description" to momoBillDescription,
             "requestId" to MERCHANT_CODE + "merchant_billId_" + System.currentTimeMillis(),
@@ -240,7 +241,8 @@ class CheckoutActivity : AppCompatActivity() {
                 is ApiResult.Loading -> progressCart.visibility = View.VISIBLE
                 is ApiResult.Success -> {
                     progressCart.visibility = View.GONE
-                    val adapter = CheckoutAdapter(response.data!!, this@CheckoutActivity)
+                    cartItems = response.data!!
+                    val adapter = CheckoutAdapter(response.data, this@CheckoutActivity)
                     rvProduct.adapter = adapter
                     subTotalPrice.value = adapter.getTotalPrice()
                     totalPrice.value = subTotalPrice.value!! + 30000.0 - (if (isUseJolieCoin.value!!) 200.0 else 0.0)
@@ -363,19 +365,22 @@ class CheckoutActivity : AppCompatActivity() {
         val billProductList = mutableListOf<BillProduct>()
         cartItems.forEach { cartItem ->
             billProductList.add(BillProduct(
-                cartItem.productDetail,
+                cartItem.productDetail.id,
                 cartItem.size,
                 cartItem.quantity,
                 cartItem.price
             ))
         }
+
+        println(billProductList)
+
         val orderId = RandomString.generateRandomString()
         return Bill(
             id = null,
             userInfo = currentUser!!.uid,
             products = billProductList.toList(),
             address = userAddress!!,
-            totalCost = subTotalPrice!!,
+            totalCost = totalPrice!!,
             discountCost = calculateDiscount(),
             shippingFee = calculateShippingFee(),
             voucherApply = emptyList(),
