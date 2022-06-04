@@ -29,6 +29,7 @@ import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.CartItemComparator
 import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.util.NumberUtil
 import com.nt118.joliecafe.viewmodels.cart.CartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -65,6 +66,7 @@ class CartFragment : Fragment() {
     private lateinit var suggestionContainer: LinearLayout
     private lateinit var footer: FrameLayout
     private lateinit var tvItemCount: TextView
+    private lateinit var tvTotalPrice: TextView
     private var isCartEmpty = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,6 +93,9 @@ class CartFragment : Fragment() {
         cartViewModel.itemCount.asLiveData().observe(viewLifecycleOwner) {
             tvItemCount.text = it.toString()
         }
+        cartViewModel.totalCost.observe(viewLifecycleOwner) {
+            tvTotalPrice.text = NumberUtil.addSeparator(it)
+        }
         cartViewModel.deleteCartItemResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResult.Loading -> progressCart.visibility = View.VISIBLE
@@ -113,8 +118,10 @@ class CartFragment : Fragment() {
                     } else {
                         progressCart.visibility = View.GONE
                         emptyCartView.visibility = View.GONE
+                        suggestionContainer.visibility = View.GONE
                         header2.visibility = View.VISIBLE
                         footer.visibility = View.VISIBLE
+                        cartViewModel.totalCost.value = 0.0
                         fetchDataFromApi(data)
                     }
                 }
@@ -146,6 +153,7 @@ class CartFragment : Fragment() {
         rvCartSuggestion = binding.rvCartSuggestion
         suggestionContainer = binding.suggestionContainer
         tvItemCount = binding.tvItemCount
+        tvTotalPrice = binding.tvTotalPrice
 
         rvCartSuggestion.adapter = CartSuggestionAdapter()
         cartCoffeeAdapter = CartAdapter(requireActivity(), cartViewModel, mutableListOf())
@@ -212,39 +220,57 @@ class CartFragment : Fragment() {
     }
 
     private fun fetchDataFromApi(data: List<CartItemByCategory>) {
-        data.find { it.type == "Coffee" }?.let {
+        data.find { it.type == "Coffee" }?.let { cartItemByCategory ->
             cvCoffee.visibility = View.VISIBLE
-            cartCoffeeAdapter.fetchData(it.products)
+            cartCoffeeAdapter.fetchData(cartItemByCategory.products)
+            cartItemByCategory.products.sumOf { it.price }.let { price ->
+                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
+            }
             cartViewModel.itemCount.value += cartCoffeeAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
-        data.find { it.type == "Tea" }?.let {
+        data.find { it.type == "Tea" }?.let { cartItemByCategory ->
             cvTea.visibility = View.VISIBLE
-            cartTeaAdapter.fetchData(it.products)
+            cartTeaAdapter.fetchData(cartItemByCategory.products)
+            cartItemByCategory.products.sumOf { it.price }.let { price ->
+                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
+            }
             cartViewModel.itemCount.value += cartTeaAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
-        data.find { it.type == "Juice" }?.let {
+        data.find { it.type == "Juice" }?.let { cartItemByCategory ->
             cvJuice.visibility = View.VISIBLE
-            cartJuiceAdapter.fetchData(it.products)
+            cartJuiceAdapter.fetchData(cartItemByCategory.products)
+            cartItemByCategory.products.sumOf { it.price }.let { price ->
+                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
+            }
             cartViewModel.itemCount.value += cartJuiceAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
-        data.find { it.type == "Milk tea" }?.let {
+        data.find { it.type == "Milk tea" }?.let { cartItemByCategory ->
             cvMilkTea.visibility = View.VISIBLE
-            cartMilkTeaAdapter.fetchData(it.products)
+            cartMilkTeaAdapter.fetchData(cartItemByCategory.products)
+            cartItemByCategory.products.sumOf { it.price }.let { price ->
+                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
+            }
             cartViewModel.itemCount.value += cartMilkTeaAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
-        data.find { it.type == "Milk shake" }?.let {
+        data.find { it.type == "Milk shake" }?.let { cartItemByCategory ->
             cvMilkShake.visibility = View.VISIBLE
-            cartMilkShakeAdapter.fetchData(it.products)
+            cartMilkShakeAdapter.fetchData(cartItemByCategory.products)
+            cartItemByCategory.products.sumOf { it.price }.let { price ->
+                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
+            }
             cartViewModel.itemCount.value += cartMilkShakeAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
-        data.find { it.type == "Pasty" }?.let {
+        data.find { it.type == "Pasty" }?.let { cartItemByCategory ->
             cvPasty.visibility = View.VISIBLE
-            cartPastyAdapter.fetchData(it.products)
+            cartPastyAdapter.fetchData(cartItemByCategory.products)
+            cartItemByCategory.products.sumOf { it.price }.let { price ->
+                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
+            }
             cartViewModel.itemCount.value += cartPastyAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
     }
@@ -389,6 +415,8 @@ class CartFragment : Fragment() {
         rvCartSuggestion.visibility = View.VISIBLE
         suggestionContainer.visibility = View.VISIBLE
         header2.visibility = View.GONE
+        footer.visibility = View.GONE
+        progressCart.visibility = View.GONE
     }
 
     private fun checkboxHandler() {

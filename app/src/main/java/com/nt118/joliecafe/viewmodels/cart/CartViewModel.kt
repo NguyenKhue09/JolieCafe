@@ -41,6 +41,7 @@ class CartViewModel @Inject constructor(
     var itemCount: MutableStateFlow<Int> = MutableStateFlow(0)
     var getCartItemV2Response: MutableLiveData<ApiResult<List<CartItemByCategory>>> = MutableLiveData()
     var deleteCartItemResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
+    var totalCost: MutableLiveData<Double> = MutableLiveData(0.0)
 
     fun getCartItems(token: String, type: String): Flow<PagingData<CartItem>> {
         return if (token.isNotEmpty()) {
