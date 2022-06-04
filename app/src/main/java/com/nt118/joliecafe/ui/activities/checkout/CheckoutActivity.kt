@@ -26,6 +26,7 @@ import com.nt118.joliecafe.models.Address
 import com.nt118.joliecafe.models.Bill
 import com.nt118.joliecafe.models.BillProduct
 import com.nt118.joliecafe.models.CartItem
+import com.nt118.joliecafe.ui.activities.address_book.AddressBookActivity
 import com.nt118.joliecafe.ui.activities.order_detail.OrderDetailActivity
 import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.DateTimeUtil
@@ -57,17 +58,24 @@ class CheckoutActivity : AppCompatActivity() {
     private lateinit var tvAddress: TextView
     private lateinit var addressContainer: LinearLayout
     private lateinit var swUseJolieCoin: SwitchCompat
+    private lateinit var tvChangeAddress: TextView
+    private lateinit var tvJolieCoinLabel: TextView
+    private lateinit var tvJolieCoinDetail: TextView
+    private lateinit var tvTotalDetail: TextView
 
     private val cartItems: List<CartItem> get() = checkoutViewModel.cartItems
     private var isUseJolieCoin
-        get() = checkoutViewModel.isUseJolieCoin
-        set(value) { checkoutViewModel.isUseJolieCoin = value }
+        get() = checkoutViewModel.isUseJolieCoin.value
+        set(value) { checkoutViewModel.isUseJolieCoin.value = value }
     private var userAddress
         get() = checkoutViewModel.userAddress
         set(value) { checkoutViewModel.userAddress = value }
+    private var subTotalPrice
+        get() = checkoutViewModel.subTotalPrice.value
+        set(value) { checkoutViewModel.subTotalPrice.value = value }
     private var totalPrice
-        get() = checkoutViewModel.totalPrice
-        set(value) { checkoutViewModel.totalPrice = value }
+        get() = checkoutViewModel.totalPrice.value
+        set(value) { checkoutViewModel.totalPrice.value = value }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,17 +85,7 @@ class CheckoutActivity : AppCompatActivity() {
         initViews()
         readDataStore()
         observe()
-
-        lifecycleScope.launchWhenStarted {
-            checkoutViewModel.readUserToken.collectLatest { token ->
-                checkoutViewModel.userToken = token
-                checkoutViewModel.getAllCartItems(token)
-                checkoutViewModel.getAddressById(token, checkoutViewModel.userDefaultAddressId)
-            }
-        }
         setListeners()
-
-        tvUseJolieCoin.text = resources.getString(R.string.use_jolie_coin, 200)
     }
 
     private fun initViews() {
@@ -105,7 +103,23 @@ class CheckoutActivity : AppCompatActivity() {
         tvPhoneNumber = binding.tvPhoneNumber
         tvAddress = binding.tvAddress
         swUseJolieCoin = binding.swUseJolieCoin
-        swUseJolieCoin.isChecked = isUseJolieCoin
+        tvChangeAddress = binding.tvChangeAddress
+        tvJolieCoinLabel = binding.tvJolieCoinLabel
+        tvJolieCoinDetail = binding.tvJolieCoinDetail
+        tvTotalDetail = binding.tvTotalDetail
+
+        swUseJolieCoin.isChecked = isUseJolieCoin!!
+        tvUseJolieCoin.text = resources.getString(R.string.use_jolie_coin, 200)
+
+        if (isUseJolieCoin!!) {
+            tvJolieCoinLabel.visibility = View.VISIBLE
+            tvJolieCoinDetail.visibility = View.VISIBLE
+            totalPrice = subTotalPrice!! - 200.0
+        } else {
+            tvJolieCoinLabel.visibility = View.GONE
+            tvJolieCoinDetail.visibility = View.GONE
+            totalPrice = subTotalPrice!!
+        }
     }
 
     private fun readDataStore() {
@@ -126,8 +140,8 @@ class CheckoutActivity : AppCompatActivity() {
                     progressCart.visibility = View.GONE
                     val adapter = CheckoutAdapter(response.data!!, this@CheckoutActivity)
                     rvProduct.adapter = adapter
-                    totalPrice = adapter.getTotalPrice()
-                    tvSubtotalDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(adapter.getTotalPrice()))
+                    subTotalPrice.value = adapter.getTotalPrice()
+                    totalPrice.value = subTotalPrice.value!! + 30000.0 - (if (isUseJolieCoin.value!!) 200.0 else 0.0)
                 }
                 is ApiResult.Error -> {
                     progressCart.visibility = View.GONE
@@ -155,6 +169,26 @@ class CheckoutActivity : AppCompatActivity() {
                 else -> {}
             }
         }
+
+        subTotalPrice.observe(this@CheckoutActivity) {
+            tvSubtotalDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(it))
+        }
+
+        totalPrice.observe(this@CheckoutActivity) {
+            tvTotalDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(it))
+        }
+
+        isUseJolieCoin.observe(this@CheckoutActivity) {
+            if (it) {
+                tvJolieCoinLabel.visibility = View.VISIBLE
+                tvJolieCoinDetail.visibility = View.VISIBLE
+                totalPrice.value = subTotalPrice.value!! + 30000.0 - 200.0
+            } else {
+                tvJolieCoinLabel.visibility = View.GONE
+                tvJolieCoinDetail.visibility = View.GONE
+                totalPrice.value = subTotalPrice.value!! + 30000.0
+            }
+        }
     }
 
     private fun setListeners() {
@@ -180,6 +214,11 @@ class CheckoutActivity : AppCompatActivity() {
         swUseJolieCoin.setOnClickListener {
             isUseJolieCoin = swUseJolieCoin.isChecked
         }
+
+        tvChangeAddress.setOnClickListener {
+            val intent = Intent(this, AddressBookActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun setShippingAddress(address: Address) {
@@ -192,14 +231,14 @@ class CheckoutActivity : AppCompatActivity() {
     private fun calculateDiscount(): Double {
         // discount chưa có nên tạm thời coi như JolieCoin là 200
 
-        return if (isUseJolieCoin) {
+        return if (isUseJolieCoin!!) {
             200.0
         } else {
             0.0
         }
     }
 
-    private fun calculateShippingFee() = 30000.0 // K tính được nên
+    private fun calculateShippingFee() = 30000.0 // K tính được nên tạm thời coi như là 30k
 
     private fun createBill(): Bill {
         val billProductList = mutableListOf<BillProduct>()
@@ -217,7 +256,7 @@ class CheckoutActivity : AppCompatActivity() {
             userInfo = currentUser!!.uid,
             products = billProductList.toList(),
             address = userAddress!!,
-            totalCost = totalPrice,
+            totalCost = subTotalPrice!!,
             calculateDiscount(),
             calculateShippingFee(),
             emptyList(),
@@ -232,6 +271,17 @@ class CheckoutActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launchWhenStarted {
+            checkoutViewModel.readUserToken.collectLatest { token ->
+                checkoutViewModel.userToken = token
+                checkoutViewModel.getAllCartItems(token)
+                checkoutViewModel.getAddressById(token, checkoutViewModel.userDefaultAddressId)
+            }
+        }
     }
 
     private fun pxToDp(px: Float, context: Context) =
