@@ -107,14 +107,6 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun initTabPageData() {
-//        networkListener.checkNetworkAvailability(requireContext())
-//            .asLiveData().observeOnce(viewLifecycleOwner) { status ->
-//                favoriteViewModel.networkStatus = status
-//                favoriteViewModel.showNetworkStatus()
-//                if (favoriteViewModel.networkStatus) {
-//
-//                }
-//            }
         lifecycleScope.launchWhenStarted {
             favoriteViewModel.getUserFavoriteProducts(
                 productQuery = mapOf(
@@ -212,12 +204,6 @@ class FavoriteFragment : Fragment() {
                         submitFavoriteData(data = data)
                     }
                 }
-            }
-        }
-        lifecycleScope.launchWhenStarted {
-            favoriteViewModel.readUserToken.collectLatest { token ->
-                println("update token")
-                favoriteViewModel.userToken = token
             }
         }
     }

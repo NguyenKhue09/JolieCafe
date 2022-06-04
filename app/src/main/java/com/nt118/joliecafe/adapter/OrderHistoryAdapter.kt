@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
+import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.OrderHistoryItemLayoutBinding
 import com.nt118.joliecafe.models.OrderHistory
 import com.nt118.joliecafe.ui.activities.order_history.OrderHistoryActivity
@@ -101,20 +102,27 @@ class OrderHistoryAdapter(
 
             orderItemInBillAdapter.setData(newData = bill.products)
 
+            val totalItem = bill.products.sumOf { it.quantity }
+
+            holder.binding.tvOrderNumberItem.text = orderHistoryActivity.getString(R.string.product_quantity, totalItem.toString())
             holder.binding.tvOrderDate.text = bill.orderDate.toDate()?.formatTo(dateFormat = LOCAL_TIME_FORMAT)
             holder.binding.tvUserName.text = bill.address.userName
             holder.binding.tvUserPhone.text = bill.address.phone
             holder.binding.tvUserAddress.text = bill.address.address
             holder.binding.tvSubtotalCost.text = orderHistoryActivity.getString(
-                com.nt118.joliecafe.R.string.product_price,
+                R.string.product_price,
                 NumberFormat.getNumberInstance(Locale.US).format(bill.totalCost - bill.shippingFee)
             )
             holder.binding.tvShippingFee.text = orderHistoryActivity.getString(
-                    com.nt118.joliecafe.R.string.product_price,
+                    R.string.product_price,
             NumberFormat.getNumberInstance(Locale.US).format(bill.shippingFee)
             )
             holder.binding.tvTotalCost.text = orderHistoryActivity.getString(
-                com.nt118.joliecafe.R.string.product_price,
+                R.string.product_price,
+                NumberFormat.getNumberInstance(Locale.US).format(bill.totalCost)
+            )
+            holder.binding.tvOrderTempTotalCost.text = orderHistoryActivity.getString(
+                R.string.product_price,
                 NumberFormat.getNumberInstance(Locale.US).format(bill.totalCost)
             )
         }

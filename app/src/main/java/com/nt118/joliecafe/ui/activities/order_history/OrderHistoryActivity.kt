@@ -20,7 +20,9 @@ import com.nt118.joliecafe.util.extenstions.setCustomBackground
 import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.order_history.OrderHistoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class OrderHistoryActivity : AppCompatActivity() {
