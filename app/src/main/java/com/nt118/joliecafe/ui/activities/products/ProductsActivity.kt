@@ -85,7 +85,6 @@ class ProductsActivity : AppCompatActivity() {
         handleAddFavoriteResponse()
         handleDeleteFavoriteProductResponse()
 
-
     }
 
     override fun onDestroy() {
@@ -181,7 +180,6 @@ class ProductsActivity : AppCompatActivity() {
     //favorite
     private fun handleAddFavoriteResponse() {
         productsViewModel.addFavoriteProductResponse.observe(this@ProductsActivity) { response ->
-            Log.d("Bottom Shit", "handleApiResponse: call")
             when (response) {
                 is ApiResult.Loading -> {
 
@@ -217,8 +215,8 @@ class ProductsActivity : AppCompatActivity() {
 
 
     private fun handleDeleteFavoriteProductResponse() {
-        productsViewModel.deleteFavoriteProductResponse.observe(this) { result ->
-            when (result) {
+        productsViewModel.deleteFavoriteProductResponse.observe(this) { response ->
+            when (response) {
                 is ApiResult.Loading -> {
                 }
                 is ApiResult.NullDataSuccess -> {

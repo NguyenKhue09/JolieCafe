@@ -67,7 +67,6 @@ class ProductAdapter(
                                 holder.binding.imgFavoriteChoose.visibility = View.VISIBLE
                                 holder.binding.imgFavorite.visibility = View.GONE
                             }
-                            println( "chạy rồi nè")
                         }
                     }
                     is ApiResult.Error -> {
