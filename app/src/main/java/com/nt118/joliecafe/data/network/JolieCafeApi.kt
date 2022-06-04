@@ -147,7 +147,6 @@ interface JolieCafeApi {
     // End of Cart API
 
 
-
     //favorite
     @DELETE("$API_GATEWAY/favorite/remove-by-productId")
     suspend fun removeUserFavoriteProductByProductId(
@@ -166,6 +165,16 @@ interface JolieCafeApi {
         @Header("Authorization") token: String
     ):  Response<ApiResponseMultiData<FavProductId>>
 
+    // Start bill api
+
+    @Headers("Content-Type: application/json")
+    @GET("$API_GATEWAY/bill/get-bill-user")
+    suspend fun getUserBills(
+        @Header("Authorization") token: String,
+        @QueryMap orderQuery: Map<String, String>,
+    ): ApiResponseMultiData<OrderHistory>
+
+    // End bill api
 
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 

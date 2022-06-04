@@ -289,4 +289,15 @@ class HomeFragment : Fragment() {
 
         return  item
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        networkListener.unregisterNetworkCallback()
+    }
 }

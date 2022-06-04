@@ -4,10 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.nt118.joliecafe.data.network.JolieCafeApi
-import com.nt118.joliecafe.data.paging_source.AddressPagingSource
-import com.nt118.joliecafe.data.paging_source.CartItemPagingSource
-import com.nt118.joliecafe.data.paging_source.FavoriteProductPagingSource
-import com.nt118.joliecafe.data.paging_source.ProductPagingSource
+import com.nt118.joliecafe.data.paging_source.*
 import com.nt118.joliecafe.models.*
 import com.nt118.joliecafe.util.Constants.Companion.PAGE_SIZE
 import kotlinx.coroutines.flow.Flow
@@ -163,6 +160,13 @@ class RemoteDataSource @Inject constructor(
         productId: String,
     ): Response<ApiResponseSingleData<Unit>> {
         return jolieCafeApi.addUserFavoriteProduct(token = "Bearer $token" , productId = productId)
+    }
+
+    fun getUserBills(token: String): Flow<PagingData<OrderHistory>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
+            pagingSourceFactory = { OrderHistoryPagingSource(token = "Bearer $token", jolieCafeApi = jolieCafeApi) }
+        ).flow
     }
 
 }
