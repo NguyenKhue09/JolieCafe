@@ -67,6 +67,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
+                android:id="@+id/tv_change_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/SmallText"
@@ -421,7 +422,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="0 VND"
+                        android:text="30.000 VND"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_subtotal_detail" />
@@ -434,6 +435,7 @@
                         android:layout_marginTop="12dp"
                         android:text="@string/discount"
                         android:textSize="14sp"
+                        android:visibility="gone"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_shipping_fee_label" />
 
@@ -445,6 +447,7 @@
                         android:layout_marginTop="12dp"
                         android:text="-30.000 VND"
                         android:textSize="14sp"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tv_shipping_fee_detail" />
 
