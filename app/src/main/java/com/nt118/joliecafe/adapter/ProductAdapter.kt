@@ -18,6 +18,8 @@ import com.nt118.joliecafe.ui.activities.detail.DetailActivity
 import com.nt118.joliecafe.ui.activities.products.ProductsActivity
 import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.viewmodels.products.ProductsViewModel
+import java.text.NumberFormat
+import java.util.*
 
 class ProductAdapter(
         private val productsActivity: ProductsActivity,
@@ -78,7 +80,14 @@ class ProductAdapter(
             }
 
             holder.binding.tvNameProduct.text = product.name
-            holder.binding.itemPriceProduct.text = product.originPrice.toString()
+
+            holder.binding.itemPriceProduct.text = productsActivity.getString(
+                R.string.product_price,
+                NumberFormat.getNumberInstance(
+                    Locale.US
+                ).format(product.originPrice)
+            )
+
             holder.binding.tvCategoriesProduct.text = product.type
 
             holder.binding.itemCard.setOnClickListener {

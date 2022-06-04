@@ -53,6 +53,7 @@ class CartAdapter(
             holder.binding.ivThumbnail.load(cartItem.productDetail.thumbnail) {
                 crossfade(600)
                 error(R.drawable.placeholder_image)
+                placeholder(R.drawable.placeholder_image)
             }
             holder.binding.tvProductName.text = cartItem.productDetail.name
             holder.binding.tvProductDescription.text = cartItem.productDetail.description

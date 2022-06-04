@@ -144,23 +144,12 @@
                     android:layout_marginTop="5dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_regular"
-                    android:text="@string/item_price"
+                    android:text="@string/product_price"
                     android:textColor="@color/text_color"
                     android:textSize="11sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/item_categories">
                 </TextView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/raleway_regular"
-                    android:text=" VNĐ"
-                    android:textColor="@color/text_color"
-                    android:textSize="11sp"
-                    app:layout_constraintStart_toEndOf="@+id/item_price"
-                    app:layout_constraintTop_toBottomOf="@+id/item_categories" />
 
                 <TextView
                     android:id="@+id/item_categories"
