@@ -10,6 +10,7 @@ import com.nt118.joliecafe.data.Repository
 import com.nt118.joliecafe.models.Address
 import com.nt118.joliecafe.models.ApiResponseSingleData
 import com.nt118.joliecafe.models.CartItem
+import com.nt118.joliecafe.models.MomoPaymentRequestBody
 import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +30,7 @@ class CheckoutViewModel@Inject constructor(
 
     val getCartResponse: MutableLiveData<ApiResult<List<CartItem>>> = MutableLiveData()
     val getAddressByIdResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
+    val momoPaymentRequestResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
 
     var userToken = ""
     var networkStatus = false
@@ -64,6 +66,21 @@ class CheckoutViewModel@Inject constructor(
             }
         }
 
+    fun momoPaymentRequest(token: String, data: MomoPaymentRequestBody) =
+        viewModelScope.launch {
+            momoPaymentRequestResponse.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.momoRequestPayment(data = data, token = token)
+                println(response)
+                momoPaymentRequestResponse.value = handleNullDataApiResponse(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                momoPaymentRequestResponse.value = ApiResult.Error(e.message.toString())
+            }
+        }
+
+
+
     private fun <T> handleApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
         return when {
             response.message().toString().contains("timeout") -> {
@@ -86,6 +103,23 @@ class CheckoutViewModel@Inject constructor(
         }
     }
 
+    private fun <T> handleNullDataApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
+        println(response)
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+            response.isSuccessful -> {
+                ApiResult.NullDataSuccess()
+            }
+            else -> {
+                ApiResult.Error(response.message())
+            }
+        }
+    }
 
     private fun saveBackOnline(backOnline: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {

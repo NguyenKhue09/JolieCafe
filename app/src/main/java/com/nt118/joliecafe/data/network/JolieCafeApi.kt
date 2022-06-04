@@ -1,9 +1,7 @@
 package com.nt118.joliecafe.data.network
 
 import com.nt118.joliecafe.models.*
-import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants.Companion.API_GATEWAY
-import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -12,9 +10,9 @@ interface JolieCafeApi {
     @Headers("Content-Type: application/json")
     @POST("$API_GATEWAY/payment/payment-request")
     suspend fun momoRequestPayment(
-        @Body body: HashMap<String, Any>,
+        @Body body: MomoPaymentRequestBody,
         @Header("Authorization") token: String
-    ): Response<SuspendUserMoneyResponse>
+    ): Response<ApiResponseSingleData<Unit>>
 
 
     @Headers("Content-Type: application/json")

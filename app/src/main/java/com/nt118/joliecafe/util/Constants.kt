@@ -23,5 +23,9 @@ class Constants {
         const val SNACK_BAR_STATUS_SUCCESS = 1
         const val SNACK_BAR_STATUS_DISABLE = 0
         const val SNACK_BAR_STATUS_ERROR = -1
+
+        const val MERCHANT_NAME = "JolieCafe"
+        const val MERCHANT_CODE = "MOMOJKQ920220323"
+        const val MERCHANT_NAME_LABEL = "JolieCafe"
     }
 }       
