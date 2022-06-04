@@ -34,6 +34,11 @@ class CheckoutViewModel@Inject constructor(
     var networkStatus = false
     var backOnline = false
     var userDefaultAddressId = ""
+    var cartItems: List<CartItem> = listOf()
+    var isUseJolieCoin: MutableLiveData<Boolean> = MutableLiveData(false)
+    var userAddress: Address? = null
+    var subTotalPrice: MutableLiveData<Double> = MutableLiveData(0.0)
+    var totalPrice: MutableLiveData<Double> = MutableLiveData(0.0)
 
     fun getAllCartItems(token: String) =
         viewModelScope.launch {
