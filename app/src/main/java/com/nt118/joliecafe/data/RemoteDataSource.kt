@@ -148,4 +148,21 @@ class RemoteDataSource @Inject constructor(
         return jolieCafeApi.getCartItemsV2(token = "Bearer $token")
     }
 
+    //favorite
+    suspend fun getUserFavoriteProductsId(token: String): Response<ApiResponseMultiData<FavProductId>> {
+        return jolieCafeApi.getUserFavoriteProductsId( token= "Bearer $token")
+    }
+
+
+    suspend fun removeUserFavoriteProductByProductId(token: String, productId: String): Response<ApiResponseSingleData<Unit>> {
+        return jolieCafeApi.removeUserFavoriteProductByProductId(token = "Bearer $token", productId = productId)
+    }
+
+    suspend fun addUserFavoriteProduct(
+        token: String,
+        productId: String,
+    ): Response<ApiResponseSingleData<Unit>> {
+        return jolieCafeApi.addUserFavoriteProduct(token = "Bearer $token" , productId = productId)
+    }
+
 }

@@ -15,6 +15,7 @@ class NotificationActivity : AppCompatActivity() {
         _binding = ActivityNotificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         recyclerViewLayout()
+
     }
 
     private fun recyclerViewLayout() {

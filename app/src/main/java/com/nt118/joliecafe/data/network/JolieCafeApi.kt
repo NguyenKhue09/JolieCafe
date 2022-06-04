@@ -5,6 +5,7 @@ import com.nt118.joliecafe.util.Constants.Companion.API_GATEWAY
 import retrofit2.Response
 import retrofit2.http.*
 
+
 interface JolieCafeApi {
 
     @Headers("Content-Type: application/json")
@@ -146,6 +147,24 @@ interface JolieCafeApi {
     // End of Cart API
 
 
+
+    //favorite
+    @DELETE("$API_GATEWAY/favorite/remove-by-productId")
+    suspend fun removeUserFavoriteProductByProductId(
+        @Header("Authorization") token: String,
+        @Query("productId") productId: String,
+    ): Response<ApiResponseSingleData<Unit>>
+
+    @POST("$API_GATEWAY/favorite/add")
+    suspend fun addUserFavoriteProduct(
+        @Header("Authorization") token: String,
+        @Query("productId") productId: String,
+    ): Response<ApiResponseSingleData<Unit>>
+
+    @GET("$API_GATEWAY/favorite/list-id")
+    suspend fun getUserFavoriteProductsId(
+        @Header("Authorization") token: String
+    ):  Response<ApiResponseMultiData<FavProductId>>
 
 
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
