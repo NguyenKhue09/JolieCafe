@@ -1,16 +1,17 @@
 package com.nt118.joliecafe.adapter
 
-import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.RotateAnimation
+import androidx.lifecycle.Observer
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
+import androidx.transition.Slide
+import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.OrderHistoryItemLayoutBinding
@@ -22,12 +23,13 @@ import com.nt118.joliecafe.util.extenstions.toDate
 import java.text.NumberFormat
 import java.util.*
 
+
 class OrderHistoryAdapter(
     val orderHistoryActivity: OrderHistoryActivity,
     diffUtil: DiffUtil.ItemCallback<OrderHistory>
 ) : PagingDataAdapter<OrderHistory, OrderHistoryAdapter.MyViewHolder>(diffCallback = diffUtil) {
 
-    private var mPosition = -1
+    private lateinit var orderListIdObserver: Observer<MutableList<String>>
 
     class MyViewHolder(var binding: OrderHistoryItemLayoutBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -46,7 +48,7 @@ class OrderHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
+        var isExpanded: Boolean
         val orderHistory = getItem(position)
 
         val orderItemInBillAdapter = OrderItemInBillAdapter(orderHistoryActivity.baseContext)
@@ -57,48 +59,35 @@ class OrderHistoryAdapter(
         val orderItem = holder.binding.cardOrderHistory
         val cardContent = holder.binding.orderItemBody
         val btnCollapse = holder.binding.btnCollapse
-        val isViewExpanded = position == mPosition
-
-        if (isViewExpanded) {
-            holder.binding.tvOrderNumberItem.visibility = View.GONE
-            holder.binding.tvOrderTempTotalCost.visibility = View.GONE
-            TransitionManager.beginDelayedTransition(
-                orderItem,
-                AutoTransition()
-            )
-            cardContent.visibility = View.VISIBLE
-        } else {
-            TransitionManager.beginDelayedTransition(
-                orderItem,
-                AutoTransition()
-            )
-            cardContent.visibility = View.GONE
-            holder.binding.tvOrderNumberItem.visibility = View.VISIBLE
-            holder.binding.tvOrderTempTotalCost.visibility = View.VISIBLE
-        }
-
-        val rotateAnimation: RotateAnimation = if(isViewExpanded) {
-            println("anim1")
-            RotateAnimation(0f, -180f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f).apply {
-                duration = 300
-                fillAfter = true
-            }
-        } else {
-            println("anim2")
-            RotateAnimation(-180f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f).apply {
-                duration = 300
-                fillAfter = true
-            }
-        }
-
-        if (mPosition == position) btnCollapse.startAnimation(rotateAnimation)
-
-        btnCollapse.setOnClickListener {
-            mPosition = if(isViewExpanded) -1 else position
-            notifyItemChanged(position)
-        }
 
         orderHistory?.let { bill ->
+
+            orderListIdObserver = Observer<MutableList<String>> { listId ->
+                isExpanded =  listId.contains(bill.id)
+
+                if (isExpanded) {
+                    cardContent.visibility = View.VISIBLE
+                    holder.binding.tvOrderNumberItem.visibility = View.GONE
+                    holder.binding.tvOrderTempTotalCost.visibility = View.GONE
+                    btnCollapse.setImageResource(R.drawable.ic_arrow_up)
+                } else {
+                    holder.binding.tvOrderNumberItem.visibility = View.VISIBLE
+                    holder.binding.tvOrderTempTotalCost.visibility = View.VISIBLE
+                    cardContent.visibility = View.GONE
+                    btnCollapse.setImageResource(R.drawable.ic_arrow_down)
+                }
+                TransitionManager.beginDelayedTransition(
+                    orderItem,
+                    AutoTransition()
+                )
+            }
+
+            orderHistoryActivity.orderHistoryClickedList.observeForever(orderListIdObserver)
+
+
+            btnCollapse.setOnClickListener {
+                orderHistoryActivity.addNewOrderToClickList(bill.id)
+            }
 
             orderItemInBillAdapter.setData(newData = bill.products)
 
@@ -125,6 +114,38 @@ class OrderHistoryAdapter(
                 R.string.product_price,
                 NumberFormat.getNumberInstance(Locale.US).format(bill.totalCost)
             )
+            holder.binding.tvOrderStatus.text = orderHistoryActivity.getString(
+                R.string.status,
+                bill.status
+            )
+
+            holder.binding.tvDiscountCost.text = orderHistoryActivity.getString(
+                R.string.product_price,
+                NumberFormat.getNumberInstance(Locale.US).format(if(bill.discountCost == 0.0) 0 else -bill.discountCost)
+            )
+
+            holder.binding.tvPaidStatus.text = if(bill.paid) "You paid this bill" else "You haven't pay yet!"
         }
+        holder.setIsRecyclable(false)
+    }
+
+    fun removeOrderListIdObserver() {
+        if(!::orderListIdObserver.isInitialized) orderHistoryActivity.orderHistoryClickedList.removeObserver(orderListIdObserver)
     }
 }
+
+
+//                rotateAnimation = if(isExpanded) {
+//                    println("anim1")
+//                    RotateAnimation(0f, -180f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f).apply {
+//                        duration = 300
+//                        fillAfter = true
+//                    }
+//                } else {
+//                    println("anim2")
+//                    RotateAnimation(-180f, 0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f).apply {
+//                        duration = 300
+//                        fillAfter = true
+//                    }
+//                }
+//btnCollapse.startAnimation(rotateAnimation)
