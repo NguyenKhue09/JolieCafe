@@ -12,6 +12,7 @@ import com.nt118.joliecafe.models.ApiResponseSingleData
 import com.nt118.joliecafe.models.FavoriteProduct
 import com.nt118.joliecafe.models.User
 import com.nt118.joliecafe.util.ApiResult
+import com.nt118.joliecafe.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -45,6 +46,7 @@ class FavoriteViewModel @Inject constructor(
     var backOnline = false
 
     init {
+        setTabSelected(Constants.listTabContentFavorite[0])
         viewModelScope.launch {
             readUserToken.collectLatest { token ->
                 println(token)
@@ -57,6 +59,7 @@ class FavoriteViewModel @Inject constructor(
         productQuery: Map<String, String>,
         token: String
     ): Flow<PagingData<FavoriteProduct>> {
+        println(tabSelected.value)
         return if (token.isNotEmpty()) {
             try {
                 repository.remote.getUserFavoriteProducts(
@@ -161,6 +164,11 @@ class FavoriteViewModel @Inject constructor(
                 saveBackOnline(false)
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        println("onCleared")
     }
 
 }
