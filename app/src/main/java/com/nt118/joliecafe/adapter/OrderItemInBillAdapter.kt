@@ -50,6 +50,7 @@ class OrderItemInBillAdapter(
             NumberFormat.getNumberInstance(Locale.US).format(product.price)
         )
         holder.binding.oderItemQuantityNumber.text = product.quantity.toString()
+        holder.binding.tvOrderItemName.text = product.product.name
     }
 
     override fun getItemCount(): Int {

@@ -107,17 +107,8 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun initTabPageData() {
-        lifecycleScope.launchWhenStarted {
-            favoriteViewModel.getUserFavoriteProducts(
-                productQuery = mapOf(
-                    "type" to listTabContentFavorite[0]
-                ),
-                token = favoriteViewModel.userToken
-            ).collectLatest { data ->
-                selectedTab = listTabContentFavorite[0]
-                submitFavoriteData(data = data)
-            }
-        }
+        val tabIndex = listTabContentFavorite.indexOf(favoriteViewModel.tabSelected.value)
+        binding.tabLayoutFavorite.selectTab(binding.tabLayoutFavorite.getTabAt(tabIndex), true)
     }
 
     private fun onTabSelected() {
@@ -319,11 +310,13 @@ class FavoriteFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        println("onDestroyView")
         _binding = null
     }
 
     override fun onStop() {
         super.onStop()
+        println("Onstop")
         networkListener.unregisterNetworkCallback()
     }
 }
