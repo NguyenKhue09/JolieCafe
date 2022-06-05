@@ -36,6 +36,7 @@ class CheckoutViewModel@Inject constructor(
     var networkStatus = false
     var backOnline = false
     var userDefaultAddressId = ""
+    var paymentMethod = "COD"
     var cartItems: List<CartItem> = listOf()
     var isUseJolieCoin: MutableLiveData<Boolean> = MutableLiveData(false)
     var userAddress: Address? = null

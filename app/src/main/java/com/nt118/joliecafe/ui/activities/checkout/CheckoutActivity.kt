@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -68,6 +69,9 @@ class CheckoutActivity : AppCompatActivity() {
     private lateinit var tvJolieCoinLabel: TextView
     private lateinit var tvJolieCoinDetail: TextView
     private lateinit var tvTotalDetail: TextView
+    private lateinit var btnCash: MaterialCardView
+    private lateinit var btnCreditCard: MaterialCardView
+    private lateinit var btnMomo: MaterialCardView
 
     private lateinit var momoBillDescription: String
     private lateinit var bill: Bill
@@ -85,6 +89,9 @@ class CheckoutActivity : AppCompatActivity() {
     private var totalPrice
         get() = checkoutViewModel.totalPrice.value
         set(value) { checkoutViewModel.totalPrice.value = value }
+    private var paymentMethod
+        get() = checkoutViewModel.paymentMethod
+        set(value) { checkoutViewModel.paymentMethod = value }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,6 +124,9 @@ class CheckoutActivity : AppCompatActivity() {
         tvJolieCoinLabel = binding.tvJolieCoinLabel
         tvJolieCoinDetail = binding.tvJolieCoinDetail
         tvTotalDetail = binding.tvTotalDetail
+        btnCash = binding.btnCash
+        btnCreditCard = binding.btnCreditCard
+        btnMomo = binding.btnMomo
 
         swUseJolieCoin.isChecked = isUseJolieCoin!!
         tvUseJolieCoin.text = resources.getString(R.string.use_jolie_coin, 200)
@@ -328,7 +338,14 @@ class CheckoutActivity : AppCompatActivity() {
         }
 
         btnOrder.setOnClickListener {
-            requestMoMoPayment()
+            when (paymentMethod) {
+                "MoMo" -> requestMoMoPayment()
+                "Visa card" -> {
+                    showSnackBar("Visa card is not supported yet", SNACK_BAR_STATUS_ERROR, R.drawable.ic_error)
+                }
+                "COD" -> requestCODPayment()
+            }
+
             //startActivity(Intent(this, OrderDetailActivity::class.java))
         }
 
@@ -350,6 +367,25 @@ class CheckoutActivity : AppCompatActivity() {
             val intent = Intent(this, AddressBookActivity::class.java)
             startActivity(intent)
         }
+
+        btnCash.setOnClickListener {
+            paymentMethod = "COD"
+            setPayment(paymentMethod)
+        }
+
+        btnCreditCard.setOnClickListener {
+            paymentMethod = "Visa card"
+            setPayment(paymentMethod)
+        }
+
+        btnMomo.setOnClickListener {
+            paymentMethod = "MoMo"
+            setPayment(paymentMethod)
+        }
+    }
+
+    private fun requestCODPayment() {
+
     }
 
     private fun setShippingAddress(address: Address) {
@@ -396,7 +432,7 @@ class CheckoutActivity : AppCompatActivity() {
             voucherApply = emptyList(),
             scoreApply = 20, // Coi như mỗi lần mua là được 20 điểm
             paid = false, // Chưa thanh toán
-            paymentMethod = "MoMo", // Tạm cho ntn nhé
+            paymentMethod = paymentMethod, // Tạm cho ntn nhé
             orderDate = DateTimeUtil.getCurrentDate(),
             status = "Pending",
             orderId = orderId
@@ -413,6 +449,25 @@ class CheckoutActivity : AppCompatActivity() {
         btnOrder.isEnabled = true
         btnCancel.isEnabled = true
         btnNavBack.isEnabled = true
+    }
+
+    private fun setPayment(method: String) {
+        // Reset state
+        btnCash.strokeWidth = 0
+        btnCreditCard.strokeWidth = 0
+        btnMomo.strokeWidth = 0
+
+        when (method) {
+            "COD" -> {
+                btnCash.strokeWidth = 5
+            }
+            "Visa card" -> {
+                btnCreditCard.strokeWidth = 5
+            }
+            "MoMo" -> {
+                btnMomo.strokeWidth = 5
+            }
+        }
     }
 
     override fun onDestroy() {
