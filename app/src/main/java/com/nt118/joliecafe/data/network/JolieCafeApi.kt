@@ -126,6 +126,14 @@ interface JolieCafeApi {
     ): Response<ApiResponseSingleData<Unit>>
 
     @Headers("Content-Type: application/json")
+    @PUT("$API_GATEWAY/cart/remove-many")
+    @JvmSuppressWildcards
+    suspend fun deleteCartItems(
+        @Body body: Map<String, List<String>>,
+        @Header("Authorization") token: String
+    ): Response<ApiResponseSingleData<Unit>>
+
+    @Headers("Content-Type: application/json")
     @POST("$API_GATEWAY/cart/add")
     suspend fun addCart(
         @Body body: Map<String, String>,

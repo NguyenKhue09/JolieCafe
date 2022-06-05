@@ -62,11 +62,14 @@
             android:checked="false"/>
 
         <TextView
+            android:id="@+id/tv_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            android:text="@string/edit"
-            style="@style/SmallText"/>
+            android:text="@string/delete"
+            android:visibility="gone"
+            style="@style/SmallText"
+            android:textColor="@color/error_color"/>
 
     </FrameLayout>
 
