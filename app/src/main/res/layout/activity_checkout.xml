@@ -150,15 +150,6 @@
                 app:cardCornerRadius="9dp"
                 android:backgroundTint="#4B413A">
 
-                <com.google.android.material.progressindicator.CircularProgressIndicator
-                    android:id="@+id/progress_cart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    android:elevation="10dp"
-                    app:indicatorColor="@color/grey_primary_variant" />
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_product"
                     android:layout_marginHorizontal="18dp"
@@ -356,6 +347,7 @@
                         android:id="@+id/sw_use_jolie_coin"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:theme="@style/switchColor"
                         android:checked="false"/>
                 </LinearLayout>
 

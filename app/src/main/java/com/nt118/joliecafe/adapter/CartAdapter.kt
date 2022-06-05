@@ -15,6 +15,7 @@ import com.nt118.joliecafe.models.CartItem
 import androidx.recyclerview.widget.DiffUtil
 import coil.load
 import com.nt118.joliecafe.R
+import com.nt118.joliecafe.util.NumberUtil
 import com.nt118.joliecafe.viewmodels.cart.CartViewModel
 import java.text.NumberFormat
 import java.util.*
@@ -30,6 +31,7 @@ class CartAdapter(
     var onSelectAllAction: (() -> Unit)? = null
     var onDeselectAllAction: (() -> Unit)? = null
     private var numOfCheckedItem = 0
+    private val selectedItem: MutableList<CartItem> = mutableListOf()
 
     class ViewHolder(var binding: ItemCartBinding) : RecyclerView.ViewHolder(binding.root) {
         companion object {
@@ -60,7 +62,7 @@ class CartAdapter(
             holder.binding.tvAmount.text = cartItem.quantity.toString()
             holder.binding.tvPrice.text = mActivity.getString(
                 R.string.product_price,
-                NumberFormat.getNumberInstance(Locale.US).format(cartItem.price)
+                NumberUtil.addSeparator(cartItem.price)
             )
             if (isSelectAll) {
                 holder.binding.cbItemSelect.isChecked = true
@@ -72,8 +74,12 @@ class CartAdapter(
                 isDeselectAll = false
                 if ((it as CheckBox).isChecked) {
                     numOfCheckedItem++
+                    selectedItem.add(cartItem)
+                    viewModel.totalCost.value = viewModel.totalCost.value?.plus(cartItem.price)
                 } else {
                     numOfCheckedItem--
+                    selectedItem.remove(cartItem)
+                    viewModel.totalCost.value = viewModel.totalCost.value?.minus(cartItem.price)
                 }
 
                 when (numOfCheckedItem) {
@@ -106,6 +112,14 @@ class CartAdapter(
         isSelectAll = true
         isDeselectAll = false
         numOfCheckedItem = itemCount
+        viewModel.totalCost.value = viewModel.totalCost.value?.minus(
+            selectedItem.sumOf { it.price }
+        )
+        selectedItem.clear()
+        selectedItem.addAll(dataset)
+        viewModel.totalCost.value = viewModel.totalCost.value?.plus(
+            selectedItem.sumOf { it.price }
+        )
         notifyDataSetChanged()
     }
 
@@ -114,6 +128,10 @@ class CartAdapter(
         isDeselectAll = true
         isSelectAll = false
         numOfCheckedItem = 0
+        viewModel.totalCost.value = viewModel.totalCost.value?.minus(
+            selectedItem.sumOf { it.price }
+        )
+        selectedItem.clear()
         notifyDataSetChanged()
     }
 
@@ -129,8 +147,11 @@ class CartAdapter(
     fun fetchData(data: List<CartItem>?) {
         dataset.clear()
         dataset.addAll(data?.toMutableList() ?: mutableListOf())
+        selectedItem.clear()
         notifyDataSetChanged()
     }
+
+    fun getSelectedCartItem() = selectedItem.toList()
 
     override fun getItemCount() = dataset.size
 

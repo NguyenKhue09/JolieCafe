@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -19,12 +18,13 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.CheckoutAdapter
 import com.nt118.joliecafe.databinding.ActivityCheckoutBinding
@@ -41,7 +41,6 @@ import com.nt118.joliecafe.util.extenstions.setCustomBackground
 import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.checkout.CheckoutViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import vn.momo.momo_partner.MoMoParameterNamePayment
 
 @AndroidEntryPoint
@@ -58,7 +57,6 @@ class CheckoutActivity : AppCompatActivity() {
     private lateinit var btnCancel: MaterialButton
     private lateinit var voucherContainer: CardView
     private lateinit var tvUseJolieCoin: TextView
-    private lateinit var progressCart: CircularProgressIndicator
     private lateinit var progressAddress: CircularProgressIndicator
     private lateinit var tvSubtotalDetail: TextView
     private lateinit var tvName: TextView
@@ -108,7 +106,6 @@ class CheckoutActivity : AppCompatActivity() {
         btnCancel = binding.btnCancel
         voucherContainer = binding.voucherContainer
         tvUseJolieCoin= binding.tvUseJolieCoin
-        progressCart = binding.progressCart
         progressAddress = binding.progressAddress
         tvSubtotalDetail = binding.tvSubtotalDetail
         addressContainer = binding.addressContainer
@@ -133,6 +130,13 @@ class CheckoutActivity : AppCompatActivity() {
             tvJolieCoinDetail.visibility = View.GONE
             totalPrice = subTotalPrice!!
         }
+
+        // Set adapter
+
+        val cartItemsJson = intent.getStringExtra("cartItems")
+        val cartItems = Gson().fromJson<List<CartItem>>(cartItemsJson, object : TypeToken<List<CartItem>>() {}.type)
+        rvProduct.adapter = CheckoutAdapter(cartItems, this)
+        subTotalPrice = cartItems.sumOf { it.price }
     }
 
     private fun initMoMoPayment() {
@@ -236,39 +240,42 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun observe() = checkoutViewModel.apply {
-        getCartResponse.observe(this@CheckoutActivity) { response ->
-            when (response) {
-                is ApiResult.Loading -> progressCart.visibility = View.VISIBLE
-                is ApiResult.Success -> {
-                    progressCart.visibility = View.GONE
-                    cartItems = response.data!!
-                    val adapter = CheckoutAdapter(response.data, this@CheckoutActivity)
-                    rvProduct.adapter = adapter
-                    subTotalPrice.value = adapter.getTotalPrice()
-                    totalPrice.value = subTotalPrice.value!! + 30000.0 - (if (isUseJolieCoin.value!!) 200.0 else 0.0)
-                }
-                is ApiResult.Error -> {
-                    progressCart.visibility = View.GONE
-                    Toast.makeText(this@CheckoutActivity, "Failed to get cart items", Toast.LENGTH_SHORT).show()
-                }
-                else -> {}
-            }
-        }
+//        getCartResponse.observe(this@CheckoutActivity) { response ->
+//            when (response) {
+//                is ApiResult.Loading -> progressCart.visibility = View.VISIBLE
+//                is ApiResult.Success -> {
+//                    progressCart.visibility = View.GONE
+//                    cartItems = response.data!!
+//                    val adapter = CheckoutAdapter(response.data, this@CheckoutActivity)
+//                    rvProduct.adapter = adapter
+//                    subTotalPrice.value = adapter.getTotalPrice()
+//                    totalPrice.value = subTotalPrice.value!! + 30000.0 - (if (isUseJolieCoin.value!!) 200.0 else 0.0)
+//                }
+//                is ApiResult.Error -> {
+//                    progressCart.visibility = View.GONE
+//                    Toast.makeText(this@CheckoutActivity, "Failed to get cart items", Toast.LENGTH_SHORT).show()
+//                }
+//                else -> {}
+//            }
+//        }
 
         getAddressByIdResponse.observe(this@CheckoutActivity) { response ->
             when (response) {
                 is ApiResult.Loading -> {
                     progressAddress.visibility = View.VISIBLE
                     addressContainer.visibility = View.GONE
+                    btnOrder.isEnabled = false
                 }
                 is ApiResult.Success -> {
                     progressAddress.visibility = View.GONE
                     addressContainer.visibility = View.VISIBLE
+                    btnOrder.isEnabled = true
                     setShippingAddress(response.data!!)
                 }
                 is ApiResult.Error -> {
                     progressAddress.visibility = View.GONE
-                    Toast.makeText(this@CheckoutActivity, "Failed to get address", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this@CheckoutActivity, "Failed to get address", Toast.LENGTH_SHORT).show()
+                    showSnackBar(message = "Failed to get address", status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
                 }
                 else -> {}
             }
@@ -278,13 +285,16 @@ class CheckoutActivity : AppCompatActivity() {
             when (response) {
                 is ApiResult.Loading -> {
                     binding.checkoutCircularProgressIndicator.visibility = View.VISIBLE
+                    disableButton()
                 }
                 is ApiResult.NullDataSuccess -> {
                     binding.checkoutCircularProgressIndicator.visibility = View.GONE
+                    enableButton()
                     showSnackBar(message = "Momo payment successfully", status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_success)
                 }
                 is ApiResult.Error -> {
                     binding.checkoutCircularProgressIndicator.visibility = View.GONE
+                    enableButton()
                     showSnackBar(message = response.message!!, status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
                 }
                 else -> {}
@@ -393,6 +403,18 @@ class CheckoutActivity : AppCompatActivity() {
         )
     }
 
+    private fun disableButton() {
+        btnOrder.isEnabled = false
+        btnCancel.isEnabled = false
+        btnNavBack.isEnabled = false
+    }
+
+    private fun enableButton() {
+        btnOrder.isEnabled = true
+        btnCancel.isEnabled = true
+        btnNavBack.isEnabled = true
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
@@ -400,13 +422,7 @@ class CheckoutActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        lifecycleScope.launchWhenStarted {
-            checkoutViewModel.readUserToken.collectLatest { token ->
-                checkoutViewModel.userToken = token
-                checkoutViewModel.getAllCartItems(token)
-                checkoutViewModel.getAddressById(token, checkoutViewModel.userDefaultAddressId)
-            }
-        }
+        checkoutViewModel.getAddressById(checkoutViewModel.userDefaultAddressId)
     }
 
     private fun pxToDp(px: Float, context: Context) =

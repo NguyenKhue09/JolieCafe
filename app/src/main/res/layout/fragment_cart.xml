@@ -353,6 +353,7 @@
             android:layout_gravity="end"
             android:background="@drawable/rounded_shape"
             android:text="@string/checkout"
+            android:enabled="false"
             app:backgroundTint="@color/grey_primary_variant" />
 
     </FrameLayout>
