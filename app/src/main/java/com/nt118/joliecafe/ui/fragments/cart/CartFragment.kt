@@ -21,8 +21,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.gson.Gson
 import com.nt118.joliecafe.adapter.CartAdapter
 import com.nt118.joliecafe.databinding.FragmentCartBinding
+import com.nt118.joliecafe.models.CartItem
 import com.nt118.joliecafe.models.CartItemByCategory
 import com.nt118.joliecafe.ui.activities.checkout.CheckoutActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
@@ -92,6 +94,7 @@ class CartFragment : Fragment() {
         }
         cartViewModel.totalCost.observe(viewLifecycleOwner) {
             tvTotalPrice.text = NumberUtil.addSeparator(it)
+            binding.btnCheckout.isEnabled = it > 0
         }
         cartViewModel.deleteCartItemResponse.observe(viewLifecycleOwner) {
             when (it) {
@@ -203,7 +206,10 @@ class CartFragment : Fragment() {
         }
 
         btnCheckout.setOnClickListener {
-            startActivity(Intent(context, CheckoutActivity::class.java))
+            val intent = Intent(context, CheckoutActivity::class.java)
+            val selectedCartItems = getSelectedCartItem()
+            intent.putExtra("cartItems", Gson().toJson(selectedCartItems))
+            startActivity(intent)
         }
 
         rvCartSuggestion.adapter = CartSuggestionAdapter()
@@ -220,138 +226,73 @@ class CartFragment : Fragment() {
         data.find { it.type == "Coffee" }?.let { cartItemByCategory ->
             cvCoffee.visibility = View.VISIBLE
             cartCoffeeAdapter.fetchData(cartItemByCategory.products)
-            cartItemByCategory.products.sumOf { it.price }.let { price ->
-                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
-            }
             cartViewModel.itemCount.value += cartCoffeeAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
         data.find { it.type == "Tea" }?.let { cartItemByCategory ->
             cvTea.visibility = View.VISIBLE
             cartTeaAdapter.fetchData(cartItemByCategory.products)
-            cartItemByCategory.products.sumOf { it.price }.let { price ->
-                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
-            }
             cartViewModel.itemCount.value += cartTeaAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
         data.find { it.type == "Juice" }?.let { cartItemByCategory ->
             cvJuice.visibility = View.VISIBLE
             cartJuiceAdapter.fetchData(cartItemByCategory.products)
-            cartItemByCategory.products.sumOf { it.price }.let { price ->
-                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
-            }
             cartViewModel.itemCount.value += cartJuiceAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
         data.find { it.type == "Milk tea" }?.let { cartItemByCategory ->
             cvMilkTea.visibility = View.VISIBLE
             cartMilkTeaAdapter.fetchData(cartItemByCategory.products)
-            cartItemByCategory.products.sumOf { it.price }.let { price ->
-                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
-            }
             cartViewModel.itemCount.value += cartMilkTeaAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
         data.find { it.type == "Milk shake" }?.let { cartItemByCategory ->
             cvMilkShake.visibility = View.VISIBLE
             cartMilkShakeAdapter.fetchData(cartItemByCategory.products)
-            cartItemByCategory.products.sumOf { it.price }.let { price ->
-                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
-            }
             cartViewModel.itemCount.value += cartMilkShakeAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
         data.find { it.type == "Pasty" }?.let { cartItemByCategory ->
             cvPasty.visibility = View.VISIBLE
             cartPastyAdapter.fetchData(cartItemByCategory.products)
-            cartItemByCategory.products.sumOf { it.price }.let { price ->
-                cartViewModel.totalCost.value = cartViewModel.totalCost.value?.plus(price.toInt())
-            }
             cartViewModel.itemCount.value += cartPastyAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
     }
 
-    private fun init() {
-
-
-//        cartViewModel.cartCount.asLiveData().observe(viewLifecycleOwner) {
-//            if (it >= MAX_TYPE) {
-//                progressCart.visibility = View.GONE
-//            }
-//        }
-//
-//        cartCoffeeAdapter.addLoadStateListener {
-//            Log.d("CartFragment", "cartCount: ${cartViewModel.cartEmptyCount.value}")
-//            if (it.refresh is LoadState.Loading)
-//                return@addLoadStateListener
-//
-//            cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
-//            if (cartCoffeeAdapter.itemCount != 0) {
-//                cvCoffee.visibility = View.VISIBLE
-//                header2.visibility = View.VISIBLE
-//                footer.visibility =View.VISIBLE
-//                isCartEmpty = false
-//                cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartCoffeeAdapter.itemCount)
-//            }
-//            else {
-//                cartViewModel.cartEmptyCount.value = cartViewModel.cartEmptyCount.value.plus(1)
-//            }
-//        }
-//
-//        cartTeaAdapter.addLoadStateListener {
-//            Log.d("CartFragment", "cartCount: ${cartViewModel.cartEmptyCount.value}")
-//            if (it.refresh is LoadState.Loading)
-//                return@addLoadStateListener
-//
-//            cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
-//            if (cartTeaAdapter.itemCount != 0) {
-//                cvTea.visibility = View.VISIBLE
-//                header2.visibility = View.VISIBLE
-//                footer.visibility =View.VISIBLE
-//                isCartEmpty = false
-//                cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartTeaAdapter.itemCount)
-//            }
-//            else {
-//                cartViewModel.cartEmptyCount.value = cartViewModel.cartEmptyCount.value.plus(1)
-//            }
-//        }
-//
-//        cartJuiceAdapter.addLoadStateListener {
-//            Log.d("CartFragment", "cartCount: ${cartViewModel.cartEmptyCount.value}")
-//            if (it.refresh is LoadState.Loading)
-//                return@addLoadStateListener
-//
-//            cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
-//            if (cartJuiceAdapter.itemCount != 0) {
-//                cvJuice.visibility = View.VISIBLE
-//                header2.visibility = View.VISIBLE
-//                footer.visibility =View.VISIBLE
-//                isCartEmpty = false
-//                cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartJuiceAdapter.itemCount)
-//            }
-//            else {
-//                cartViewModel.cartEmptyCount.value = cartViewModel.cartEmptyCount.value.plus(1)
-//            }
-//        }
-//
-//        cartMilkTeaAdapter.addLoadStateListener {
-//            Log.d("CartFragment", "cartCount: ${cartViewModel.cartEmptyCount.value}")
-//            if (it.refresh is LoadState.Loading)
-//                return@addLoadStateListener
-//
-//            cartViewModel.cartCount.value = cartViewModel.cartCount.value.plus(1)
-//            if (cartMilkTeaAdapter.itemCount != 0) {
-//                cvMilkTea.visibility = View.VISIBLE
-//                header2.visibility = View.VISIBLE
-//                footer.visibility =View.VISIBLE
-//                isCartEmpty = false
-//                cartViewModel.itemCount.value = cartViewModel.itemCount.value.plus(cartMilkTeaAdapter.itemCount)
-//            }
-//            else {
-//                cartViewModel.cartEmptyCount.value = cartViewModel.cartEmptyCount.value.plus(1)
-//            }
-//        }
+    private fun getSelectedCartItem(): List<CartItem> {
+        val cartItems = mutableListOf<CartItem>()
+        cartCoffeeAdapter.getSelectedCartItem().let {
+            if (it.isNotEmpty()) {
+                cartItems.addAll(it)
+            }
+        }
+        cartTeaAdapter.getSelectedCartItem().let {
+            if (it.isNotEmpty()) {
+                cartItems.addAll(it)
+            }
+        }
+        cartJuiceAdapter.getSelectedCartItem().let {
+            if (it.isNotEmpty()) {
+                cartItems.addAll(it)
+            }
+        }
+        cartMilkTeaAdapter.getSelectedCartItem().let {
+            if (it.isNotEmpty()) {
+                cartItems.addAll(it)
+            }
+        }
+        cartMilkShakeAdapter.getSelectedCartItem().let {
+            if (it.isNotEmpty()) {
+                cartItems.addAll(it)
+            }
+        }
+        cartPastyAdapter.getSelectedCartItem().let {
+            if (it.isNotEmpty()) {
+                cartItems.addAll(it)
+            }
+        }
+        return cartItems.toList()
     }
 
     private fun getData() {

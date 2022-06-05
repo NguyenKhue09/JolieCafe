@@ -14,6 +14,7 @@ import com.nt118.joliecafe.models.MomoPaymentRequestBody
 import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
@@ -28,7 +29,6 @@ class CheckoutViewModel@Inject constructor(
     var readUserToken = dataStoreRepository.readUserToken
     var readUserDefaultAddressId = dataStoreRepository.readUserDefaultAddressId
 
-    val getCartResponse: MutableLiveData<ApiResult<List<CartItem>>> = MutableLiveData()
     val getAddressByIdResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
     val momoPaymentRequestResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
 
@@ -42,23 +42,19 @@ class CheckoutViewModel@Inject constructor(
     var subTotalPrice: MutableLiveData<Double> = MutableLiveData(0.0)
     var totalPrice: MutableLiveData<Double> = MutableLiveData(0.0)
 
-    fun getAllCartItems(token: String) =
+    init {
         viewModelScope.launch {
-            getCartResponse.value = ApiResult.Loading()
-            try {
-                val response = repository.remote.getAllCartItems(token)
-                getCartResponse.value = handleApiResponse(response)
-            } catch (e: Exception) {
-                e.printStackTrace()
-                getCartResponse.value = ApiResult.Error(e.message.toString())
+            readUserToken.collectLatest { token ->
+                userToken = token
             }
         }
+    }
 
-    fun getAddressById(token: String, addressId: String) =
+    fun getAddressById(addressId: String) =
         viewModelScope.launch {
             getAddressByIdResponse.value = ApiResult.Loading()
             try {
-                val response = repository.remote.getAddressById(token, addressId)
+                val response = repository.remote.getAddressById(userToken, addressId)
                 getAddressByIdResponse.value = handleApiResponse(response)
             } catch (e: Exception) {
                 e.printStackTrace()
