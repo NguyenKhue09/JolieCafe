@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
@@ -21,6 +22,7 @@ import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.order_history.OrderHistoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 
@@ -33,10 +35,15 @@ class OrderHistoryActivity : AppCompatActivity() {
     private val orderHistoryViewModel: OrderHistoryViewModel by viewModels()
     private lateinit var orderHistoryAdapter: OrderHistoryAdapter
 
+    lateinit var orderHistoryClickedList: LiveData<MutableList<String>>
+    lateinit var orderHistoryClicked: LiveData<Boolean>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityOrderHistoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        orderHistoryClickedList = orderHistoryViewModel.orderHistoryClickedList
 
         updateNetworkStatus()
         updateBackOnlineStatus()
@@ -48,6 +55,10 @@ class OrderHistoryActivity : AppCompatActivity() {
 
         getUserBills()
         handlePagingAdapterState()
+    }
+
+    fun addNewOrderToClickList(id: String) {
+        orderHistoryViewModel.addNewOrderToClickedList(id)
     }
 
     private fun updateBackOnlineStatus() {

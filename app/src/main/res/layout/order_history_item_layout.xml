@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="18dp"
+    android:animateLayoutChanges="true"
+    android:id="@+id/layout_order_history_item"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.google.android.material.card.MaterialCardView
@@ -20,7 +22,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
             android:background="@drawable/profile_button_custom_bg"
             android:padding="18dp">
 
@@ -71,6 +72,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_chevron_down"
                 android:padding="15dp"
+                android:tint="@color/text_color"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_order_date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_order_date">
@@ -81,11 +83,11 @@
                 android:id="@+id/order_item_body"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_order_number_item">
+                app:layout_constraintTop_toBottomOf="@+id/tv_order_number_item"
+                tools:visibility="visible">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_order_item"
