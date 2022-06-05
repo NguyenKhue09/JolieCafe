@@ -39,6 +39,20 @@
             </TextView>
 
             <TextView
+                android:id="@+id/tv_order_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="@string/status"
+                android:textSize="11sp"
+                android:textColor="@color/grey_secondary"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_order_date"
+                app:layout_constraintStart_toEndOf="@+id/tv_order_date"
+                app:layout_constraintTop_toTopOf="@+id/tv_order_date">
+
+            </TextView>
+
+            <TextView
                 android:id="@+id/tv_order_number_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,10 +86,10 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_chevron_down"
                 android:padding="15dp"
-                android:tint="@color/text_color"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_order_date"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_order_date">
+                app:layout_constraintTop_toTopOf="@+id/tv_order_date"
+                app:tint="@color/text_color">
 
             </ImageView>
 
@@ -228,6 +242,38 @@
                 </TextView>
 
                 <TextView
+                    android:id="@+id/tv_discount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Discount"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/grey_secondary"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/tv_shipping"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_shipping">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_discount_cost"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="@string/product_price"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/grey_secondary"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_discount"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_discount"
+                    app:layout_constraintTop_toTopOf="@+id/tv_discount">
+
+                </TextView>
+
+                <TextView
                     android:id="@+id/tv_total"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -237,8 +283,8 @@
                     android:textAlignment="textStart"
                     android:textColor="@color/title_text_color"
                     android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="@+id/tv_shipping"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_shipping">
+                    app:layout_constraintStart_toStartOf="@+id/tv_discount"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_discount">
 
                 </TextView>
 
@@ -258,6 +304,39 @@
                     app:layout_constraintTop_toTopOf="@+id/tv_total">
 
                 </TextView>
+
+                <TextView
+                    android:id="@+id/tv_paid"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="Paid"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="@+id/tv_total"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_total">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_paid_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="You paid"
+                    android:textAlignment="textEnd"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_paid"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_paid"
+                    app:layout_constraintTop_toTopOf="@+id/tv_paid">
+
+                </TextView>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

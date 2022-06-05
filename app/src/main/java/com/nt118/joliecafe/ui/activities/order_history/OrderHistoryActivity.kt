@@ -187,5 +187,6 @@ class OrderHistoryActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        orderHistoryAdapter.removeOrderListIdObserver()
     }
 }

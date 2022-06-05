@@ -114,7 +114,17 @@ class OrderHistoryAdapter(
                 R.string.product_price,
                 NumberFormat.getNumberInstance(Locale.US).format(bill.totalCost)
             )
+            holder.binding.tvOrderStatus.text = orderHistoryActivity.getString(
+                R.string.status,
+                bill.status
+            )
 
+            holder.binding.tvDiscountCost.text = orderHistoryActivity.getString(
+                R.string.product_price,
+                NumberFormat.getNumberInstance(Locale.US).format(if(bill.discountCost == 0.0) 0 else -bill.discountCost)
+            )
+
+            holder.binding.tvPaidStatus.text = if(bill.paid) "You paid this bill" else "You haven't pay yet!"
         }
         holder.setIsRecyclable(false)
     }
