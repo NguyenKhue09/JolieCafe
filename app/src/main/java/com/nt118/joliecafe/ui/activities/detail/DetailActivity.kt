@@ -41,6 +41,9 @@ class DetailActivity : AppCompatActivity() {
         _binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val bundle : Bundle? = intent.extras
+        val productId = bundle!!.getString("productId")
+
         networkListener = NetworkListener()
 
         recyclerViewReview()
@@ -53,7 +56,7 @@ class DetailActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             detailProductViewModel.getDetailProduct(
                 token = detailProductViewModel.userToken,
-                productId = "6267fb7a02095fbefdd3cbb7"
+                productId = "6266aaa2de6570302a415602"
             )
         }
 
@@ -61,11 +64,12 @@ class DetailActivity : AppCompatActivity() {
             when (response) {
                 is ApiResult.Loading -> {
                     binding.categoriesCircularProgressIndicator.visibility = View.VISIBLE
+                    binding.nestedScrollView.visibility = View.GONE
                 }
                 is ApiResult.Success -> {
                     binding.categoriesCircularProgressIndicator.visibility = View.GONE
+                    binding.nestedScrollView.visibility = View.VISIBLE
                     val data = response.data
-                    println("có chạy không")
                     data?.let {
                         binding.imgProduct.load(data.thumbnail) {
                             crossfade(600)
@@ -77,10 +81,21 @@ class DetailActivity : AppCompatActivity() {
                                 Locale.US
                             ).format(data.originPrice)
                         )
+                        binding.tvNameProduct.text = data.name
+                        binding.tvDescriptionContent.text = data.description
+                        binding.tvRank.text = data.avgRating.toString()
+                        binding.tvNumberReview.text = data.comments?.size.toString()
+                        if(data.comments?.size == 0) {
+                            binding.btnViewAllReview.visibility = View.GONE
+                            binding.rvReview.visibility = View.GONE
+                        }
+                        println("hiện lên nào em ơi")
+                        println(data.comments)
                     }
                 }
                 is ApiResult.Error -> {
-                    binding.categoriesCircularProgressIndicator.visibility = View.GONE
+                    binding.categoriesCircularProgressIndicator.visibility = View.VISIBLE
+                    binding.nestedScrollView.visibility = View.GONE
                     Log.d("CartFragment", "get cart error: ${response.message}")
                 }
                 else -> {}

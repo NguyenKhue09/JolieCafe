@@ -92,6 +92,7 @@ class ProductAdapter(
 
             holder.binding.itemCard.setOnClickListener {
                 val intent = Intent(productsActivity, DetailActivity::class.java)
+                intent.putExtra("productId", product.id)
                 productsActivity.startActivity(intent)
             }
 

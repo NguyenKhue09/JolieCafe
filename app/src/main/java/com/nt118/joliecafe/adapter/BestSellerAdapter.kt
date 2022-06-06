@@ -46,13 +46,16 @@ class BestSellerAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
 
-        holder.binding.itemCard.setOnClickListener {
-            val intent = Intent(activity, DetailActivity::class.java)
-            activity.startActivity(intent)
-        }
+
 
         val product = getItem(position)
         product?.let {
+
+            holder.binding.itemCard.setOnClickListener {
+                val intent = Intent(activity, DetailActivity::class.java)
+                intent.putExtra("productId", product.id)
+                activity.startActivity(intent)
+            }
 
             holder.binding.btnAddCard.setOnClickListener {
                 val ft = (activity as AppCompatActivity).supportFragmentManager.beginTransaction()

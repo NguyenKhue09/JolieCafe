@@ -8,6 +8,7 @@
 
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,10 +45,11 @@
                 android:id="@+id/img_product"
                 android:layout_width="match_parent"
                 android:layout_height="360dp"
-                android:scaleType="center"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/tv_name_product"
@@ -64,13 +66,26 @@
 
             <ImageView
                 android:id="@+id/btn_favorite"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="20dp"
                 android:src="@drawable/ic_favorite"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_product" />
+                app:layout_constraintTop_toBottomOf="@+id/img_product"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/btn_favorite_choose"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="20dp"
+                android:visibility="gone"
+                android:src="@drawable/ic_favorite_fill"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/img_product"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/tv_price_product"
@@ -79,7 +94,6 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat_regular"
-                android:text="90.000"
                 android:textColor="@color/text_color"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat_regular"
-                android:text=" VND • "
+                android:text=" • "
                 android:textColor="@color/text_color"
                 android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/tv_price_product"
@@ -103,7 +117,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat_regular"
-                android:text="5.0"
                 android:textColor="@color/text_color"
                 android:textSize="14sp"
                 app:layout_constraintStart_toEndOf="@+id/tv_vnd"
@@ -139,7 +152,6 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/raleway_regular"
-                android:text="@string/test_description"
                 android:textColor="@color/text_color"
                 android:textSize="11sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -189,7 +201,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:fontFamily="@font/montserrat_regular"
-                android:text="12"
                 android:textColor="@color/text_color"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView3"
@@ -250,6 +261,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
         android:layout_width="match_parent"
         android:layout_height="68dp"
         android:backgroundTint="@color/grey_primary"
@@ -296,6 +308,7 @@
         app:indicatorColor="@color/text_color_2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/nested_scroll_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
