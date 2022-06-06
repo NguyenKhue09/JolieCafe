@@ -176,6 +176,15 @@ interface JolieCafeApi {
 
     // End bill api
 
+    // start detail product
+
+    @GET("$API_GATEWAY/product/get-product-detail")
+    suspend fun getDetailProductsId(
+        @Header("Authorization") token: String,
+        @Query("productId") productId: String,
+    ):  Response<ApiResponseSingleData<Product>>
+
+
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 
 }

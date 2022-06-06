@@ -65,8 +65,8 @@
 
             <ImageView
                 android:id="@+id/img_favorite"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="18dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:src="@drawable/ic_favorite"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -75,8 +75,8 @@
 
             <ImageView
                 android:id="@+id/img_favorite_choose"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="18dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:visibility="gone"
                 android:src="@drawable/ic_favorite_fill"

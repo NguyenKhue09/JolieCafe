@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activities.review.ReviewProductActivity">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/ic_star_fill"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_number_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_regular"
+        android:text="5/5"
+        android:textColor="@color/text_color"
+        android:textSize="16sp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="13dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_rank_all"
+            style="@style/customChipStyleDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:fontFamily="@font/raleway_regular"
+            android:text="All"
+            android:textAlignment="center"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            app:checkedIconVisible="false" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_5_star"
+            style="@style/customChipStyleDetailRank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:fontFamily="@font/raleway_regular"
+            android:text="5"
+            android:textAlignment="center"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            app:checkedIconVisible="false"
+            app:closeIcon="@drawable/ic_star"
+            app:closeIconTint="@color/text_color" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_4_star"
+            style="@style/customChipStyleDetailRank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/raleway_regular"
+            android:text="4"
+            android:textAlignment="center"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            app:checkedIconVisible="false"
+            app:closeIcon="@drawable/ic_star"
+            app:closeIconTint="@color/text_color" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_3_star"
+            style="@style/customChipStyleDetailRank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:fontFamily="@font/raleway_regular"
+            android:text="3"
+            android:textAlignment="center"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            app:checkedIconVisible="false"
+            app:closeIcon="@drawable/ic_star"
+            app:closeIconTint="@color/text_color" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_2_star"
+            style="@style/customChipStyleDetailRank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/raleway_regular"
+            android:text="2"
+            android:textAlignment="center"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            app:checkedIconVisible="false"
+            app:closeIcon="@drawable/ic_star"
+            app:closeIconTint="@color/text_color" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_1_star"
+            style="@style/customChipStyleDetailRank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:fontFamily="@font/raleway_regular"
+            android:text="1"
+            android:textAlignment="center"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            app:checkedIconVisible="false"
+            app:closeIcon="@drawable/ic_star"
+            app:closeIconTint="@color/text_color" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_0_star"
+            style="@style/customChipStyleDetailRank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/raleway_regular"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="@color/text_color"
+            android:textSize="14sp"
+            app:checkedIconVisible="false"
+            app:closeIcon="@drawable/ic_star"
+            app:closeIconTint="@color/text_color" />
+
+
+    </com.google.android.material.chip.ChipGroup>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
