@@ -23,7 +23,7 @@ class ProfileViewModel @Inject constructor(
     application: Application,
     private val repository: Repository,
     private val dataStoreRepository: DataStoreRepository
-): AndroidViewModel(application) {
+) : AndroidViewModel(application) {
 
     var readBackOnline = dataStoreRepository.readBackOnline
     var readUserToken = dataStoreRepository.readUserToken
@@ -33,6 +33,7 @@ class ProfileViewModel @Inject constructor(
     val networkMessage = MutableLiveData<String>()
 
     var getUserInfosResponse: MutableLiveData<ApiResult<User>> = MutableLiveData()
+    var removeUserNoticeTokenResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
 
     var userToken = ""
     var networkStatus = false
@@ -40,7 +41,7 @@ class ProfileViewModel @Inject constructor(
     var isFaceOrGGLogin = false
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             readUserToken.collectLatest { token ->
                 println(token)
                 userToken = token
@@ -59,6 +60,18 @@ class ProfileViewModel @Inject constructor(
                 getUserInfosResponse.value = ApiResult.Error(e.message)
             }
         }
+
+    fun removeUserNoticeToken() = viewModelScope.launch {
+        removeUserNoticeTokenResponse.value = ApiResult.Loading()
+        try {
+            val response = repository.remote.removeUserNoticeToken(token = userToken)
+            removeUserNoticeTokenResponse.value =
+                handleNullDataSuccessApiResponse(response = response)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            removeUserNoticeTokenResponse.value = ApiResult.Error(e.message)
+        }
+    }
 
     private fun handleApiResponse(response: Response<ApiResponseSingleData<User>>): ApiResult<User> {
         val result = response.body()
@@ -79,34 +92,23 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    private fun handleNullDataSuccessApiResponse(response: Response<ApiResponseSingleData<Unit>>): ApiResult<Unit> {
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+            response.isSuccessful -> {
+                ApiResult.NullDataSuccess()
+            }
+            else -> {
+                ApiResult.Error(response.message())
+            }
+        }
+    }
 
-//    private fun handleTokenEmpty() {
-//        val currentUser = FirebaseAuth.getInstance().currentUser
-//        viewModelScope.launch {
-//            if (currentUser != null && networkStatus) {
-//                println("Token empty")
-//                val data = mutableMapOf<String, String>()
-//                val user = FirebaseAuth.getInstance().currentUser
-//                data["_id"] = user!!.uid
-//                data["fullname"] = user.displayName ?: ""
-//                data["email"] = user.email ?: ""
-//                val response = repository.remote.createUser(data = data)
-//                handleGetTokenResponse(response)
-//            }
-//        }
-//    }
-//
-//    private fun handleGetTokenResponse(response: Response<ApiResponseSingleData<User>>) {
-//        val result = response.body()
-//        when {
-//            response.isSuccessful -> {
-//                saveUserToken(userToken = result!!.data!!.token)
-//            }
-//            else -> {
-//                saveUserToken("")
-//            }
-//        }
-//    }
 
     fun saveUserToken(userToken: String) =
         viewModelScope.launch(Dispatchers.IO) {

@@ -10,6 +10,7 @@ import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_IS_USER_DATA_CHA
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_NAME
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_USER_AUTH_TYPE
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_USER_DEFAULT_ADDRESS_ID
+import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_USER_NOTICE_TOKEN
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_USER_TOKEN
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
@@ -33,6 +34,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         val isFaceOrGGLogin = booleanPreferencesKey(PREFERENCES_USER_AUTH_TYPE)
         val isUserDataChange = booleanPreferencesKey(PREFERENCES_IS_USER_DATA_CHANGE)
         val defaultAddressId = stringPreferencesKey(PREFERENCES_USER_DEFAULT_ADDRESS_ID)
+        val userNoticeToken = stringPreferencesKey(PREFERENCES_USER_NOTICE_TOKEN)
     }
 
     private val dataStore: DataStore<Preferences> = context.dataStore
@@ -65,6 +67,12 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
     suspend fun saveUserDefaultAddressId(addressId: String) {
         dataStore.edit { preferences ->
             preferences[PreferenceKeys.defaultAddressId] = addressId
+        }
+    }
+
+    suspend fun saveUserNoticeToken(token: String) {
+        dataStore.edit { preferences ->
+            preferences[PreferenceKeys.userNoticeToken] = token
         }
     }
 
@@ -130,6 +138,19 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         }
         .map { preferences ->
             val defaultAddressId = preferences[PreferenceKeys.defaultAddressId] ?: ""
+            defaultAddressId
+        }.distinctUntilChanged()
+
+    val readUserNoticeToken: Flow<String> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw  exception
+            }
+        }
+        .map { preferences ->
+            val defaultAddressId = preferences[PreferenceKeys.userNoticeToken] ?: ""
             defaultAddressId
         }.distinctUntilChanged()
 }

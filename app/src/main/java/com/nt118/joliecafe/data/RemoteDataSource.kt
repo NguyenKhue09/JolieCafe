@@ -3,7 +3,6 @@ package com.nt118.joliecafe.data
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.google.gson.Gson
 import com.nt118.joliecafe.data.network.JolieCafeApi
 import com.nt118.joliecafe.data.paging_source.*
 import com.nt118.joliecafe.models.*
@@ -183,6 +182,19 @@ class RemoteDataSource @Inject constructor(
     // api detail product
     suspend fun getDetailFavoriteProductsId(token: String, productId: String): Response<ApiResponseSingleData<Product>> {
         return jolieCafeApi.getDetailProductsId( token= "Bearer $token", productId = productId)
+    }
+
+    suspend fun updateUserNoticeToken(
+        token: String,
+        notificationToken: String,
+    ): Response<ApiResponseSingleData<User>> {
+        return jolieCafeApi.updateUserNoticeToken(token = "Bearer $token", notificationToken = notificationToken)
+    }
+
+    suspend fun removeUserNoticeToken(
+        token: String
+    ): Response<ApiResponseSingleData<Unit>> {
+        return jolieCafeApi.removeUserNoticeToken(token = "Bearer $token")
     }
 
 }
