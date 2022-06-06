@@ -98,11 +98,29 @@ class CartAdapter(
             holder.binding.btnDecreaseQuantity.setOnClickListener {
                 handleQuantityChange(cartItem.quantity - 1, cartItem)
                 holder.binding.tvAmount.text = cartItem.quantity.toString()
+                holder.binding.tvPrice.text = mActivity.getString(
+                    R.string.product_price,
+                    NumberUtil.addSeparator(cartItem.price)
+                )
+                selectedItem.contains(cartItem).let {
+                    if (it) {
+                        viewModel.totalCost.value = viewModel.totalCost.value?.minus(cartItem.productDetail.originPrice)
+                    }
+                }
             }
 
             holder.binding.btnIncreaseQuantity.setOnClickListener {
                 handleQuantityChange(cartItem.quantity + 1, cartItem)
                 holder.binding.tvAmount.text = cartItem.quantity.toString()
+                holder.binding.tvPrice.text = mActivity.getString(
+                    R.string.product_price,
+                    NumberUtil.addSeparator(cartItem.price)
+                )
+                selectedItem.contains(cartItem).let {
+                    if (it) {
+                        viewModel.totalCost.value = viewModel.totalCost.value?.plus(cartItem.productDetail.originPrice)
+                    }
+                }
             }
         }
     }
@@ -140,6 +158,7 @@ class CartAdapter(
             viewModel.deleteCartItem(cartItem.productId, token = viewModel.userToken)
         } else {
             cartItem.quantity = quantity
+            cartItem.price = quantity * cartItem.productDetail.originPrice
         }
     }
 

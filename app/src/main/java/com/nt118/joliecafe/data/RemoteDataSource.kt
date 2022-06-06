@@ -3,6 +3,7 @@ package com.nt118.joliecafe.data
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.google.gson.Gson
 import com.nt118.joliecafe.data.network.JolieCafeApi
 import com.nt118.joliecafe.data.paging_source.*
 import com.nt118.joliecafe.models.*
@@ -125,6 +126,16 @@ class RemoteDataSource @Inject constructor(
         return jolieCafeApi.deleteCartItem(productId = productId, token = "Bearer $token")
     }
 
+    suspend fun deleteCartItems(
+        productIds: List<String>,
+        token: String
+    ): Response<ApiResponseSingleData<Unit>> {
+        val body = mapOf(
+            "productIds" to productIds
+        )
+        println(body["productIds"])
+        return jolieCafeApi.deleteCartItems(body = body, token = "Bearer $token")
+    }
 
     suspend fun addCart(
         data: Map<String, String>,

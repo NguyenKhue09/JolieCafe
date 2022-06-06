@@ -12,5 +12,5 @@ data class CartItem(
     val productDetail:Product,
     val size: String,
     var quantity: Int,
-    val price: Double
+    var price: Double
 )

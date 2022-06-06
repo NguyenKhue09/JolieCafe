@@ -35,6 +35,9 @@ class CartViewModel @Inject constructor(
     var userToken = ""
     var networkStatus = false
     var backOnline = false
+
+    val networkMessage = MutableLiveData<String>()
+
     var cartEmptyCount: MutableStateFlow<Int> = MutableStateFlow(0) // cái này để đếm xem bao nhiêu RV trống
 //    var cartCount: MutableStateFlow<Int> = MutableStateFlow(0) // bộ đếm RV chạy xong
     var numOfSelectedRv: MutableStateFlow<Int> = MutableStateFlow(0)
@@ -75,6 +78,20 @@ class CartViewModel @Inject constructor(
                 val response = repository.remote.deleteCartItem(productId, token)
                 deleteCartItemResponse.value = handleApiResponse(response)
                 Log.d("CartViewModel", "deleteCartItem: done")
+            } catch (e: Exception) {
+                e.printStackTrace()
+                deleteCartItemResponse.value = ApiResult.Error(e.message)
+            }
+        }
+    }
+
+    fun deleteCartItems(productIds: List<String>, token: String) {
+        viewModelScope.launch {
+            deleteCartItemResponse.value = ApiResult.Loading()
+            try {
+                if (token.isEmpty()) Throwable("Unauthorized")
+                val response = repository.remote.deleteCartItems(productIds, token)
+                deleteCartItemResponse.value = handleApiResponse(response)
             } catch (e: Exception) {
                 e.printStackTrace()
                 deleteCartItemResponse.value = ApiResult.Error(e.message)
@@ -149,11 +166,11 @@ class CartViewModel @Inject constructor(
 
     fun showNetworkStatus() {
         if (!networkStatus) {
-            Toast.makeText(getApplication(), "No Internet Connection", Toast.LENGTH_SHORT).show()
             saveBackOnline(true)
+            networkMessage.value = "No Internet Connection"
         } else if (networkStatus) {
             if (backOnline) {
-                Toast.makeText(getApplication(), "We're back online", Toast.LENGTH_SHORT).show()
+                networkMessage.value = "We're back online"
                 saveBackOnline(false)
             }
         }

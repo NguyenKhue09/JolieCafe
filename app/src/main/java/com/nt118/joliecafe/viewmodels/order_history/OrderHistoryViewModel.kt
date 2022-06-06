@@ -2,6 +2,7 @@ package com.nt118.joliecafe.viewmodels.order_history
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -14,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,6 +32,9 @@ class OrderHistoryViewModel @Inject constructor(
     private val _orderHistory = MutableStateFlow<PagingData<OrderHistory>>(PagingData.empty())
     val orderHistory: StateFlow<PagingData<OrderHistory>> = _orderHistory
 
+    private val _orderHistoryClickedList = MutableLiveData<MutableList<String>>(mutableListOf())
+    val orderHistoryClickedList: LiveData<MutableList<String>> = _orderHistoryClickedList
+
     val networkMessage = MutableLiveData<String>()
 
     var userToken = ""
@@ -43,6 +48,16 @@ class OrderHistoryViewModel @Inject constructor(
                 userToken = token
             }
         }
+    }
+
+    fun addNewOrderToClickedList(id: String) {
+        println(id)
+        if(!_orderHistoryClickedList.value!!.contains(id)) {
+            _orderHistoryClickedList.value!!.add(id)
+        } else {
+            _orderHistoryClickedList.value!!.remove(id)
+        }
+        _orderHistoryClickedList.value = _orderHistoryClickedList.value
     }
 
     fun getUserBills() {

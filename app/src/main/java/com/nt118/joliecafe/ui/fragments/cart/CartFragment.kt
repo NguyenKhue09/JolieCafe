@@ -11,6 +11,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -19,19 +20,22 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.gson.Gson
+import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.CartAdapter
 import com.nt118.joliecafe.databinding.FragmentCartBinding
 import com.nt118.joliecafe.models.CartItem
 import com.nt118.joliecafe.models.CartItemByCategory
 import com.nt118.joliecafe.ui.activities.checkout.CheckoutActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
-import com.nt118.joliecafe.util.ApiResult
-import com.nt118.joliecafe.util.CartItemComparator
-import com.nt118.joliecafe.util.NetworkListener
-import com.nt118.joliecafe.util.NumberUtil
+import com.nt118.joliecafe.util.*
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_DISABLE
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_SUCCESS
+import com.nt118.joliecafe.util.extenstions.setCustomBackground
+import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.cart.CartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
@@ -66,6 +70,7 @@ class CartFragment : Fragment() {
     private lateinit var footer: FrameLayout
     private lateinit var tvItemCount: TextView
     private lateinit var tvTotalPrice: TextView
+    private lateinit var tvDelete: TextView
     private var isCartEmpty = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,6 +100,7 @@ class CartFragment : Fragment() {
         cartViewModel.totalCost.observe(viewLifecycleOwner) {
             tvTotalPrice.text = NumberUtil.addSeparator(it)
             binding.btnCheckout.isEnabled = it > 0
+            tvDelete.visibility = if (it > 0) View.VISIBLE else View.GONE
         }
         cartViewModel.deleteCartItemResponse.observe(viewLifecycleOwner) {
             when (it) {
@@ -122,6 +128,7 @@ class CartFragment : Fragment() {
                         header2.visibility = View.VISIBLE
                         footer.visibility = View.VISIBLE
                         cartViewModel.totalCost.value = 0.0
+                        cartViewModel.cartEmptyCount.value = 0
                         fetchDataFromApi(data)
                     }
                 }
@@ -154,6 +161,7 @@ class CartFragment : Fragment() {
         suggestionContainer = binding.suggestionContainer
         tvItemCount = binding.tvItemCount
         tvTotalPrice = binding.tvTotalPrice
+        tvDelete = binding.tvDelete
 
         rvCartSuggestion.adapter = CartSuggestionAdapter()
         cartCoffeeAdapter = CartAdapter(requireActivity(), cartViewModel, mutableListOf())
@@ -170,6 +178,7 @@ class CartFragment : Fragment() {
         rvPasty.adapter = cartPastyAdapter
 
 //        init()
+        observeNetworkMessage()
         getData()
         checkboxHandler()
         checkAllHandler()
@@ -181,26 +190,6 @@ class CartFragment : Fragment() {
                 cartViewModel.showNetworkStatus()
                 if (cartViewModel.backOnline) {
                     cartViewModel.getCartItemV2(cartViewModel.userToken)
-
-//                    cartViewModel.getCartItems(cartViewModel.userToken, "Coffee").collectLatest { data ->
-//                        cartCoffeeAdapter.submitData(lifecycle, data)
-//                    }
-//
-//                    cartViewModel.getCartItems(cartViewModel.userToken, "Tea").collectLatest { data ->
-//                        cartTeaAdapter.submitData(lifecycle, data)
-//                    }
-//
-//                    cartViewModel.getCartItems(cartViewModel.userToken, "Juice").collectLatest { data ->
-//                        cartJuiceAdapter.submitData(lifecycle, data)
-//                    }
-//
-//                    cartViewModel.getCartItems(cartViewModel.userToken, "MilkTea").collectLatest { data ->
-//                        cartMilkTeaAdapter.submitData(lifecycle, data)
-//                    }
-//
-//                    cartViewModel.getCartItems(cartViewModel.userToken, "MilkShake").collectLatest { data ->
-//                        cartMilkShakeAdapter.submitData(lifecycle, data)
-//                    }
                 }
             }
         }
@@ -212,9 +201,35 @@ class CartFragment : Fragment() {
             startActivity(intent)
         }
 
+        tvDelete.setOnClickListener {
+            val selectedCartItems = getSelectedCartItem()
+            val selectedCartItemIds = selectedCartItems.map { it.productId }
+            cartViewModel.deleteCartItems(selectedCartItemIds, cartViewModel.userToken)
+        }
+
         rvCartSuggestion.adapter = CartSuggestionAdapter()
 
         return root
+    }
+
+    private fun observeNetworkMessage() {
+        cartViewModel.networkMessage.observe(viewLifecycleOwner) { message ->
+            if (!cartViewModel.networkStatus) {
+                showSnackBar(
+                    message = message,
+                    status = SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_wifi_off
+                )
+            } else if (cartViewModel.networkStatus) {
+                if (cartViewModel.backOnline) {
+                    showSnackBar(
+                        message = message,
+                        status = SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_wifi
+                    )
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -226,36 +241,42 @@ class CartFragment : Fragment() {
         data.find { it.type == "Coffee" }?.let { cartItemByCategory ->
             cvCoffee.visibility = View.VISIBLE
             cartCoffeeAdapter.fetchData(cartItemByCategory.products)
+            cartCoffeeAdapter.uncheckAllCheckbox()
             cartViewModel.itemCount.value += cartCoffeeAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
         data.find { it.type == "Tea" }?.let { cartItemByCategory ->
             cvTea.visibility = View.VISIBLE
             cartTeaAdapter.fetchData(cartItemByCategory.products)
+            cartTeaAdapter.uncheckAllCheckbox()
             cartViewModel.itemCount.value += cartTeaAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
         data.find { it.type == "Juice" }?.let { cartItemByCategory ->
             cvJuice.visibility = View.VISIBLE
             cartJuiceAdapter.fetchData(cartItemByCategory.products)
+            cartJuiceAdapter.uncheckAllCheckbox()
             cartViewModel.itemCount.value += cartJuiceAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
         data.find { it.type == "Milk tea" }?.let { cartItemByCategory ->
             cvMilkTea.visibility = View.VISIBLE
             cartMilkTeaAdapter.fetchData(cartItemByCategory.products)
+            cartMilkTeaAdapter.uncheckAllCheckbox()
             cartViewModel.itemCount.value += cartMilkTeaAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
         data.find { it.type == "Milk shake" }?.let { cartItemByCategory ->
             cvMilkShake.visibility = View.VISIBLE
             cartMilkShakeAdapter.fetchData(cartItemByCategory.products)
+            cartMilkShakeAdapter.uncheckAllCheckbox()
             cartViewModel.itemCount.value += cartMilkShakeAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
 
         data.find { it.type == "Pasty" }?.let { cartItemByCategory ->
             cvPasty.visibility = View.VISIBLE
             cartPastyAdapter.fetchData(cartItemByCategory.products)
+            cartPastyAdapter.uncheckAllCheckbox()
             cartViewModel.itemCount.value += cartPastyAdapter.itemCount
         } ?: run { cartViewModel.cartEmptyCount.value += 1 }
     }
@@ -582,6 +603,32 @@ class CartFragment : Fragment() {
             isChecked = false
             jumpDrawablesToCurrentState()
         }
+    }
+
+    private fun showSnackBar(message: String, status: Int, icon: Int) {
+        val drawable = requireContext().getDrawable(icon)
+
+        val snackBarContentColor = when (status) {
+            Constants.SNACK_BAR_STATUS_SUCCESS -> R.color.text_color_2
+            Constants.SNACK_BAR_STATUS_DISABLE -> R.color.dark_text_color
+            Constants.SNACK_BAR_STATUS_ERROR -> R.color.error_color
+            else -> R.color.text_color_2
+        }
+
+
+        val snackBar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setAction("Ok") {
+            }
+            .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.grey_primary))
+            .setTextColor(ContextCompat.getColor(requireContext(), snackBarContentColor))
+            .setIcon(
+                drawable = drawable!!,
+                colorTint = ContextCompat.getColor(requireContext(), snackBarContentColor),
+                iconPadding = resources.getDimensionPixelOffset(R.dimen.small_margin)
+            )
+            .setCustomBackground(requireContext().getDrawable(R.drawable.snackbar_normal_custom_bg)!!)
+
+        snackBar.show()
     }
 
     override fun onStop() {
