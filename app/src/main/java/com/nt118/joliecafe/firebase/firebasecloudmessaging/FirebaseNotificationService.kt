@@ -12,7 +12,11 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.nt118.joliecafe.R
+import com.nt118.joliecafe.data.DataStoreRepository
+import com.nt118.joliecafe.data.Repository
 import com.nt118.joliecafe.ui.activities.notifications.NotificationActivity
+import kotlinx.coroutines.*
+import javax.inject.Inject
 import kotlin.random.Random
 
 private const val CHANNEL_ID = "jolie_notice_channel"
@@ -20,8 +24,14 @@ const val channelName = "com.nt118.joliecafe"
 
 class FirebaseNotificationService: FirebaseMessagingService() {
 
+    @Inject
+    lateinit var dataStoreRepository: DataStoreRepository
+
+    lateinit var job: Job
+
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+        saveNewTokenToDataStore(token)
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
@@ -58,5 +68,21 @@ class FirebaseNotificationService: FirebaseMessagingService() {
         }
 
         notificationManager.createNotificationChannel(channel)
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun saveNewTokenToDataStore(token: String) {
+        job = GlobalScope.launch {
+            withContext(Dispatchers.IO) {
+                dataStoreRepository.saveUserToken(token)
+            }
+        }
+
+        job.invokeOnCompletion { println("Job1 completed") }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 }

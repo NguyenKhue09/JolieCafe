@@ -192,6 +192,19 @@ interface JolieCafeApi {
         @Query("productId") productId: String,
     ):  Response<ApiResponseSingleData<Product>>
 
+    @Headers("Content-Type: application/x-www-form-urlencoded")
+    @PUT("$API_GATEWAY/user/update-user-notice-token")
+    @FormUrlEncoded
+    suspend fun updateUserNoticeToken(
+        @Header("Authorization") token: String,
+        @Field("notificationToken") notificationToken: String,
+    ): Response<ApiResponseSingleData<User>>
+
+
+    @PUT("$API_GATEWAY/user/remove-user-notice-token")
+    suspend fun removeUserNoticeToken(
+        @Header("Authorization") token: String,
+    ): Response<ApiResponseSingleData<Unit>>
 
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 

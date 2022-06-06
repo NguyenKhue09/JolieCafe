@@ -12,6 +12,7 @@ import com.nt118.joliecafe.models.User
 import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
@@ -32,6 +33,16 @@ class LoginViewModel @Inject constructor(
 
     var networkStatus = false
     var backOnline = false
+
+    var userNoticeToken = ""
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.readUserNoticeToken.collectLatest { token ->
+                userNoticeToken = token
+            }
+        }
+    }
 
 
 
@@ -91,14 +102,20 @@ class LoginViewModel @Inject constructor(
             }
             response.isSuccessful -> {
                 saveUserToken(result!!.data!!.token)
-                saveDefaultAddressId(defaultAddressId = result.data?.defaultAddress ?: "")
-                ApiResult.Success(result.data!!)
+                updateUserNoticeToken(userToken = result.data!!.token)
+                saveDefaultAddressId(defaultAddressId = result.data.defaultAddress ?: "")
+                ApiResult.Success(result.data)
             }
             else -> {
                 ApiResult.Error(response.message())
             }
         }
     }
+
+    private fun updateUserNoticeToken(userToken: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.remote.updateUserNoticeToken(token = userToken, notificationToken = userNoticeToken)
+        }
 
     fun showNetworkStatus() {
         if (!networkStatus) {
