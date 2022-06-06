@@ -6,35 +6,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.activities.detail.DetailActivity">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/btn_back"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        app:cardBackgroundColor="#E4E4E4"
-        app:cardCornerRadius="90dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp"
+
+    <androidx.core.widget.NestedScrollView
+        android:clipToPadding="false"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="70dp"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <ImageView
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:src="@drawable/ic_arrow_left"
-            tools:ignore="ContentDescription" />
-    </androidx.cardview.widget.CardView>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/btn_back"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                app:cardBackgroundColor="#E4E4E4"
+                app:cardCornerRadius="90dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_arrow_left"
+                    tools:ignore="ContentDescription" />
+            </androidx.cardview.widget.CardView>
+
             <ImageView
                 android:id="@+id/img_product"
                 android:layout_width="match_parent"
                 android:layout_height="360dp"
                 android:scaleType="center"
-                android:src="@drawable/b"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -43,12 +53,12 @@
                 android:id="@+id/tv_name_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="24dp"
                 android:fontFamily="@font/raleway_regular"
                 android:text="Sweet Cappuccino"
                 android:textColor="@color/grey_primary_variant"
                 android:textSize="20sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_product" />
 
@@ -56,8 +66,8 @@
                 android:id="@+id/btn_favorite"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="20dp"
                 android:src="@drawable/ic_favorite"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_product" />
@@ -66,12 +76,12 @@
                 android:id="@+id/tv_price_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat_regular"
                 android:text="90.000"
                 android:textColor="@color/text_color"
                 android:textSize="14sp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name_product" />
 
@@ -79,11 +89,11 @@
                 android:id="@+id/tv_vnd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat_regular"
                 android:text=" VND • "
                 android:textColor="@color/text_color"
                 android:textSize="14sp"
-                android:layout_marginTop="10dp"
                 app:layout_constraintStart_toEndOf="@+id/tv_price_product"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name_product" />
 
@@ -91,20 +101,20 @@
                 android:id="@+id/tv_rank"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat_regular"
                 android:text="5.0"
                 android:textColor="@color/text_color"
                 android:textSize="14sp"
-                android:layout_marginTop="10dp"
                 app:layout_constraintStart_toEndOf="@+id/tv_vnd"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name_product" />
 
             <ImageView
                 android:layout_width="12dp"
                 android:layout_height="12dp"
-                android:src="@drawable/ic_star"
-                android:layout_marginTop="13dp"
                 android:layout_marginStart="4dp"
+                android:layout_marginTop="13dp"
+                android:src="@drawable/ic_star"
                 app:layout_constraintStart_toEndOf="@+id/tv_rank"
                 app:layout_constraintTop_toBottomOf="@+id/tv_name_product"
                 tools:ignore="ContentDescription" />
@@ -113,12 +123,12 @@
                 android:id="@+id/tv_description_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/raleway_regular"
-                android:text="Description"
-                android:textColor="@color/text_color"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="24dp"
-                android:textSize="14sp"
+                android:fontFamily="@font/raleway_medium"
+                android:text="Description"
+                android:textColor="@color/text_color"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_price_product" />
 
@@ -140,154 +150,152 @@
                 android:id="@+id/tv_review"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/raleway_regular"
-                android:text="Review"
-                android:textColor="@color/text_color"
-                android:textSize="14sp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="24dp"
+                android:fontFamily="@font/raleway_medium"
+                android:text="Review"
+                android:textColor="@color/text_color"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_description_content" />
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="18dp"
-                android:src="@drawable/ic_star_fill"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_review" />
-
             <TextView
-                android:id="@+id/tv_number_rank"
+                android:id="@+id/btn_view_all_review"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/raleway_medium"
+                android:text="Show all >>"
+                android:textColor="@color/grey_primary_variant"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_description_content" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_star"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_review"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv_number_review"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:fontFamily="@font/montserrat_regular"
-                android:text="5/5"
+                android:text="12"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                app:layout_constraintStart_toEndOf="@+id/imageView3"
+                app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:fontFamily="@font/raleway_regular"
+                android:text="review"
+                android:textColor="@color/text_color"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+                app:layout_constraintStart_toEndOf="@+id/tv_number_review"
+                app:layout_constraintTop_toTopOf="@+id/imageView3" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView3"
+                tools:itemCount="5" />
+
+
+            <TextView
+                android:id="@+id/tv_more_products"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/raleway_medium"
+                android:text="More products"
                 android:textColor="@color/text_color"
                 android:textSize="16sp"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="13dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="20dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                app:layout_constraintTop_toBottomOf="@+id/rv_review"/>
 
-
-            <com.google.android.material.chip.ChipGroup
-                android:layout_width="320dp"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_more_products"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="22dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintTop_toBottomOf="@+id/tv_review"
-                app:selectionRequired="true"
-                app:singleSelection="true">
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_more_products"/>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_rank_all"
-                    style="@style/customChipStyleDetail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/raleway_regular"
-                    android:text="All"
-                    android:checked="true"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_color"
-                    android:textSize="14sp"
-                    app:checkedIconVisible="false" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_5_star"
-                    style="@style/customChipStyleDetailRank"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/raleway_regular"
-                    android:text="5"
-                    android:layout_marginHorizontal="20dp"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_color"
-                    android:textSize="14sp"
-                    app:checkedIconVisible="false"
-                    app:closeIcon="@drawable/ic_star"
-                    app:closeIconTint="@color/text_color" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_4_star"
-                    style="@style/customChipStyleDetailRank"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/raleway_regular"
-                    android:text="4"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_color"
-                    android:textSize="14sp"
-                    app:checkedIconVisible="false"
-                    app:closeIcon="@drawable/ic_star"
-                    app:closeIconTint="@color/text_color" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_3_star"
-                    style="@style/customChipStyleDetailRank"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/raleway_regular"
-                    android:text="3"
-                    android:textAlignment="center"
-                    android:layout_marginHorizontal="20dp"
-                    android:textColor="@color/text_color"
-                    android:textSize="14sp"
-                    app:checkedIconVisible="false"
-                    app:closeIcon="@drawable/ic_star"
-                    app:closeIconTint="@color/text_color" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_2_star"
-                    style="@style/customChipStyleDetailRank"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/raleway_regular"
-                    android:text="2"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_color"
-                    android:textSize="14sp"
-                    app:checkedIconVisible="false"
-                    app:closeIcon="@drawable/ic_star"
-                    app:closeIconTint="@color/text_color" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_1_star"
-                    style="@style/customChipStyleDetailRank"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/raleway_regular"
-                    android:text="1"
-                    android:textAlignment="center"
-                    android:layout_marginHorizontal="20dp"
-                    android:textColor="@color/text_color"
-                    android:textSize="14sp"
-                    app:checkedIconVisible="false"
-                    app:closeIcon="@drawable/ic_star"
-                    app:closeIconTint="@color/text_color" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_0_star"
-                    style="@style/customChipStyleDetailRank"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/raleway_regular"
-                    android:text="0"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_color"
-                    android:textSize="14sp"
-                    app:checkedIconVisible="false"
-                    app:closeIcon="@drawable/ic_star"
-                    app:closeIconTint="@color/text_color" />
-
-
-
-            </com.google.android.material.chip.ChipGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:backgroundTint="@color/grey_primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </androidx.cardview.widget.CardView>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_add_card"
+        android:layout_width="148dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_btn_add_cart"
+        android:fontFamily="@font/raleway_medium"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="ADD TO CART"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_buy_now"
+        android:layout_width="148dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/background_btn_add_cart"
+        android:backgroundTint="@color/grey_primary_variant"
+        android:fontFamily="@font/raleway_medium"
+        android:text="BUY NOW"
+        android:layout_marginEnd="20dp"
+        android:textColor="@color/text_color"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/categories_CircularProgressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:indicatorColor="@color/text_color_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

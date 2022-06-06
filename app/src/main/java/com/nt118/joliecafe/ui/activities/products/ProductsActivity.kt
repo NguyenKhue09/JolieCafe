@@ -1,9 +1,7 @@
 package com.nt118.joliecafe.ui.activities.products
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -14,9 +12,7 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.nt118.joliecafe.R
-import com.nt118.joliecafe.adapter.CategorieAdapter
 import com.nt118.joliecafe.adapter.CategoriesProductsAdapter
-import com.nt118.joliecafe.adapter.FavoriteItemAdapter
 import com.nt118.joliecafe.adapter.ProductAdapter
 import com.nt118.joliecafe.databinding.ActivityProductsBinding
 import com.nt118.joliecafe.models.CategorieModel
@@ -24,7 +20,6 @@ import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
-import com.nt118.joliecafe.util.extenstions.observeOnce
 import com.nt118.joliecafe.util.extenstions.setCustomBackground
 import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.products.ProductsViewModel

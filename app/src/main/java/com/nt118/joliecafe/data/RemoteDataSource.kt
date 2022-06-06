@@ -180,4 +180,9 @@ class RemoteDataSource @Inject constructor(
         ).flow
     }
 
+    // api detail product
+    suspend fun getDetailFavoriteProductsId(token: String, productId: String): Response<ApiResponseSingleData<Product>> {
+        return jolieCafeApi.getDetailProductsId( token= "Bearer $token", productId = productId)
+    }
+
 }

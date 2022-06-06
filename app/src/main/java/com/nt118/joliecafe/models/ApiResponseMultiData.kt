@@ -10,8 +10,3 @@ data class ApiResponseMultiData<T>(
     val nextPage: Int? = null,
     val data: List<T>? = null
 )
-
-@Serializable
-data class FavProductId (
-    val productId: String
-)
