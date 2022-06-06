@@ -32,6 +32,7 @@ import com.nt118.joliecafe.ui.activities.signup.SignUpActivity
 import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants
 import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.viewmodels.MainActivityViewModel
 import com.nt118.joliecafe.viewmodels.login.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException

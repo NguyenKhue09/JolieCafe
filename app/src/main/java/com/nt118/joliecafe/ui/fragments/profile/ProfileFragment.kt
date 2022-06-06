@@ -77,6 +77,8 @@ class ProfileFragment : Fragment() {
         observerUserDataChangeStatus()
         observerGetUserResponse()
         observerNetworkMessage()
+        observerRemoveUserNoticeToken()
+
         initUserData()
 
         updateNetworkStatus()
@@ -94,10 +96,15 @@ class ProfileFragment : Fragment() {
                 FirebaseAuth.getInstance().signOut()
                 FirebaseGoogleAuthentication().signOut(requireActivity(), mGoogleSignInClient)
                 FirebaseFacebookLogin().facebookLoginSignOut()
+                profileViewModel.removeUserNoticeToken()
                 profileViewModel.saveUserToken(userToken = "")
                 startActivity(Intent(requireContext(), LoginActivity::class.java))
             } else {
-                showSnackBar(message = "You are offline", status = SNACK_BAR_STATUS_DISABLE, icon = R.drawable.ic_wifi_off)
+                showSnackBar(
+                    message = "You are offline",
+                    status = SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_wifi_off
+                )
             }
         }
 
@@ -110,9 +117,17 @@ class ProfileFragment : Fragment() {
                 findNavController().navigate(action)
             } else {
                 if (!profileViewModel.networkStatus) {
-                    showSnackBar(message = "You are offline", status = SNACK_BAR_STATUS_DISABLE, icon = R.drawable.ic_wifi_off)
+                    showSnackBar(
+                        message = "You are offline",
+                        status = SNACK_BAR_STATUS_DISABLE,
+                        icon = R.drawable.ic_wifi_off
+                    )
                 } else {
-                    showSnackBar(message = "Your profile data is loading", status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_satisfied)
+                    showSnackBar(
+                        message = "Your profile data is loading",
+                        status = SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_satisfied
+                    )
                 }
             }
         }
@@ -121,7 +136,11 @@ class ProfileFragment : Fragment() {
             if (profileViewModel.networkStatus) {
                 startActivity(Intent(requireContext(), AddressBookActivity::class.java))
             } else {
-                showSnackBar(message = "You are offline", status = SNACK_BAR_STATUS_DISABLE, icon = R.drawable.ic_wifi_off)
+                showSnackBar(
+                    message = "You are offline",
+                    status = SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_wifi_off
+                )
             }
         }
 
@@ -129,7 +148,11 @@ class ProfileFragment : Fragment() {
             if (profileViewModel.networkStatus) {
                 startActivity(Intent(requireContext(), OrderHistoryActivity::class.java))
             } else {
-                showSnackBar(message = "You are offline", status = SNACK_BAR_STATUS_DISABLE, icon = R.drawable.ic_wifi_off)
+                showSnackBar(
+                    message = "You are offline",
+                    status = SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_wifi_off
+                )
             }
         }
 
@@ -137,7 +160,11 @@ class ProfileFragment : Fragment() {
             if (profileViewModel.networkStatus) {
                 startActivity(Intent(requireContext(), SettingsActivity::class.java))
             } else {
-                showSnackBar(message = "You are offline", status = SNACK_BAR_STATUS_DISABLE, icon = R.drawable.ic_wifi_off)
+                showSnackBar(
+                    message = "You are offline",
+                    status = SNACK_BAR_STATUS_DISABLE,
+                    icon = R.drawable.ic_wifi_off
+                )
             }
         }
     }
@@ -169,7 +196,7 @@ class ProfileFragment : Fragment() {
                     profileViewModel.getUserInfos(
                         token = profileViewModel.userToken
                     )
-                    Log.d("get","Data Change")
+                    Log.d("get", "Data Change")
                     profileViewModel.saveIsUserDataChange(false)
                 }
             }
@@ -219,7 +246,25 @@ class ProfileFragment : Fragment() {
                 }
                 is ApiResult.Error -> {
                     preventNavigateToProfileActivity = false
-                    if(profileViewModel.networkStatus) showSnackBar(message = userInfos.message!!, status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
+                    if (profileViewModel.networkStatus) showSnackBar(
+                        message = userInfos.message!!,
+                        status = SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun observerRemoveUserNoticeToken() {
+        profileViewModel.removeUserNoticeTokenResponse.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ApiResult.NullDataSuccess -> {
+                    println("Remove User Notice Token Success")
+                }
+                is ApiResult.Error -> {
+                    println("Remove User Notice Token Error")
                 }
                 else -> {}
             }

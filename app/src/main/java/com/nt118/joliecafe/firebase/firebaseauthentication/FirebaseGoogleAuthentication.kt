@@ -11,8 +11,10 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.OAuthCredential
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.signup.SignUpActivity
+
 
 class FirebaseGoogleAuthentication {
 
@@ -23,12 +25,16 @@ class FirebaseGoogleAuthentication {
             OnCompleteListener<Void?> { })
     }
 
+
     fun googleAuthForFirebase(account: GoogleSignInAccount, activity: Activity) {
         val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
         val data: MutableMap<String, String> = mutableMapOf()
 
         try {
             mAuth.signInWithCredential(credentials).addOnCompleteListener { task ->
+                val token = task.result.credential as OAuthCredential
+                println("tokennnnnnnnnnnnnnnnnnnnnnnn")
+                println(token)
                 if (task.isSuccessful) {
                     Toast.makeText(activity, "Google sign in successfully", Toast.LENGTH_LONG)
                         .show()
