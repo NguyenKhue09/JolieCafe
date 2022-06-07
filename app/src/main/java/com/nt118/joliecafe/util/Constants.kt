@@ -31,5 +31,6 @@ class Constants {
 
         const val UTC_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         const val LOCAL_TIME_FORMAT = "dd/MM/yyyy"
+        const val TOPIC = "JolieCafeNotificationMainTopic"
     }
 }       

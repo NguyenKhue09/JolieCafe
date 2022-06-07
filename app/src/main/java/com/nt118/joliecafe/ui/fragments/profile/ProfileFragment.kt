@@ -334,6 +334,14 @@ class ProfileFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        networkListener.unregisterNetworkCallback()
+        unregisterNetworkCallback()
+    }
+
+    private fun unregisterNetworkCallback() {
+        try {
+            networkListener.unregisterNetworkCallback()
+        } catch (e: Exception) {
+            // i.e. NetworkCallback was already unregistered
+        }
     }
 }
