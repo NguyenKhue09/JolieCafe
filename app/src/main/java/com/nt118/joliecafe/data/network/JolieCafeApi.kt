@@ -206,6 +206,13 @@ interface JolieCafeApi {
         @Header("Authorization") token: String,
     ): Response<ApiResponseSingleData<Unit>>
 
+    //get comments
+    @GET("$API_GATEWAY/comment/get")
+    suspend fun getCommentProduct(
+        @Header("Authorization") token: String,
+        @Query("productId") productId: String,
+    ):  Response<ApiResponseMultiData<Comment>>
+
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 
 }

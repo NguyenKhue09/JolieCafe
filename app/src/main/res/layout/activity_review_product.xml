@@ -6,14 +6,47 @@
     android:layout_height="match_parent"
     tools:context=".ui.activities.review.ReviewProductActivity">
 
+    <RelativeLayout
+        android:id="@+id/appbar"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iconBackHome"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_arrow_left"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tvCategories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="24dp"
+            android:layout_toEndOf="@id/iconBackHome"
+            android:fontFamily="@font/raleway_medium"
+            android:text="All Reviews"
+            android:textColor="@color/grey_primary_variant"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="34dp"
         android:layout_height="34dp"
         android:layout_marginStart="20dp"
+        android:layout_marginTop="34dp"
         android:src="@drawable/ic_star_fill"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -33,9 +66,11 @@
     <com.google.android.material.chip.ChipGroup
         android:layout_width="320dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="22dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar"
         app:selectionRequired="true"
         app:singleSelection="true">
 
@@ -118,20 +153,6 @@
             android:layout_marginHorizontal="20dp"
             android:fontFamily="@font/raleway_regular"
             android:text="1"
-            android:textAlignment="center"
-            android:textColor="@color/text_color"
-            android:textSize="14sp"
-            app:checkedIconVisible="false"
-            app:closeIcon="@drawable/ic_star"
-            app:closeIconTint="@color/text_color" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_0_star"
-            style="@style/customChipStyleDetailRank"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/raleway_regular"
-            android:text="0"
             android:textAlignment="center"
             android:textColor="@color/text_color"
             android:textSize="14sp"

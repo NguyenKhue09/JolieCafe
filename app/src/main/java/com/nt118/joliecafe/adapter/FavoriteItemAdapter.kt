@@ -46,6 +46,7 @@ class FavoriteItemAdapter(
             val product = it.product
             holder.binding.itemCard.setOnClickListener {
                 val intent = Intent(favoriteFragment.context, DetailActivity::class.java)
+                intent.putExtra("productId", product.id)
                 favoriteFragment.context?.startActivity(intent)
             }
 

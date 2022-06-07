@@ -8,16 +8,23 @@
     android:background="@drawable/bottom_navigation_custom_bg"
     tools:context=".ui.fragments.catagories.CategoriesBottomSheetFragment">
 
-    <ImageView
-        android:id="@+id/item_img_product"
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_card_product"
         android:layout_width="65dp"
         android:layout_height="65dp"
-        android:scaleType="centerCrop"
-        android:background="@drawable/item_image_custom_bg"
-        android:src="@drawable/e"
+        app:cardCornerRadius="9dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/item_img_product"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/item_image_custom_bg"
+            android:src="@drawable/e"
+            tools:ignore="ContentDescription" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/tvName"
@@ -28,7 +35,7 @@
         android:textSize="16sp"
         android:layout_marginTop="15dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintStart_toEndOf="@+id/item_img_product"
+        app:layout_constraintStart_toEndOf="@+id/item_card_product"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -40,7 +47,7 @@
         android:textSize="11sp"
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintStart_toEndOf="@+id/item_img_product"
+        app:layout_constraintStart_toEndOf="@+id/item_card_product"
         app:layout_constraintTop_toBottomOf="@+id/tvName" />
 
     <ImageView
@@ -60,7 +67,7 @@
         android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/item_img_product">
+        app:layout_constraintTop_toBottomOf="@+id/item_card_product">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
