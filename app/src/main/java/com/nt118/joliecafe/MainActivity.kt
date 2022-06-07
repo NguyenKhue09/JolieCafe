@@ -12,10 +12,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.messaging.FirebaseMessaging
 import com.nt118.joliecafe.databinding.ActivityMainBinding
 import com.nt118.joliecafe.util.ApiResult
+import com.nt118.joliecafe.util.Constants
 import com.nt118.joliecafe.viewmodels.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-const val TOPIC = "JolieCafeNotificationMainTopic"
+const val TOPIC = Constants.TOPIC
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
