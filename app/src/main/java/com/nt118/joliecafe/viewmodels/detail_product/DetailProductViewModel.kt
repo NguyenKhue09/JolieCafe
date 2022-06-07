@@ -53,7 +53,6 @@ class DetailProductViewModel @Inject constructor(
 
     fun getDetailProduct(token: String, productId: String) =
         viewModelScope.launch {
-            println("m có qua đây không tl")
             getDetailProductResponse.value = ApiResult.Loading()
             try {
                 val response = repository.remote.getDetailFavoriteProductsId(token = token, productId = productId)
@@ -173,7 +172,44 @@ class DetailProductViewModel @Inject constructor(
     }
 
     //comment
+    var getCommentProductResponse: MutableLiveData<ApiResult<List<Comment>>> = MutableLiveData()
 
+    fun getComment(token: String,productId: String) =
+        viewModelScope.launch {
+            getCommentProductResponse.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.getCommentProduct(token,productId)
+                getCommentProductResponse.value = handleCommentApiMultiResponse(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                getCommentProductResponse.value = ApiResult.Error(e.message.toString())
+            }
+        }
+
+    private fun handleCommentApiMultiResponse(response: Response<ApiResponseMultiData<Comment>>): ApiResult<List<Comment>> {
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+
+            response.isSuccessful -> {
+                val result = response.body()
+                if (result != null) {
+                    ApiResult.Success(result.data!!)
+                } else {
+                    ApiResult.Error("comment not found!")
+                }
+            }
+
+            else -> {
+                ApiResult.Error(response.message())
+            }
+        }
+    }
 
     // add cart
     var addCartResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()

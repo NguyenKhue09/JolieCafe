@@ -13,25 +13,25 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.MoreProductsAdapter
-import com.nt118.joliecafe.adapter.ProductAdapter
 import com.nt118.joliecafe.adapter.ReviewProductAdapter
 import com.nt118.joliecafe.databinding.ActivityDetailBinding
+import com.nt118.joliecafe.models.CartItem
 import com.nt118.joliecafe.ui.activities.checkout.CheckoutActivity
 import com.nt118.joliecafe.ui.activities.review.ReviewProductActivity
-import com.nt118.joliecafe.util.ApiResult
-import com.nt118.joliecafe.util.Constants
-import com.nt118.joliecafe.util.NetworkListener
-import com.nt118.joliecafe.util.ProductComparator
+import com.nt118.joliecafe.util.*
 import com.nt118.joliecafe.util.extenstions.setCustomBackground
 import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.detail_product.DetailProductViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.NumberFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
@@ -56,11 +56,11 @@ class DetailActivity : AppCompatActivity() {
         productId = bundle!!.getString("productId").toString()
         binding.btnBack.setOnClickListener {
             onBackPressed()
+            finish()
         }
 
         networkListener = NetworkListener()
 
-        recyclerViewReview()
         recyclerViewMoreProducts()
 
         updateNetworkStatus()
@@ -71,11 +71,13 @@ class DetailActivity : AppCompatActivity() {
             detailProductViewModel.getDetailProduct(
                 token = detailProductViewModel.userToken,
                 productId = productId
-//                productId = "6266aaa2de6570302a415602"
             )
 
             detailProductViewModel.getFavorite(detailProductViewModel.userToken)
-
+            detailProductViewModel.getComment(
+                token = detailProductViewModel.userToken,
+                productId = productId
+            )
             detailProductViewModel.getProducts(
                 productQuery = mapOf(
                     "type" to "All"
@@ -111,11 +113,7 @@ class DetailActivity : AppCompatActivity() {
                         binding.tvNameProduct.text = data.name
                         binding.tvDescriptionContent.text = data.description
                         binding.tvRank.text = data.avgRating.toString()
-                        binding.tvNumberReview.text = data.comments?.size.toString()
-                        if(data.comments?.size == 0) {
-                            binding.btnViewAllReview.visibility = View.GONE
-                            binding.rvReview.visibility = View.VISIBLE
-                        }
+
 
                         binding.btnAddCard.setOnClickListener {
                             val newCart = mapOf(
@@ -135,16 +133,54 @@ class DetailActivity : AppCompatActivity() {
                                 "price" to data.originPrice.toString(),
                             )
                             addNewCart(cartData = newCart)
-                            startActivity(Intent(this, CheckoutActivity::class.java))
+                            val intent = Intent(this, CheckoutActivity::class.java)
+                            val cartItems = mutableListOf<CartItem>()
+                            cartItems.add(CartItem(productId, productId, data,"M",1, data.originPrice))
+                            intent.putExtra("cartItems", Gson().toJson(cartItems))
+                            startActivity(intent)
                         }
-                        println("hiện lên nào em ơi")
-                        println(data.comments)
                     }
                 }
                 is ApiResult.Error -> {
                     binding.categoriesCircularProgressIndicator.visibility = View.VISIBLE
                     binding.nestedScrollView.visibility = View.GONE
                     Log.d("CartFragment", "get cart error: ${response.message}")
+                }
+                else -> {}
+            }
+        }
+
+        detailProductViewModel.getCommentProductResponse.observe(this){ response ->
+            when(response){
+                is ApiResult.Loading -> {
+                    binding.btnViewAllReview.visibility = View.GONE
+                }
+                is ApiResult.Success -> {
+                    val data = response.data!!
+                    if (data.isEmpty()){
+                        binding.btnViewAllReview.visibility = View.GONE
+                    }else if (data.size > 4){
+                        binding.btnViewAllReview.visibility = View.VISIBLE
+                        binding.btnViewAllReview.setOnClickListener {
+                            val intent = Intent(this, ReviewProductActivity::class.java)
+                            intent.putExtra("productId", productId)
+                            startActivity(intent)
+                        }
+                    } else {
+                        binding.btnViewAllReview.visibility = View.GONE
+                    }
+                    data.let {
+                        binding.tvNumberReview.text = data.size.toString()
+                        val rvReview = binding.rvReview
+                        reviewProductAdapter = ReviewProductAdapter(data)
+                        rvReview.layoutManager = LinearLayoutManager(this@DetailActivity,
+                            LinearLayoutManager.VERTICAL, false)
+                        rvReview.adapter = reviewProductAdapter
+
+                    }
+                }
+                is ApiResult.Error -> {
+                    binding.btnViewAllReview.visibility = View.GONE
                 }
                 else -> {}
             }
@@ -201,13 +237,6 @@ class DetailActivity : AppCompatActivity() {
         _binding  = null
     }
 
-    private fun recyclerViewReview() {
-        val rvReview = binding.rvReview
-        val reviewProductAdapter = ReviewProductAdapter(fetDataBestSaler())
-        rvReview.layoutManager = LinearLayoutManager(this,
-            LinearLayoutManager.VERTICAL, false)
-        rvReview.adapter = reviewProductAdapter
-    }
 
     private fun recyclerViewMoreProducts() {
         val diffCallBack = ProductComparator
@@ -218,13 +247,6 @@ class DetailActivity : AppCompatActivity() {
         rvMoreProduct.adapter = moreProductsAdapter
     }
 
-    private fun fetDataBestSaler() : ArrayList<String> {
-        val item = ArrayList<String>()
-        for (i in 0 until 5) {
-            item.add("$i")
-        }
-        return item
-    }
 
     //test
 
@@ -297,6 +319,14 @@ class DetailActivity : AppCompatActivity() {
                         status = Constants.SNACK_BAR_STATUS_SUCCESS,
                         icon = R.drawable.ic_success
                     )
+                    lifecycleScope.launch {
+                        detailProductViewModel.readUserToken.collectLatest { token ->
+                            detailProductViewModel.userToken = token
+                            withContext(Dispatchers.IO) {
+                                detailProductViewModel.getFavorite(token)
+                            }
+                        }
+                    }
                 }
                 is ApiResult.Error -> {
                     Toast.makeText(this@DetailActivity, response.message, Toast.LENGTH_SHORT).show()
@@ -306,14 +336,14 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-    fun addNewFavorite(productId: String) {
+    private fun addNewFavorite(productId: String) {
         detailProductViewModel.addFavoriteProduct(
             token = detailProductViewModel.userToken,
             productId = productId
         )
     }
 
-    fun removeFavoriteProduct(productId: String) {
+    private fun removeFavoriteProduct(productId: String) {
         detailProductViewModel.removeFavoriteProduct(
             token = detailProductViewModel.userToken,
             productId = productId
@@ -332,6 +362,14 @@ class DetailActivity : AppCompatActivity() {
                         status = Constants.SNACK_BAR_STATUS_SUCCESS,
                         icon = R.drawable.ic_success
                     )
+                    lifecycleScope.launch {
+                        detailProductViewModel.readUserToken.collectLatest { token ->
+                            detailProductViewModel.userToken = token
+                            withContext(Dispatchers.IO) {
+                                detailProductViewModel.getFavorite(token)
+                            }
+                        }
+                    }
                 }
                 is ApiResult.Error -> {
                     showSnackBar(

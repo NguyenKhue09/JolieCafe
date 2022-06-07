@@ -9,7 +9,8 @@ import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.ItemRvReviewBinding
 import com.nt118.joliecafe.models.Comment
 
-class ReviewProductAdapter(private val item : List<Comment>) : RecyclerView.Adapter<ReviewProductAdapter.MyViewHolder>() {
+
+class AllReviewProductAdapter(private val item : List<Comment>) : RecyclerView.Adapter<AllReviewProductAdapter.MyViewHolder>() {
     class MyViewHolder(var binding: ItemRvReviewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -30,17 +31,16 @@ class ReviewProductAdapter(private val item : List<Comment>) : RecyclerView.Adap
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = item[position]
 
-            holder.binding.imgAvatar.load(item.userId.thumbnail) {
-                crossfade(600)
-                error(R.drawable.placeholder_image)
-            }
-            holder.binding.tvName.text = item.userId.fullName
-            holder.binding.tvContentRv.text = item.content
-            holder.binding.tvRate.text = item.rating.toString()
+        holder.binding.imgAvatar.load(item.userId.thumbnail) {
+            crossfade(600)
+            error(R.drawable.placeholder_image)
+        }
+        holder.binding.tvName.text = item.userId.fullName
+        holder.binding.tvContentRv.text = item.content
+        holder.binding.tvRate.text = item.rating.toString()
     }
 
     override fun getItemCount(): Int {
-        val limit = 4
-        return Math.min(item.size, limit)
+        return item.size
     }
 }
