@@ -197,4 +197,9 @@ class RemoteDataSource @Inject constructor(
         return jolieCafeApi.removeUserNoticeToken(token = "Bearer $token")
     }
 
+
+    suspend fun getCommentProduct(token: String, productId: String): Response<ApiResponseMultiData<Comment>> {
+        return jolieCafeApi.getCommentProduct( token= "Bearer $token", productId = productId)
+    }
+
 }

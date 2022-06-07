@@ -1,9 +1,11 @@
 package com.nt118.joliecafe.ui.activities.detail
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.asLiveData
@@ -13,11 +15,15 @@ import coil.load
 import com.google.android.material.snackbar.Snackbar
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.MoreProductsAdapter
+import com.nt118.joliecafe.adapter.ProductAdapter
 import com.nt118.joliecafe.adapter.ReviewProductAdapter
 import com.nt118.joliecafe.databinding.ActivityDetailBinding
+import com.nt118.joliecafe.ui.activities.checkout.CheckoutActivity
+import com.nt118.joliecafe.ui.activities.review.ReviewProductActivity
 import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants
 import com.nt118.joliecafe.util.NetworkListener
+import com.nt118.joliecafe.util.ProductComparator
 import com.nt118.joliecafe.util.extenstions.setCustomBackground
 import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.detail_product.DetailProductViewModel
@@ -35,11 +41,22 @@ class DetailActivity : AppCompatActivity() {
     private var _binding: ActivityDetailBinding? = null
     private val binding get() = _binding!!
     private lateinit var networkListener: NetworkListener
+    private lateinit var moreProductsAdapter: MoreProductsAdapter
+
+    private lateinit var reviewProductAdapter: ReviewProductAdapter
+
+    private lateinit var  productId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val bundle : Bundle? = intent.extras
+        productId = bundle!!.getString("productId").toString()
+        binding.btnBack.setOnClickListener {
+            onBackPressed()
+        }
 
         networkListener = NetworkListener()
 
@@ -53,19 +70,33 @@ class DetailActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             detailProductViewModel.getDetailProduct(
                 token = detailProductViewModel.userToken,
-                productId = "6267fb7a02095fbefdd3cbb7"
+                productId = productId
+//                productId = "6266aaa2de6570302a415602"
             )
+
+            detailProductViewModel.getFavorite(detailProductViewModel.userToken)
+
+            detailProductViewModel.getProducts(
+                productQuery = mapOf(
+                    "type" to "All"
+                ),
+                token = detailProductViewModel.userToken
+            ).collectLatest { data ->
+                moreProductsAdapter.submitData(data)
+            }
+
         }
 
         detailProductViewModel.getDetailProductResponse.observe(this) { response ->
             when (response) {
                 is ApiResult.Loading -> {
                     binding.categoriesCircularProgressIndicator.visibility = View.VISIBLE
+                    binding.nestedScrollView.visibility = View.GONE
                 }
                 is ApiResult.Success -> {
                     binding.categoriesCircularProgressIndicator.visibility = View.GONE
+                    binding.nestedScrollView.visibility = View.VISIBLE
                     val data = response.data
-                    println("có chạy không")
                     data?.let {
                         binding.imgProduct.load(data.thumbnail) {
                             crossfade(600)
@@ -77,16 +108,92 @@ class DetailActivity : AppCompatActivity() {
                                 Locale.US
                             ).format(data.originPrice)
                         )
+                        binding.tvNameProduct.text = data.name
+                        binding.tvDescriptionContent.text = data.description
+                        binding.tvRank.text = data.avgRating.toString()
+                        binding.tvNumberReview.text = data.comments?.size.toString()
+                        if(data.comments?.size == 0) {
+                            binding.btnViewAllReview.visibility = View.GONE
+                            binding.rvReview.visibility = View.VISIBLE
+                        }
+
+                        binding.btnAddCard.setOnClickListener {
+                            val newCart = mapOf(
+                                "productId" to productId,
+                                "size" to "M",
+                                "quantity" to "1",
+                                "price" to data.originPrice.toString(),
+                            )
+                            addNewCart(cartData = newCart)
+                        }
+
+                        binding.btnBuyNow.setOnClickListener {
+                            val newCart = mapOf(
+                                "productId" to productId,
+                                "size" to "M",
+                                "quantity" to "1",
+                                "price" to data.originPrice.toString(),
+                            )
+                            addNewCart(cartData = newCart)
+                            startActivity(Intent(this, CheckoutActivity::class.java))
+                        }
+                        println("hiện lên nào em ơi")
+                        println(data.comments)
                     }
                 }
                 is ApiResult.Error -> {
-                    binding.categoriesCircularProgressIndicator.visibility = View.GONE
+                    binding.categoriesCircularProgressIndicator.visibility = View.VISIBLE
+                    binding.nestedScrollView.visibility = View.GONE
                     Log.d("CartFragment", "get cart error: ${response.message}")
                 }
                 else -> {}
             }
         }
 
+        detailProductViewModel.getFavoriteProductResponse.observe(this) { response ->
+            when (response) {
+                is ApiResult.Loading -> {
+                    binding.btnFavorite.visibility = View.VISIBLE
+                }
+                is ApiResult.Success -> {
+                    val data = response.data!!
+                    if (data.isEmpty()) {
+                        binding.btnFavorite.visibility = View.VISIBLE
+                    } else {
+                        data.find { it.productId == productId }?.let {
+                            binding.btnFavoriteChoose.visibility = View.VISIBLE
+                            binding.btnFavorite.visibility = View.GONE
+                        }
+                    }
+                }
+                is ApiResult.Error -> {
+                    binding.btnFavorite.visibility = View.VISIBLE
+                }
+                else -> {}
+            }
+        }
+
+        binding.btnFavorite.setOnClickListener {
+            addNewFavorite(productId = productId)
+            binding.btnFavoriteChoose.visibility = View.VISIBLE
+            binding.btnFavorite.visibility = View.GONE
+        }
+
+        binding.btnFavoriteChoose.setOnClickListener {
+            removeFavoriteProduct(productId = productId)
+            binding.btnFavoriteChoose.visibility = View.GONE
+            binding.btnFavorite.visibility = View.VISIBLE
+        }
+        binding.btnViewAllReview.setOnClickListener {
+            val intent = Intent(this, ReviewProductActivity::class.java)
+            intent.putExtra("productId", productId)
+            startActivity(intent)
+        }
+
+
+        handleAddFavoriteResponse()
+        handleDeleteFavoriteProductResponse()
+        handleApiAddCartResponse()
     }
 
     override fun onDestroy() {
@@ -103,8 +210,9 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun recyclerViewMoreProducts() {
+        val diffCallBack = ProductComparator
         val rvMoreProduct = binding.rvMoreProducts
-        val moreProductsAdapter = MoreProductsAdapter(fetDataBestSaler())
+        moreProductsAdapter = MoreProductsAdapter(this, diffCallBack = diffCallBack)
         rvMoreProduct.layoutManager = LinearLayoutManager(this,
             LinearLayoutManager.HORIZONTAL, false)
         rvMoreProduct.adapter = moreProductsAdapter
@@ -160,14 +268,118 @@ class DetailActivity : AppCompatActivity() {
             if (detailProductViewModel.backOnline) {
                 detailProductViewModel.getDetailProduct(
                     token = detailProductViewModel.userToken,
-                    productId = "6267fb7a02095fbefdd3cbb7"
+                    productId = productId
                 )
+                detailProductViewModel.getProducts(
+                    productQuery = mapOf(
+                        "type" to "All"
+                    ),
+                    token = detailProductViewModel.userToken
+                ).collectLatest { data ->
+                    moreProductsAdapter.submitData(data)
+                }
+                detailProductViewModel.getFavorite(detailProductViewModel.userToken)
             }
         }
     }
 
 
-    //
+    // favorite
+    private fun handleAddFavoriteResponse() {
+        detailProductViewModel.addFavoriteProductResponse.observe(this) { response ->
+            when (response) {
+                is ApiResult.Loading -> {
+
+                }
+                is ApiResult.NullDataSuccess -> {
+                    showSnackBar(
+                        message = "Add favorite product successful",
+                        status = Constants.SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
+                }
+                is ApiResult.Error -> {
+                    Toast.makeText(this@DetailActivity, response.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> {}
+            }
+        }
+    }
+
+    fun addNewFavorite(productId: String) {
+        detailProductViewModel.addFavoriteProduct(
+            token = detailProductViewModel.userToken,
+            productId = productId
+        )
+    }
+
+    fun removeFavoriteProduct(productId: String) {
+        detailProductViewModel.removeFavoriteProduct(
+            token = detailProductViewModel.userToken,
+            productId = productId
+        )
+    }
+
+
+    private fun handleDeleteFavoriteProductResponse() {
+        detailProductViewModel.deleteFavoriteProductResponse.observe(this) { response ->
+            when (response) {
+                is ApiResult.Loading -> {
+                }
+                is ApiResult.NullDataSuccess -> {
+                    showSnackBar(
+                        message = "Remove favorite product successful",
+                        status = Constants.SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
+                    )
+                }
+                is ApiResult.Error -> {
+                    showSnackBar(
+                        message = "Remove favorite product failed!",
+                        status = Constants.SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    // add cart
+
+    private fun handleApiAddCartResponse() {
+        detailProductViewModel.addCartResponse.observe(this) { response ->
+            Log.d("Bottom Shit", "handleApiResponse: call")
+            when (response) {
+                is ApiResult.Loading -> {
+
+                }
+                is ApiResult.NullDataSuccess -> {
+                    showSnackBar(
+                        message = "Add new cart successfully",
+                        status = Constants.SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
+                }
+                is ApiResult.Error -> {
+                    showSnackBar(
+                        message = "Add new cart failed!",
+                        status = Constants.SNACK_BAR_STATUS_ERROR,
+                        icon = R.drawable.ic_error
+                    )
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun addNewCart(cartData: Map<String, String>) {
+        Log.d("Bottom Shit", "addNewCart: ${cartData.values}")
+        detailProductViewModel.addCart(
+            data = cartData,
+            token = detailProductViewModel.userToken
+        )
+    }
 
 
     private fun showSnackBar(message: String, status: Int, icon: Int) {

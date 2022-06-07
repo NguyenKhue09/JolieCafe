@@ -48,7 +48,7 @@ class DetailProductViewModel @Inject constructor(
         }
     }
 
-    //favorite
+    //detail product
     var getDetailProductResponse: MutableLiveData<ApiResult<Product>> = MutableLiveData()
 
     fun getDetailProduct(token: String, productId: String) =
@@ -83,6 +83,113 @@ class DetailProductViewModel @Inject constructor(
     }
 
 
+    var getFavoriteProductResponse: MutableLiveData<ApiResult<List<FavProductId>>> = MutableLiveData()
+    var addFavoriteProductResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
+    var deleteFavoriteProductResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
+
+    fun getFavorite(token: String) =
+        viewModelScope.launch {
+            getFavoriteProductResponse.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.getUserFavoriteProductsId(token)
+                getFavoriteProductResponse.value = handleApiMultiResponse(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                getFavoriteProductResponse.value = ApiResult.Error(e.message.toString())
+            }
+        }
+
+    private fun handleApiMultiResponse(response: Response<ApiResponseMultiData<FavProductId>>): ApiResult<List<FavProductId>> {
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+
+            response.isSuccessful -> {
+                val result = response.body()
+                if (result != null) {
+                    ApiResult.Success(result.data!!)
+                } else {
+                    ApiResult.Error("favorite not found!")
+                }
+            }
+
+            else -> {
+                ApiResult.Error(response.message())
+            }
+        }
+    }
+
+    fun addFavoriteProduct(token: String, productId: String)  =
+        viewModelScope.launch {
+            addFavoriteProductResponse.value = ApiResult.Loading()
+            try {
+                if (token.isEmpty()) Throwable("Unauthorized")
+                val response = repository.remote.addUserFavoriteProduct(token = token, productId = productId)
+                addFavoriteProductResponse.value = handleApiResponseFavorite(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                addFavoriteProductResponse.value = ApiResult.Error(e.message)
+            }
+        }
+
+
+    fun removeFavoriteProduct(token: String, productId: String) =
+        viewModelScope.launch {
+            deleteFavoriteProductResponse.value = ApiResult.Loading()
+            try {
+                if (token.isEmpty()) handleTokenEmpty()
+                val response = repository.remote.removeUserFavoriteProductByProductId(
+                    token = token,
+                    productId = productId
+                )
+                deleteFavoriteProductResponse.value = handleApiResponseFavorite(response = response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                deleteFavoriteProductResponse.value = ApiResult.Error(e.message)
+            }
+        }
+
+    private fun <T> handleApiResponseFavorite(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
+        println(response)
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+            response.isSuccessful -> {
+                ApiResult.NullDataSuccess()
+            }
+            else -> {
+                ApiResult.Error(response.message())
+            }
+        }
+    }
+
+    //comment
+
+
+    // add cart
+    var addCartResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
+
+    fun addCart(data: Map<String, String>, token: String)  =
+        viewModelScope.launch {
+            addCartResponse.value = ApiResult.Loading()
+            try {
+                if (token.isEmpty()) Throwable("Unauthorized")
+                val response = repository.remote.addCart(data = data, token = token)
+                addCartResponse.value = handleApiResponseFavorite(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                addCartResponse.value = ApiResult.Error(e.message)
+            }
+        }
 
 
     //    products
