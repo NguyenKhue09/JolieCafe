@@ -4,57 +4,80 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingTop="20dp"
+    android:paddingHorizontal="20dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="9dp"
         tools:ignore="MissingConstraints">
-        <RelativeLayout
-            android:id="@+id/notification"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/readed"
-            android:padding="12dp"
-            tools:ignore="UselessLeaf">
-            <TextView
-                android:id="@+id/tvOrder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Order "
-                android:textSize="11sp"
-                android:fontFamily="@font/raleway_regular"/>
-            <TextView
-                android:id="@+id/tvIdBill"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
-                android:text="#0326"
-                android:textSize="11sp"
-                android:fontFamily="@font/montserrat_regular"
-                android:layout_toEndOf="@id/tvOrder"/>
+            android:background="@color/grey_opacity60_primary"
+            android:padding="20dp">
 
             <TextView
-                android:id="@+id/tvTime"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_notification_title"
+                style="@style/RegularText2"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:fontFamily="@font/montserrat_regular"
-                android:layout_marginTop="1dp"
-                android:text="22/02/2022"
-                android:textSize="11sp" />
-
-            <TextView
-                android:id="@+id/tvContentNotification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:textSize="14sp"
-                android:fontFamily="@font/raleway_regular"
-                android:text="@string/test_notification"
                 android:ellipsize="end"
-                android:layout_below="@id/tvOrder"
-                android:layout_marginTop="11dp"/>
-        </RelativeLayout>
+                android:fontFamily="@font/montserrat_regular"
+                android:maxLines="2"
+                android:text="SAVE THE LAST DEAL!"
+                android:textColor="@color/title_text_color"
+                app:layout_constraintEnd_toStartOf="@+id/tv_time"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/tv_time"
+                style="@style/SmallText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="2002/22/22"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_notification_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_notification_title">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/tv_notification_body"
+                style="@style/SmallText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/montserrat_regular"
+                android:maxLines="6"
+                android:text="Keep your readers updated. Always. No one wants to be the last one to know The backdrop’s back layer is persistent, displaying controls and content that relate to the front layer. The backdrop’s back layer can be accessed from any scroll position. The backdrop focuses attention on one layer at a time."
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_notification_title"
+                app:layout_constraintTop_toBottomOf="@+id/tv_notification_title">
+
+            </TextView>
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/iv_notification_image"
+                android:layout_width="0dp"
+                android:layout_height="300dp"
+                android:layout_marginTop="20dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_logo"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_notification_title"
+                app:layout_constraintTop_toBottomOf="@+id/tv_notification_body"
+                app:shapeAppearanceOverlay="@style/rounded_corner_9dp">
+
+            </com.google.android.material.imageview.ShapeableImageView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </RelativeLayout>

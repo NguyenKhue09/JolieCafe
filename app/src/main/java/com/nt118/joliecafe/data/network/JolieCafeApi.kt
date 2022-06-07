@@ -213,6 +213,13 @@ interface JolieCafeApi {
         @Query("productId") productId: String,
     ):  Response<ApiResponseMultiData<Comment>>
 
+
+    @GET("$API_GATEWAY/notification/all-admin-notice-user")
+    suspend fun getAdminNotificationForUser(
+        @QueryMap notificationQuery: Map<String, String>,
+        @Header("Authorization") token: String
+    ): ApiResponseMultiData<Notification>
+
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 
 }

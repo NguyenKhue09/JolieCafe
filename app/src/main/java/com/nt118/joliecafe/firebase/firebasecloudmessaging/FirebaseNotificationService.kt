@@ -13,8 +13,10 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.data.DataStoreRepository
-import com.nt118.joliecafe.data.Repository
+import com.nt118.joliecafe.ui.activities.detail.DetailActivity
 import com.nt118.joliecafe.ui.activities.notifications.NotificationActivity
+import com.nt118.joliecafe.ui.activities.order_history.OrderHistoryActivity
+import com.nt118.joliecafe.util.Constants.Companion.listNotificationType
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.random.Random
@@ -37,13 +39,15 @@ class FirebaseNotificationService: FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        val intent = Intent(this, NotificationActivity::class.java)
+        val intent =  handleNotificationType(data = message.data)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = Random.nextInt()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(notificationManager)
         }
+
+        println("message: ${message.data}")
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0 , intent, PendingIntent.FLAG_IMMUTABLE)
@@ -56,6 +60,29 @@ class FirebaseNotificationService: FirebaseMessagingService() {
             .build()
 
         notificationManager.notify(notificationID, notification)
+    }
+
+    private fun handleNotificationType(data: Map<String, String>): Intent {
+        when(data["type"]) {
+            listNotificationType[0] -> {
+                return Intent(this, NotificationActivity::class.java)
+            }
+            listNotificationType[1] -> {
+                val intent = Intent(this, DetailActivity::class.java).apply {
+                    putExtra("productId", data["productId"])
+                }
+                return intent
+            }
+            listNotificationType[2] -> {
+                return Intent(this, NotificationActivity::class.java)
+            }
+            listNotificationType[3] -> {
+                return Intent(this, OrderHistoryActivity::class.java)
+            }
+            else -> {
+                return Intent(this, NotificationActivity::class.java)
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

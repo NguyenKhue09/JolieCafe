@@ -44,17 +44,6 @@
         app:tabSelectedTextColor="@color/grey_primary_variant"
         app:tabTextAppearance="@style/TabText"
         app:tabTextColor="@color/text_color">
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/all" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/for_you" />
-
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.recyclerview.widget.RecyclerView
