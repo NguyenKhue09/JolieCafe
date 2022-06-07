@@ -71,7 +71,7 @@
 
     <TextView
         android:id="@+id/tv_content_rv"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/raleway_regular"
         android:text="Typically composed of a single espresso shot and hot milk, with the surface topped with foamed..."

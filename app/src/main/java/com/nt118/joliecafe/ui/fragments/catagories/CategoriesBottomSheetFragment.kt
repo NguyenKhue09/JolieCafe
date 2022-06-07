@@ -15,8 +15,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.FragmentCatagoriesBottomSheetBinding
+import com.nt118.joliecafe.models.CartItem
 import com.nt118.joliecafe.models.Product
 import com.nt118.joliecafe.ui.activities.checkout.CheckoutActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
@@ -145,7 +147,11 @@ class CategoriesBottomSheetFragment(private val  product: Product) : BottomSheet
                     "price" to price,
                 )
                 addNewCart(cartData = newCart)
-                startActivity(Intent(context, CheckoutActivity::class.java))
+                val intent = Intent(context, CheckoutActivity::class.java)
+                val cartItems = mutableListOf<CartItem>()
+                cartItems.add(CartItem(productId, productId, product,"M",1, product.originPrice))
+                intent.putExtra("cartItems", Gson().toJson(cartItems))
+                startActivity(intent)
             } else {
                 addCartViewModel.showNetworkStatus()
             }
