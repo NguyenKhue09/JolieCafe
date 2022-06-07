@@ -4,11 +4,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Comment(
-    val userThumbnail: String,
-    val userName: String,
+    val userId: User,
     val content: String,
     val rating: Int,
-    val createdAt: String?
+    val createdAt: String?,
+    val updatedAt: String?,
 )
 
 

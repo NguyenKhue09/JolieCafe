@@ -24,7 +24,10 @@ import com.nt118.joliecafe.util.extenstions.setCustomBackground
 import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.products.ProductsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @AndroidEntryPoint
@@ -45,6 +48,7 @@ class ProductsActivity : AppCompatActivity() {
         productsViewModel.readBackOnline.asLiveData().observe(this) {
             productsViewModel.backOnline = it
         }
+
 
         val bundle : Bundle? = intent.extras
         val position = bundle!!.getInt("position")
@@ -85,6 +89,14 @@ class ProductsActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launchWhenStarted {
+            productsViewModel.getFavorite(productsViewModel.userToken)
+        }
     }
 
     // add image categories
@@ -185,6 +197,14 @@ class ProductsActivity : AppCompatActivity() {
                         status = Constants.SNACK_BAR_STATUS_SUCCESS,
                         icon = R.drawable.ic_success
                     )
+                    lifecycleScope.launch {
+                        productsViewModel.readUserToken.collectLatest { token ->
+                            productsViewModel.userToken = token
+                            withContext(Dispatchers.IO) {
+                                productsViewModel.getFavorite(token)
+                            }
+                        }
+                    }
                 }
                 is ApiResult.Error -> {
                     Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
@@ -221,6 +241,14 @@ class ProductsActivity : AppCompatActivity() {
                         status = Constants.SNACK_BAR_STATUS_SUCCESS,
                         icon = R.drawable.ic_success
                     )
+                    lifecycleScope.launch {
+                        productsViewModel.readUserToken.collectLatest { token ->
+                            productsViewModel.userToken = token
+                            withContext(Dispatchers.IO) {
+                                productsViewModel.getFavorite(token)
+                            }
+                        }
+                    }
                 }
                 is ApiResult.Error -> {
                     //Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
