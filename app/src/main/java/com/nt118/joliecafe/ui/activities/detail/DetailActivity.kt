@@ -395,8 +395,8 @@ class DetailActivity : AppCompatActivity() {
                 is ApiResult.NullDataSuccess -> {
                     showSnackBar(
                         message = "Add new cart successfully",
-                        status = Constants.SNACK_BAR_STATUS_ERROR,
-                        icon = R.drawable.ic_error
+                        status = Constants.SNACK_BAR_STATUS_SUCCESS,
+                        icon = R.drawable.ic_success
                     )
                 }
                 is ApiResult.Error -> {
