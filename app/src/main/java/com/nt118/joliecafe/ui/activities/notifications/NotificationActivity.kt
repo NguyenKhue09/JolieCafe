@@ -43,6 +43,8 @@ class NotificationActivity : AppCompatActivity() {
         _binding = ActivityNotificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupActionBar()
+
         updateNetworkStatus()
         updateBackOnlineStatus()
         observerNetworkMessage()
@@ -54,6 +56,18 @@ class NotificationActivity : AppCompatActivity() {
         setNotificationAdapterDataWhenTabChange()
         onNotificationTabSelected()
         handleNotificationPagingAdapterState()
+    }
+
+    private fun setupActionBar() {
+        setSupportActionBar(binding.toolbarNotificationsActivity)
+
+        val actionBar = supportActionBar
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true)
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+        }
+
+        binding.toolbarNotificationsActivity.setNavigationOnClickListener { onBackPressed() }
     }
 
     private fun handleNotificationPagingAdapterState() {

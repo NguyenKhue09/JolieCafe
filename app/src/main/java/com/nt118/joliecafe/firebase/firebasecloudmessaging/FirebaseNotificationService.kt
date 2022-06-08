@@ -57,8 +57,8 @@ class FirebaseNotificationService: FirebaseMessagingService() {
 
         val image = message.data["image"]
         var imageBitmap: Bitmap? = null
-        image?.let {
-            imageBitmap = loadImage(it)
+        if(!image.isNullOrEmpty()) {
+            imageBitmap = loadImage(image)
         }
 
         val pendingIntent = PendingIntent.getActivity(this, 0 , intent, PendingIntent.FLAG_IMMUTABLE)

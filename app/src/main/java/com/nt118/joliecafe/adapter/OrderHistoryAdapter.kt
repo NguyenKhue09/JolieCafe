@@ -1,6 +1,5 @@
 package com.nt118.joliecafe.adapter
 
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
-import androidx.transition.Slide
-import androidx.transition.Transition
 import androidx.transition.TransitionManager
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.databinding.OrderHistoryItemLayoutBinding
@@ -124,9 +121,10 @@ class OrderHistoryAdapter(
                 NumberFormat.getNumberInstance(Locale.US).format(if(bill.discountCost == 0.0) 0 else -bill.discountCost)
             )
 
+            holder.binding.tvOrderId.text = orderHistoryActivity.getString(R.string.order_id, bill.orderId)
+
             holder.binding.tvPaidStatus.text = if(bill.paid) "You paid this bill" else "You haven't pay yet!"
         }
-        holder.setIsRecyclable(false)
     }
 
     fun removeOrderListIdObserver() {

@@ -97,5 +97,6 @@
     <string name="not_receive_info_err">"Không gởi được yêu cầu vui lòng kiểm tra lại"</string>
     <string name="product_quantity">%1$s items</string>
     <string name="status">\u0020- %1$s</string>
+    <string name="order_id">Order ID: %1$s</string>
 
 </resources>
