@@ -49,11 +49,12 @@ class NotificationActivityViewModel @Inject constructor(
         }
     }
 
-    fun getAdminNotificationsForUser(): Flow<PagingData<Notification>> {
+    fun getAllNotificationsForUser(): Flow<PagingData<Notification>> {
         return if (userToken.isNotEmpty()) {
             try {
                 repository.remote.getAdminNotificationsForUser(
-                    token = userToken
+                    token = userToken,
+                    tab = tabSelected.value!!
                 ).cachedIn(viewModelScope)
             } catch (e: Exception) {
                 e.printStackTrace()

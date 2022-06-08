@@ -220,6 +220,12 @@ interface JolieCafeApi {
         @Header("Authorization") token: String
     ): ApiResponseMultiData<Notification>
 
+    @GET("$API_GATEWAY/notification/all-user-notice")
+    suspend fun getAllUserNotification(
+        @QueryMap notificationQuery: Map<String, String>,
+        @Header("Authorization") token: String
+    ): ApiResponseMultiData<Notification>
+
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 
 }

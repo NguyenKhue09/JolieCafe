@@ -5,10 +5,15 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.nt118.joliecafe.R
@@ -48,8 +53,14 @@ class FirebaseNotificationService: FirebaseMessagingService() {
         }
 
         println("message: ${message.data}")
-
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+
+        val image = message.data["image"]
+        var imageBitmap: Bitmap? = null
+        image?.let {
+            imageBitmap = loadImage(it)
+        }
+
         val pendingIntent = PendingIntent.getActivity(this, 0 , intent, PendingIntent.FLAG_IMMUTABLE)
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(message.data["title"])
@@ -57,6 +68,10 @@ class FirebaseNotificationService: FirebaseMessagingService() {
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
+            .setLargeIcon(imageBitmap)
+            .setStyle(NotificationCompat.BigPictureStyle()
+                .bigPicture(imageBitmap)
+                .bigLargeIcon(null))
             .build()
 
         notificationManager.notify(notificationID, notification)
@@ -106,6 +121,24 @@ class FirebaseNotificationService: FirebaseMessagingService() {
         }
 
         job.invokeOnCompletion { println("Job1 completed") }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun loadImage(imageUrl: String): Bitmap? {
+        var bitmap: Bitmap? = null
+        GlobalScope.launch{
+            withContext(Dispatchers.IO) {
+                val loader = ImageLoader(applicationContext)
+                val request = ImageRequest.Builder(applicationContext)
+                    .data(imageUrl)
+                    .allowHardware(false) // Disable hardware bitmaps.
+                    .build()
+
+                val result = (loader.execute(request) as SuccessResult).drawable
+                bitmap =  (result as BitmapDrawable).bitmap
+            }
+        }
+        return bitmap
     }
 
     override fun onDestroy() {

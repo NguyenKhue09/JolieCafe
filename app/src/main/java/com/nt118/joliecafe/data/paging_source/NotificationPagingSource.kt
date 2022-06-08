@@ -3,14 +3,17 @@ package com.nt118.joliecafe.data.paging_source
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.nt118.joliecafe.data.network.JolieCafeApi
+import com.nt118.joliecafe.models.ApiResponseMultiData
 import com.nt118.joliecafe.models.Notification
 import com.nt118.joliecafe.util.Constants.Companion.PAGE_SIZE
+import com.nt118.joliecafe.util.Constants.Companion.listNotificationTab
 import retrofit2.HttpException
 import java.io.IOException
 
 class NotificationPagingSource(
     private val jolieAdminApi: JolieCafeApi,
-    private val token: String
+    private val token: String,
+    private val tab: String
 ): PagingSource<Int, Notification>() {
 
     override fun getRefreshKey(state: PagingState<Int, Notification>): Int? {
@@ -31,7 +34,13 @@ class NotificationPagingSource(
             //println(query)
 
             try {
-                val response = jolieAdminApi.getAdminNotificationForUser(notificationQuery = query, token = token)
+
+                val response = if(tab == listNotificationTab[0]) {
+                    jolieAdminApi.getAdminNotificationForUser(notificationQuery = query, token = token)
+                } else {
+                    jolieAdminApi.getAllUserNotification(notificationQuery = query, token = token)
+                }
+
                 //println(response)
                 return if(response.success) {
                     LoadResult.Page(
