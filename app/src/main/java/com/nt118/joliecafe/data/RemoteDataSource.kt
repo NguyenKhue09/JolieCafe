@@ -202,11 +202,20 @@ class RemoteDataSource @Inject constructor(
         return jolieCafeApi.getCommentProduct( token= "Bearer $token", productId = productId)
     }
 
-    fun getAdminNotificationsForUser(token: String): Flow<PagingData<Notification>> {
+    fun getAdminNotificationsForUser(token: String, tab: String): Flow<PagingData<Notification>> {
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {
-                NotificationPagingSource(jolieCafeApi, "Bearer $token")
+                NotificationPagingSource(jolieCafeApi, "Bearer $token", tab)
+            }
+        ).flow
+    }
+
+    fun getAllUserNotifications(token: String, tab: String): Flow<PagingData<Notification>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGE_SIZE),
+            pagingSourceFactory = {
+                NotificationPagingSource(jolieCafeApi, "Bearer $token", tab)
             }
         ).flow
     }

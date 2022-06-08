@@ -26,7 +26,6 @@ import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.notification_activity.NotificationActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import java.util.*
 
 @AndroidEntryPoint
 class NotificationActivity : AppCompatActivity() {
@@ -73,7 +72,7 @@ class NotificationActivity : AppCompatActivity() {
                 error?.let {
                     if (notificationActivityViewModel.networkStatus)
                         showSnackBar(
-                            message = "Can't load product data!",
+                            message = "Can't load notification data!",
                             status = Constants.SNACK_BAR_STATUS_ERROR,
                             icon = R.drawable.ic_error
                         )
@@ -107,7 +106,7 @@ class NotificationActivity : AppCompatActivity() {
             println(tab)
             if (notificationActivityViewModel.networkStatus) {
                 lifecycleScope.launchWhenStarted {
-                    notificationActivityViewModel.getAdminNotificationsForUser()
+                    notificationActivityViewModel.getAllNotificationsForUser()
                         .collectLatest { data ->
                             selectedTab = tab
                             submitNotificationAdapterData(data = data)
@@ -192,7 +191,7 @@ class NotificationActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             if (notificationActivityViewModel.backOnline) {
                 println(binding.notificationTabLayout.selectedTabPosition)
-                notificationActivityViewModel.getAdminNotificationsForUser(
+                notificationActivityViewModel.getAllNotificationsForUser(
                 ).collectLatest { data ->
                     selectedTab = listNotificationTab[binding.notificationTabLayout.selectedTabPosition]
                     submitNotificationAdapterData(data = data)
