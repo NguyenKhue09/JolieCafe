@@ -53,6 +53,20 @@
             </TextView>
 
             <TextView
+                android:id="@+id/tv_order_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:fontFamily="@font/montserrat_regular"
+                android:text="@string/order_id"
+                android:textColor="@color/grey_secondary"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_order_date">
+
+            </TextView>
+
+            <TextView
                 android:id="@+id/tv_order_number_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -62,7 +76,7 @@
                 android:textColor="@color/grey_secondary"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_order_date">
+                app:layout_constraintTop_toBottomOf="@+id/tv_order_id">
 
             </TextView>
 

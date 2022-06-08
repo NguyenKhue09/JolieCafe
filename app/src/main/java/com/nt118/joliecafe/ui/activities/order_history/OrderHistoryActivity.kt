@@ -36,7 +36,6 @@ class OrderHistoryActivity : AppCompatActivity() {
     private lateinit var orderHistoryAdapter: OrderHistoryAdapter
 
     lateinit var orderHistoryClickedList: LiveData<MutableList<String>>
-    lateinit var orderHistoryClicked: LiveData<Boolean>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
