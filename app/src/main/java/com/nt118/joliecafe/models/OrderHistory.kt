@@ -16,5 +16,6 @@ data class OrderHistory(
     val paymentMethod: String,
     val orderDate: String,
     val status: String,
+    val orderId: String,
     val products: List<OrderHistoryProduct>
 )

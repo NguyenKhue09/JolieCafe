@@ -42,15 +42,16 @@ class NotificationAdapter(
         notification?.let {
             holder.binding.tvNotificationTitle.text = notification.title
             holder.binding.tvNotificationBody.text = notification.message
-            notification.image?.let {
+            if (!notification.image.isNullOrEmpty()) {
                 holder.binding.ivNotificationImage.visibility = View.VISIBLE
                 holder.binding.ivNotificationImage.load(
-                    it
+                    notification.image
                 ) {
                     crossfade(300)
                     error(R.drawable.image_logo)
                     placeholder(R.drawable.image_logo)
                 }
+
             }
             holder.binding.tvTime.text =
                 notification.createdAt.toDate()?.formatTo(LOCAL_TIME_FORMAT)
