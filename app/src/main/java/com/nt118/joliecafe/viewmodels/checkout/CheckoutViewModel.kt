@@ -7,10 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
-import com.nt118.joliecafe.models.Address
-import com.nt118.joliecafe.models.ApiResponseSingleData
-import com.nt118.joliecafe.models.CartItem
-import com.nt118.joliecafe.models.MomoPaymentRequestBody
+import com.nt118.joliecafe.models.*
 import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +28,7 @@ class CheckoutViewModel@Inject constructor(
 
     val getAddressByIdResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
     val momoPaymentRequestResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
+    val getVoucherResponse: MutableLiveData<ApiResult<List<Voucher>>> = MutableLiveData()
 
     var userToken = ""
     var networkStatus = false
@@ -48,6 +46,17 @@ class CheckoutViewModel@Inject constructor(
             readUserToken.collectLatest { token ->
                 userToken = token
             }
+        }
+    }
+
+    fun getVouchers() = viewModelScope.launch {
+        getVoucherResponse.value = ApiResult.Loading()
+        try {
+            val response = repository.remote.getVouchers(token = userToken)
+            getVoucherResponse.value = handleApiMultiResponse(response)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            getVoucherResponse.value = ApiResult.Error(e.message.toString())
         }
     }
 
@@ -100,6 +109,28 @@ class CheckoutViewModel@Inject constructor(
         }
     }
 
+    private fun <T> handleApiMultiResponse(response: Response<ApiResponseMultiData<T>>): ApiResult<List<T>> {
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+            response.isSuccessful -> {
+                val result = response.body()
+                if(result != null) {
+                    ApiResult.Success(result.data!!)
+                } else {
+                    ApiResult.Error("Cart not found!")
+                }
+            }
+            else -> {
+                ApiResult.Error(response.message())
+            }
+        }
+    }
+
     private fun <T> handleNullDataApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
         println(response)
         return when {
@@ -110,7 +141,12 @@ class CheckoutViewModel@Inject constructor(
                 ApiResult.Error(response.message())
             }
             response.isSuccessful -> {
-                ApiResult.NullDataSuccess()
+                val result = response.body()
+                if (result != null) {
+                    ApiResult.Success(result.data!!)
+                } else {
+                    ApiResult.Error("Voucher not found!")
+                }
             }
             else -> {
                 ApiResult.Error(response.message())

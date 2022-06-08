@@ -226,6 +226,13 @@ interface JolieCafeApi {
         @Header("Authorization") token: String
     ): ApiResponseMultiData<Notification>
 
+    // Voucher API
+
+    @GET("$API_GATEWAY/voucher/get-all")
+    suspend fun getVouchers(
+        @Header("Authorization") token: String,
+    ): Response<ApiResponseMultiData<Voucher>>
+
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 
 }

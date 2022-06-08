@@ -220,4 +220,10 @@ class RemoteDataSource @Inject constructor(
         ).flow
     }
 
+    suspend fun getVouchers(
+        token: String
+    ): Response<ApiResponseMultiData<Voucher>> {
+        return jolieCafeApi.getVouchers(token = "Bearer $token")
+    }
+
 }
