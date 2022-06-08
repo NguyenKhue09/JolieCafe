@@ -9,14 +9,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_voucher_name"
+        app:layout_constraintTop_toTopOf="@id/tv_voucher_code"
         app:layout_constraintBottom_toBottomOf="@id/tv_voucher_description"
         android:minWidth="0dp"
         android:minHeight="0dp"
         android:buttonTint="@color/radio_button_tint"/>
 
     <TextView
-        android:id="@+id/tv_voucher_name"
+        android:id="@+id/tv_voucher_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +33,7 @@
         android:id="@+id/tv_voucher_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tv_voucher_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_voucher_code"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/rb_voucher"
         style="@style/SmallNumber"

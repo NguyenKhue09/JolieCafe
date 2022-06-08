@@ -11,6 +11,6 @@ data class Voucher(
     val endDate: String,
     val type: String,
     val condition: Int,
-    val discountPercent: Int,
+    val discountPercent: Double,
     val quantity: Int
 )

@@ -92,6 +92,39 @@ class CheckoutActivity : AppCompatActivity() {
     private var paymentMethod
         get() = checkoutViewModel.paymentMethod
         set(value) { checkoutViewModel.paymentMethod = value }
+    private val voucherList: MutableList<Voucher> = mutableListOf()
+    private var shippingFee = 30000
+    private var discount = 0
+    private var jolieCoin = 0
+
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val voucherJson = result.data!!.getStringExtra("voucher")
+            val voucherList = Gson().fromJson<List<Voucher>>(voucherJson, object : TypeToken<List<Voucher>>() {}.type)
+            try {
+                discount = (voucherList.first { it.type == "Discount" }.discountPercent * subTotalPrice!! / 100).toInt()
+                binding.tvDiscountDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(discount.toDouble()))
+                binding.tvDiscountDetail.visibility = View.VISIBLE
+                binding.tvDiscountLabel.visibility = View.VISIBLE
+            } catch (e: Exception) {
+                discount = 0
+                binding.tvDiscountDetail.text = NumberUtil.addSeparator(0.0)
+                binding.tvDiscountDetail.visibility = View.GONE
+                binding.tvDiscountLabel.visibility = View.GONE
+            }
+            try {
+                voucherList.first { it.type == "Ship" }
+                binding.tvShippingFeeDetail.visibility = View.GONE
+                binding.tvShippingFeeLabel.visibility = View.GONE
+                shippingFee = 0
+            } catch (e: Exception) {
+                binding.tvShippingFeeLabel.visibility = View.VISIBLE
+                binding.tvShippingFeeDetail.visibility = View.VISIBLE
+                shippingFee = 30000
+            }
+            calculateTotalCost()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -323,12 +356,13 @@ class CheckoutActivity : AppCompatActivity() {
             if (it) {
                 tvJolieCoinLabel.visibility = View.VISIBLE
                 tvJolieCoinDetail.visibility = View.VISIBLE
-                totalPrice.value = subTotalPrice.value!! + 30000.0 - 200.0
+                jolieCoin = 200
             } else {
                 tvJolieCoinLabel.visibility = View.GONE
                 tvJolieCoinDetail.visibility = View.GONE
-                totalPrice.value = subTotalPrice.value!! + 30000.0
+                jolieCoin = 0
             }
+            calculateTotalCost()
         }
     }
 
@@ -356,7 +390,11 @@ class CheckoutActivity : AppCompatActivity() {
         voucherContainer.setOnClickListener {
             val intent = Intent(this, VoucherDialog::class.java)
             intent.putExtra("screenWidth", pxToDp(370f, this).toInt())
-            startActivity(intent)
+            subTotalPrice?.let { it1 -> intent.putExtra("subTotal", it1.toInt()) }
+
+
+
+            resultLauncher.launch(intent)
         }
 
         swUseJolieCoin.setOnClickListener {
@@ -395,17 +433,9 @@ class CheckoutActivity : AppCompatActivity() {
         tvAddress.text = address.address
     }
 
-    private fun calculateDiscount(): Double {
-        // discount chưa có nên tạm thời coi như JolieCoin là 200
-
-        return if (isUseJolieCoin!!) {
-            200.0
-        } else {
-            0.0
-        }
+    private fun calculateTotalCost() {
+        totalPrice = subTotalPrice!! - discount + shippingFee - jolieCoin
     }
-
-    private fun calculateShippingFee() = 30000.0 // K tính được nên tạm thời coi như là 30k
 
     private fun createBill(): Bill {
         val billProductList = mutableListOf<BillProduct>()
@@ -427,9 +457,9 @@ class CheckoutActivity : AppCompatActivity() {
             products = billProductList.toList(),
             address = userAddress!!,
             totalCost = totalPrice!!,
-            discountCost = calculateDiscount(),
-            shippingFee = calculateShippingFee(),
-            voucherApply = emptyList(),
+            discountCost = discount.toDouble(),
+            shippingFee = shippingFee.toDouble(),
+            voucherApply = voucherList.toList(),
             scoreApply = 20, // Coi như mỗi lần mua là được 20 điểm
             paid = false, // Chưa thanh toán
             paymentMethod = paymentMethod, // Tạm cho ntn nhé
