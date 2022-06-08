@@ -18,6 +18,7 @@ class Constants {
         const val PREFERENCES_IS_USER_DATA_CHANGE = "isUserDataChange"
         const val PREFERENCES_USER_DEFAULT_ADDRESS_ID = "defaultAddressId"
         const val PREFERENCES_USER_NOTICE_TOKEN = "userNoticeToken"
+        const val PREFERENCES_COIN = "coin"
         const val API_GATEWAY = "/api/v1/jolie-cafe"
         const val PAGE_SIZE = 10
 
