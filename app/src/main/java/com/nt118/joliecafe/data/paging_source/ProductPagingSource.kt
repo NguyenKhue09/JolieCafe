@@ -24,13 +24,18 @@ class ProductPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Product> {
         try {
             val nextPageNumber = params.key ?: 1
-            val query = mapOf(
+            val name = productQuery["name"]
+
+            val query = mutableMapOf(
                 "currentPage" to nextPageNumber.toString(),
                 "productPerPage" to PAGE_SIZE.toString(),
                 "type" to productQuery["type"]!!
             )
 
-            println(query)
+            name?.let {
+                query["name"] = name
+            }
+
 
             try {
                 val response = jolieCafeApi.getProducts(productQuery = query, token = token)

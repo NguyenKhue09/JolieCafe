@@ -59,6 +59,11 @@ class DetailActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.btnBackHide.setOnClickListener {
+            onBackPressed()
+            finish()
+        }
+
         networkListener = NetworkListener()
 
         recyclerViewMoreProducts()
@@ -94,10 +99,16 @@ class DetailActivity : AppCompatActivity() {
                 is ApiResult.Loading -> {
                     binding.categoriesCircularProgressIndicator.visibility = View.VISIBLE
                     binding.nestedScrollView.visibility = View.GONE
+                    binding.btnBackHide.visibility = View.VISIBLE
+                    binding.btnAddCard.visibility = View.GONE
+                    binding.btnBuyNow.visibility = View.GONE
                 }
                 is ApiResult.Success -> {
                     binding.categoriesCircularProgressIndicator.visibility = View.GONE
                     binding.nestedScrollView.visibility = View.VISIBLE
+                    binding.btnBackHide.visibility = View.GONE
+                    binding.btnAddCard.visibility = View.VISIBLE
+                    binding.btnBuyNow.visibility = View.VISIBLE
                     val data = response.data
                     data?.let {
                         binding.imgProduct.load(data.thumbnail) {
@@ -144,6 +155,9 @@ class DetailActivity : AppCompatActivity() {
                 is ApiResult.Error -> {
                     binding.categoriesCircularProgressIndicator.visibility = View.VISIBLE
                     binding.nestedScrollView.visibility = View.GONE
+                    binding.btnBackHide.visibility = View.VISIBLE
+                    binding.btnAddCard.visibility = View.GONE
+                    binding.btnBuyNow.visibility = View.GONE
                     Log.d("CartFragment", "get cart error: ${response.message}")
                 }
                 else -> {}
