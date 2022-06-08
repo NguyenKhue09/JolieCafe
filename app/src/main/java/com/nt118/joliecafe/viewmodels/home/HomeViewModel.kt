@@ -105,6 +105,7 @@ class HomeViewModel @Inject constructor(
         when {
             response.isSuccessful -> {
                 saveUserToken(userToken = result!!.data!!.token)
+                saveCoin(result.data!!.coins.toString())
             }
             else -> {
                 saveUserToken("")
@@ -115,6 +116,11 @@ class HomeViewModel @Inject constructor(
     private fun saveUserToken(userToken: String) =
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreRepository.saveUserToken(userToken = userToken)
+        }
+
+    private fun saveCoin(coin: String) =
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveCoin(coin = coin)
         }
 
     private fun saveBackOnline(backOnline: Boolean) =
