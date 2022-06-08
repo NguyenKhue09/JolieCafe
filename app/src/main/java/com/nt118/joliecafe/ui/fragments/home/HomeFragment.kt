@@ -85,6 +85,12 @@ class HomeFragment : Fragment() {
             homeViewModel.backOnline = it
         }
 
+        binding.toolbarHome.searchView.setOnClickListener {
+            val intent = Intent(context, ProductsActivity::class.java)
+            intent.putExtra("position", 0)
+            startActivity(intent)
+        }
+
 
         viewPager2 = binding.viewpagerImageSlider
         val dotsIndicator = binding.dotsIndicator

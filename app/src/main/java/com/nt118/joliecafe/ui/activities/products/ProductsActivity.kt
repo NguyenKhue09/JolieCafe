@@ -3,6 +3,7 @@ package com.nt118.joliecafe.ui.activities.products
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
@@ -83,7 +84,24 @@ class ProductsActivity : AppCompatActivity() {
         handlePagingAdapterState()
         handleAddFavoriteResponse()
         handleDeleteFavoriteProductResponse()
+        handleSearchBox()
 
+        binding.searchView.setOnClickListener {
+            if (!binding.searchView.query.isNullOrEmpty()) {
+                lifecycleScope.launch {
+                    productsViewModel.getProducts(
+                        mapOf(
+                            "name" to binding.searchView.query.toString(),
+                            "type" to selectedTab
+                        ),
+                        productsViewModel.userToken
+                    ).collectLatest { data ->
+                        productAdapter.submitData(data)
+                    }
+                }
+            }
+            binding.searchView.clearFocus()
+        }
     }
 
     override fun onDestroy() {
@@ -97,6 +115,34 @@ class ProductsActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             productsViewModel.getFavorite(productsViewModel.userToken)
         }
+    }
+
+    private fun handleSearchBox() {
+        binding.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                println("onQueryTextSubmit")
+                println(query)
+                if(!query.isNullOrEmpty()) {
+                    lifecycleScope.launch {
+                        productsViewModel.getProducts(
+                            mapOf(
+                                "name" to query,
+                                "type" to selectedTab
+                            ),
+                            productsViewModel.userToken
+                        ).collectLatest { data ->
+                            productAdapter.submitData(data)
+                        }
+                    }
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                return false
+            }
+        })
     }
 
     // add image categories
