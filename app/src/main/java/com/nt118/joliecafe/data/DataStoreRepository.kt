@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_BACK_ONLINE
+import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_COIN
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_IS_USER_DATA_CHANGE
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_NAME
 import com.nt118.joliecafe.util.Constants.Companion.PREFERENCES_USER_AUTH_TYPE
@@ -35,6 +36,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         val isUserDataChange = booleanPreferencesKey(PREFERENCES_IS_USER_DATA_CHANGE)
         val defaultAddressId = stringPreferencesKey(PREFERENCES_USER_DEFAULT_ADDRESS_ID)
         val userNoticeToken = stringPreferencesKey(PREFERENCES_USER_NOTICE_TOKEN)
+        val coin = stringPreferencesKey(PREFERENCES_COIN)
     }
 
     private val dataStore: DataStore<Preferences> = context.dataStore
@@ -49,6 +51,13 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         Log.d("get", "Save token")
         dataStore.edit { preferences ->
             preferences[PreferenceKeys.userToken] = userToken
+        }
+    }
+
+    suspend fun saveCoin(coin: String) {
+        Log.d("get", "Save coin")
+        dataStore.edit { preferences ->
+            preferences[PreferenceKeys.coin] = coin
         }
     }
 
@@ -100,6 +109,19 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         .map { preferences ->
             val userToken = preferences[PreferenceKeys.userToken] ?: ""
             userToken
+        }.distinctUntilChanged()
+
+    val readCoin: Flow<String> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw  exception
+            }
+        }
+        .map { preferences ->
+            val coin = preferences[PreferenceKeys.coin] ?: ""
+            coin
         }.distinctUntilChanged()
 
     val readIsUserFaceOrGGLogin: Flow<Boolean> = dataStore.data
