@@ -98,5 +98,7 @@
     <string name="product_quantity">%1$s items</string>
     <string name="status">\u0020- %1$s</string>
     <string name="order_id">Order ID: %1$s</string>
+    <string name="use_coin">[-%1$d]</string>
+    <string name="jolie_coin_detail">-%1$d VND</string>
 
 </resources>

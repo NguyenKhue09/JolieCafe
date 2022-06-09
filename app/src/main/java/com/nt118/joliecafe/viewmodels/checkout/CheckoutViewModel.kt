@@ -40,11 +40,17 @@ class CheckoutViewModel@Inject constructor(
     var userAddress: Address? = null
     var subTotalPrice: MutableLiveData<Double> = MutableLiveData(0.0)
     var totalPrice: MutableLiveData<Double> = MutableLiveData(0.0)
+    var jolieCoin: Int = 200
 
     init {
         viewModelScope.launch {
             readUserToken.collectLatest { token ->
                 userToken = token
+            }
+        }
+        viewModelScope.launch {
+            dataStoreRepository.readCoin.collectLatest { coin ->
+                jolieCoin = coin
             }
         }
     }
