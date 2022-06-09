@@ -495,7 +495,7 @@ class CheckoutActivity : AppCompatActivity() {
             totalCost = totalPrice!!,
             discountCost = discount.toDouble(),
             shippingFee = shippingFee.toDouble(),
-            voucherApply = voucherList.toList(),
+            voucherApply = voucherList.map { it.id },
             scoreApply = jolieCoin,
             paid = false, // Chưa thanh toán
             paymentMethod = paymentMethod, // Tạm cho ntn nhé
