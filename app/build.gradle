@@ -76,7 +76,7 @@ dependencies {
 
     // Google
     implementation("com.google.android.gms:play-services-auth:20.2.0")
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.2'
 
     // Facebook
     implementation 'com.facebook.android:facebook-login:13.0.0'
@@ -116,8 +116,8 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 
     // Coroutine
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1")
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2")
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2'
 
     // Lifecycle
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
@@ -159,6 +159,9 @@ dependencies {
 
     // test
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.2'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.6.10"
+    androidTestImplementation "android.arch.core:core-testing:1.1.1"
 
     // Map api
     implementation 'com.google.android.gms:play-services-maps:18.0.2'

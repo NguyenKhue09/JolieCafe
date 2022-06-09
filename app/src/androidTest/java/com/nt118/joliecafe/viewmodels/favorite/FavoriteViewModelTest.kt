@@ -1,28 +1,57 @@
-package com.nt118.joliecafe.data.paging_source.favorite
+package com.nt118.joliecafe.viewmodels.favorite
 
-import androidx.paging.PagingSource
-import com.nt118.joliecafe.data.paging_source.FavoriteProductPagingSource
-import com.nt118.joliecafe.data.remote.FakeJolieApi
-import com.nt118.joliecafe.data.remote_data_source.FakeFavoriteRemoteDataSource
+import android.app.Application
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.asLiveData
+import androidx.paging.PagingData
+import androidx.paging.map
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import com.nt118.joliecafe.adapter.FavoriteItemAdapter
+import com.nt118.joliecafe.data.DataStoreRepository
+import com.nt118.joliecafe.data.RemoteDataSource
+import com.nt118.joliecafe.data.Repository
 import com.nt118.joliecafe.models.FavoriteProduct
 import com.nt118.joliecafe.models.Product
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
+import com.nt118.joliecafe.remote.FakeJolieApi
+import com.nt118.joliecafe.ui.fragments.favorite.FavoriteFragment
+import com.nt118.joliecafe.util.ApiResult
+import com.nt118.joliecafe.util.Constants.Companion.listTabContentFavorite
+import com.nt118.joliecafe.util.FavoriteProductComparator
+import com.nt118.joliecafe.util.extenstions.getOrAwaitValue
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import org.junit.runner.RunWith
 
-class FavoritePagingSourceTest {
+@RunWith(AndroidJUnit4::class)
+class FavoriteViewModelTest() {
 
-    private lateinit var jolieApi: FakeJolieApi
-    private lateinit var fakeFavoriteRemoteDataSource: FakeFavoriteRemoteDataSource
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    private lateinit var fakeFavoriteViewModel: FavoriteViewModel
+
+    private val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+    private lateinit var fakeJolieApi: FakeJolieApi
+
     private lateinit var favProducts: List<FavoriteProduct>
+    private lateinit var favoriteItemAdapter: FavoriteItemAdapter
+    private  lateinit var favoriteFragment: FavoriteFragment
 
     @Before
-    fun setup() {
-        jolieApi = FakeJolieApi()
-        fakeFavoriteRemoteDataSource = FakeFavoriteRemoteDataSource(jolieApi)
+    fun setUp() {
+        fakeJolieApi = FakeJolieApi()
+        fakeFavoriteViewModel = FavoriteViewModel(
+            application = Application(),
+            repository = Repository(remoteDataSource = RemoteDataSource(fakeJolieApi)),
+            dataStoreRepository = DataStoreRepository(appContext)
+        )
         favProducts = listOf(
             FavoriteProduct(
                 id = "0",
@@ -325,86 +354,95 @@ class FavoritePagingSourceTest {
                 )
             )
         )
+        favoriteFragment = FavoriteFragment()
+        favoriteItemAdapter = FavoriteItemAdapter(
+            favoriteFragment,
+            diffUtil = FavoriteProductComparator
+        )
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `getAllFavoriteProducts should return list of favorite products`() =
-        runTest {
-            val favProductSource = FavoriteProductPagingSource(
-                jolieCafeApi = jolieApi,
-                token = "",
-                productQuery = mapOf(
-                    "type" to "All"
-                )
-            )
+    fun initTabSelectedTest() {
+        fakeFavoriteViewModel.setTabSelected(listTabContentFavorite[0])
+        assertEquals(fakeFavoriteViewModel.tabSelected.getOrAwaitValue(), listTabContentFavorite[0])
+    }
 
-            assertEquals<PagingSource.LoadResult<Int, FavoriteProduct>>(
-                expected = PagingSource.LoadResult.Page(
-                    data = favProducts,
-                    prevKey = null,
-                    nextKey = 2
-                ),
-                actual = favProductSource.load(
-                    PagingSource.LoadParams.Refresh(
-                        key = 1,
-                        loadSize = 3,
-                        placeholdersEnabled = false
-                    )
-                )
-            )
-        }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `getCoffeeFavoriteProducts should return list of coffee favorite products`() =
-        runTest {
-            val favProductSource = FavoriteProductPagingSource(
-                jolieCafeApi = jolieApi,
-                token = "",
-                productQuery = mapOf(
-                    "type" to "Coffee"
-                )
-            )
-            assertEquals<PagingSource.LoadResult<Int, FavoriteProduct>>(
-                expected = PagingSource.LoadResult.Page(
-                    data = favProducts.filter { it.product.type == "Coffee" },
-                    prevKey = null,
-                    nextKey = 2
-                ),
-                actual = favProductSource.load(
-                    PagingSource.LoadParams.Refresh(
-                        key = 1,
-                        loadSize = 3,
-                        placeholdersEnabled = false
-                    )
-                )
-            )
-        }
+    fun userTokenNotEmpty() {
+        assertTrue(fakeFavoriteViewModel.userToken.isEmpty())
+    }
 
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `handle error fav paging source`() =
-        runTest {
-
-            jolieApi.shouldReturnFavPagingError = true
-
-            val favProductSource = FavoriteProductPagingSource(
-                jolieCafeApi = jolieApi,
-                token = "",
-                productQuery = mapOf(
-                    "type" to "All"
-                )
-            ).load(
-                PagingSource.LoadParams.Refresh(
-                    key = 1,
-                    loadSize = 3,
-                    placeholdersEnabled = false
-                )
+    fun checkTokenEmptyGetUserFavProduct()  = runBlocking {
+        fakeFavoriteViewModel.getUserFavoriteProducts(
+            token = "",
+            productQuery = mapOf(
+                "type" to "Coffee"
             )
-
-            assertTrue { favProductSource is PagingSource.LoadResult.Error }
+        ).collectLatest {
+            assertEquals(it, PagingData.empty<FavoriteProduct>())
         }
+    }
+
+    @Test
+    fun checkErrorGetUserFavProduct()  = runBlocking {
+        fakeFavoriteViewModel.getUserFavoriteProducts(
+            token = "not empty",
+            productQuery = mapOf(
+                "type" to "All"
+            )
+        ).collectLatest {
+            assertEquals(it, PagingData.empty<FavoriteProduct>())
+        }
+    }
+
+    @Test
+    fun checkGetUserFavProductReturnList(): Unit = runBlocking {
+        fakeFavoriteViewModel.getUserFavoriteProducts(
+            token = "not empty",
+            productQuery = mapOf(
+                "type" to "Coffee"
+            )
+        ).asLiveData().getOrAwaitValue().let {
+            it.map { fav ->
+                assertEquals(fav.product.type, "Coffee")
+            }
+        }
+    }
+
+    @Test
+    fun removeFavProductError() = runBlocking {
+        fakeJolieApi.shouldReturnDeleteFavError = true
+        fakeFavoriteViewModel.removeUserFavoriteProduct(
+            token = "not empty",
+            favoriteProductId = "not empty"
+        )
+
+        delay(1000)
+        assertEquals(fakeFavoriteViewModel.removeUserFavoriteProductResponse.getOrAwaitValue().javaClass, ApiResult.Error<Unit>("Not implemented").javaClass)
+    }
+
+    @Test
+    fun removeFavProductSuccess() = runBlocking {
+        fakeFavoriteViewModel.removeUserFavoriteProduct(
+            token = "not empty",
+            favoriteProductId = "0"
+        )
+
+        delay(1000)
+        assertEquals(fakeFavoriteViewModel.removeUserFavoriteProductResponse.getOrAwaitValue().javaClass, ApiResult.NullDataSuccess<Unit>().javaClass)
+    }
+
+    @Test
+    fun removeFavProductIDNotFound() = runBlocking {
+        fakeFavoriteViewModel.removeUserFavoriteProduct(
+            token = "not empty",
+            favoriteProductId = "-1"
+        )
+
+        delay(1000)
+        assertEquals(fakeFavoriteViewModel.removeUserFavoriteProductResponse.getOrAwaitValue().javaClass, ApiResult.Error<Unit>("Product not found").javaClass)
+    }
 
 }
