@@ -57,6 +57,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
     suspend fun saveCoin(coin: Int) {
         Log.d("get", "Save coin")
         dataStore.edit { preferences ->
+            println(coin)
             preferences[PreferenceKeys.coin] = coin
         }
     }
@@ -113,6 +114,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
 
     val readCoin: Flow<Int> = dataStore.data
         .catch { exception ->
+            println("Exceptiondmm ${exception.message}")
             if (exception is IOException) {
                 emit(emptyPreferences())
             } else {
@@ -120,6 +122,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
             }
         }
         .map { preferences ->
+            println("after: ${preferences[PreferenceKeys.coin]}")
             val coin = preferences[PreferenceKeys.coin] ?: 0
             coin
         }.distinctUntilChanged()
