@@ -26,6 +26,9 @@ class VoucherDialog : AppCompatActivity() {
     private val binding get() = _binding!!
     private val viewModel by viewModels<CheckoutViewModel>()
     private var subTotal = 0
+
+    private var selectedVoucher: List<Voucher> = listOf()
+
     private lateinit var discountAdapter: VoucherAdapter
     private lateinit var freeShipAdapter: VoucherAdapter
 
@@ -40,6 +43,7 @@ class VoucherDialog : AppCompatActivity() {
         val rvDiscount = binding.rvDiscount
         val rvFreeShip = binding.rvFreeShip
 
+        getExtra()
         getSubTotal()
         observeResponse()
         viewModel.getVouchers()
@@ -66,6 +70,10 @@ class VoucherDialog : AppCompatActivity() {
         }
     }
 
+    private fun getExtra() {
+        subTotal = intent.getIntExtra("subTotal", 0)
+        val voucherJson = intent.getStringExtra("selectedVoucher")
+        selectedVoucher = Gson().fromJson(voucherJson, object: TypeToken<List<Voucher>>() {}.type )
     private fun getSubTotal() {
         subTotal = intent.getIntExtra("subTotal", 0)
     }
@@ -83,6 +91,7 @@ class VoucherDialog : AppCompatActivity() {
                         val freeShipData = data.filter { it.type == "Ship" && it.condition <= subTotal }
                         discountAdapter = VoucherAdapter(discountData, this)
                         freeShipAdapter = VoucherAdapter(freeShipData, this)
+                        selectVoucher()
                         binding.rvDiscount.adapter = discountAdapter
                         binding.rvFreeShip.adapter = freeShipAdapter
                         if (discountData.isEmpty()) {
@@ -98,6 +107,15 @@ class VoucherDialog : AppCompatActivity() {
                 else -> {}
             }
         }
+    }
+
+    private fun selectVoucher() {
+        try {
+            discountAdapter.selectVoucher(selectedVoucher.first { it.type == "Discount" })
+        } catch (e: Exception) {}
+        try {
+            freeShipAdapter.selectVoucher(selectedVoucher.first { it.type == "Ship" })
+        } catch (e: Exception) {}
     }
 
     override fun onDestroy() {
