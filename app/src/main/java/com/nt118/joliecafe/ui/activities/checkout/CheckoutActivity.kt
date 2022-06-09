@@ -43,6 +43,7 @@ import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.checkout.CheckoutViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import vn.momo.momo_partner.MoMoParameterNamePayment
+import java.util.*
 
 @AndroidEntryPoint
 class CheckoutActivity : AppCompatActivity() {
@@ -289,24 +290,6 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun observe() = checkoutViewModel.apply {
-//        getCartResponse.observe(this@CheckoutActivity) { response ->
-//            when (response) {
-//                is ApiResult.Loading -> progressCart.visibility = View.VISIBLE
-//                is ApiResult.Success -> {
-//                    progressCart.visibility = View.GONE
-//                    cartItems = response.data!!
-//                    val adapter = CheckoutAdapter(response.data, this@CheckoutActivity)
-//                    rvProduct.adapter = adapter
-//                    subTotalPrice.value = adapter.getTotalPrice()
-//                    totalPrice.value = subTotalPrice.value!! + 30000.0 - (if (isUseJolieCoin.value!!) 200.0 else 0.0)
-//                }
-//                is ApiResult.Error -> {
-//                    progressCart.visibility = View.GONE
-//                    Toast.makeText(this@CheckoutActivity, "Failed to get cart items", Toast.LENGTH_SHORT).show()
-//                }
-//                else -> {}
-//            }
-//        }
 
         getAddressByIdResponse.observe(this@CheckoutActivity) { response ->
             when (response) {
@@ -323,8 +306,28 @@ class CheckoutActivity : AppCompatActivity() {
                 }
                 is ApiResult.Error -> {
                     progressAddress.visibility = View.GONE
+                    btnOrder.isEnabled = true
 //                    Toast.makeText(this@CheckoutActivity, "Failed to get address", Toast.LENGTH_SHORT).show()
                     showSnackBar(message = "Failed to get address", status = SNACK_BAR_STATUS_ERROR, icon = R.drawable.ic_error)
+                }
+                else -> {}
+            }
+        }
+
+        createBillResponse.observe(this@CheckoutActivity) { response ->
+            when (response) {
+                is ApiResult.Loading -> {
+                    binding.checkoutCircularProgressIndicator.visibility = View.VISIBLE
+                    disableButton()
+                }
+                is ApiResult.NullDataSuccess -> {
+                    setResult(RESULT_OK)
+                    finish()
+                }
+                is ApiResult.Error -> {
+                    binding.checkoutCircularProgressIndicator.visibility = View.GONE
+                    enableButton()
+                    showSnackBar("Failed to create bill", SNACK_BAR_STATUS_ERROR, R.drawable.ic_error)
                 }
                 else -> {}
             }
@@ -339,7 +342,10 @@ class CheckoutActivity : AppCompatActivity() {
                 is ApiResult.NullDataSuccess -> {
                     binding.checkoutCircularProgressIndicator.visibility = View.GONE
                     enableButton()
-                    showSnackBar(message = "Momo payment successfully", status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_success)
+//                    showSnackBar(message = "Momo payment successfully", status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_success)
+                    val bill = createBill()
+                    bill.paymentMethod = "MoMo"
+                    checkoutViewModel.createBill(bill)
                 }
                 is ApiResult.Error -> {
                     binding.checkoutCircularProgressIndicator.visibility = View.GONE
@@ -431,7 +437,23 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun requestCODPayment() {
-
+        val bill = createBill()
+        val map = mapOf(
+            "userInfo" to bill.userInfo,
+            "products" to Gson().toJson(bill.products),
+            "address" to Gson().toJson(bill.address),
+            "totalCost" to bill.totalCost.toString(),
+            "discountCost" to bill.discountCost.toString(),
+            "shippingFee" to bill.shippingFee.toString(),
+            "voucherApply" to Gson().toJson(bill.voucherApply),
+            "scoreApply" to bill.scoreApply.toString(),
+            "paid" to bill.paid.toString(),
+            "paymentMethod" to bill.paymentMethod,
+            "orderDate" to bill.orderDate,
+            "status" to bill.status,
+            "orderId" to bill.orderId
+        )
+        checkoutViewModel.createBill(bill)
     }
 
     private fun setShippingAddress(address: Address) {

@@ -179,6 +179,13 @@ class RemoteDataSource @Inject constructor(
         ).flow
     }
 
+    suspend fun createBill(
+        token: String,
+        bill: Bill
+    ): Response<ApiResponseSingleData<Unit>> {
+        return jolieCafeApi.createBill(token = "Bearer $token", bill = bill)
+    }
+
     // api detail product
     suspend fun getDetailFavoriteProductsId(token: String, productId: String): Response<ApiResponseSingleData<Product>> {
         return jolieCafeApi.getDetailProductsId( token= "Bearer $token", productId = productId)

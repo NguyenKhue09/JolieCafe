@@ -1,5 +1,6 @@
 package com.nt118.joliecafe.ui.fragments.cart
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -24,11 +26,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.CartAdapter
 import com.nt118.joliecafe.databinding.FragmentCartBinding
 import com.nt118.joliecafe.models.CartItem
 import com.nt118.joliecafe.models.CartItemByCategory
+import com.nt118.joliecafe.models.Voucher
 import com.nt118.joliecafe.ui.activities.checkout.CheckoutActivity
 import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.util.*
@@ -71,7 +75,15 @@ class CartFragment : Fragment() {
     private lateinit var tvItemCount: TextView
     private lateinit var tvTotalPrice: TextView
     private lateinit var tvDelete: TextView
-    private var isCartEmpty = true
+
+    private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            showSnackBar("Create bill successfully", SNACK_BAR_STATUS_SUCCESS, R.drawable.ic_success)
+            val selectedCartItems = getSelectedCartItem()
+            val selectedCartItemIds = selectedCartItems.map { it.productId }
+            cartViewModel.deleteCartItems(selectedCartItemIds, cartViewModel.userToken)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -198,7 +210,7 @@ class CartFragment : Fragment() {
             val intent = Intent(context, CheckoutActivity::class.java)
             val selectedCartItems = getSelectedCartItem()
             intent.putExtra("cartItems", Gson().toJson(selectedCartItems))
-            startActivity(intent)
+            resultLauncher.launch(intent)
         }
 
         tvDelete.setOnClickListener {

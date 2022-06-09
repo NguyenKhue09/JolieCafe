@@ -186,7 +186,7 @@ interface JolieCafeApi {
     @POST("$API_GATEWAY/bill/create")
     suspend fun createBill(
         @Header("Authorization") token: String,
-        @QueryMap bill: Map<String, String>
+        @Body bill: Bill
     ): Response<ApiResponseSingleData<Unit>>
 
     // End bill api
