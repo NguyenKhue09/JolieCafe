@@ -13,7 +13,7 @@ data class Bill(
     val shippingFee: Double,
     val voucherApply: List<String>,
     val scoreApply: Int,
-    val paid: Boolean,
+    var paid: Boolean,
     var paymentMethod: String,
     val orderDate: String,
     val status: String,

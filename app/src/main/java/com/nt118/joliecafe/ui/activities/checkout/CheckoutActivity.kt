@@ -348,6 +348,7 @@ class CheckoutActivity : AppCompatActivity() {
 //                    showSnackBar(message = "Momo payment successfully", status = SNACK_BAR_STATUS_SUCCESS, icon = R.drawable.ic_success)
                     val bill = createBill()
                     bill.paymentMethod = "MoMo"
+                    bill.paid = true
                     checkoutViewModel.createBill(bill)
                 }
                 is ApiResult.Error -> {
