@@ -182,6 +182,13 @@ interface JolieCafeApi {
         @QueryMap orderQuery: Map<String, String>,
     ): ApiResponseMultiData<OrderHistory>
 
+    @Headers("Content-Type: application/json")
+    @POST("$API_GATEWAY/bill/create")
+    suspend fun createBill(
+        @Header("Authorization") token: String,
+        @QueryMap bill: Map<String, String>
+    ): Response<ApiResponseSingleData<Unit>>
+
     // End bill api
 
     // start detail product
@@ -232,6 +239,8 @@ interface JolieCafeApi {
     suspend fun getVouchers(
         @Header("Authorization") token: String,
     ): Response<ApiResponseMultiData<Voucher>>
+
+    // End of Voucher API
 
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 

@@ -95,7 +95,8 @@ class CheckoutActivity : AppCompatActivity() {
     private val voucherList: MutableList<Voucher> = mutableListOf()
     private var shippingFee = 30000
     private var discount = 0
-    private var jolieCoin = 0
+    private val jolieCoin: Int
+        get() = checkoutViewModel.jolieCoin
 
     private val resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -165,12 +166,14 @@ class CheckoutActivity : AppCompatActivity() {
         btnMomo = binding.btnMomo
 
         swUseJolieCoin.isChecked = isUseJolieCoin!!
-        tvUseJolieCoin.text = resources.getString(R.string.use_jolie_coin, 200)
+        tvUseJolieCoin.text = resources.getString(R.string.use_jolie_coin, jolieCoin)
+        binding.tvUseJolieCoinDetail.text = resources.getString(R.string.use_coin, jolieCoin)
+        tvJolieCoinDetail.text = resources.getString(R.string.jolie_coin_detail, jolieCoin)
 
         if (isUseJolieCoin!!) {
             tvJolieCoinLabel.visibility = View.VISIBLE
             tvJolieCoinDetail.visibility = View.VISIBLE
-            totalPrice = subTotalPrice!! - 200.0
+            totalPrice = subTotalPrice!! - jolieCoin
         } else {
             tvJolieCoinLabel.visibility = View.GONE
             tvJolieCoinDetail.visibility = View.GONE
@@ -359,11 +362,9 @@ class CheckoutActivity : AppCompatActivity() {
             if (it) {
                 tvJolieCoinLabel.visibility = View.VISIBLE
                 tvJolieCoinDetail.visibility = View.VISIBLE
-                jolieCoin = 200
             } else {
                 tvJolieCoinLabel.visibility = View.GONE
                 tvJolieCoinDetail.visibility = View.GONE
-                jolieCoin = 0
             }
             calculateTotalCost()
         }
@@ -441,7 +442,8 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun calculateTotalCost() {
-        totalPrice = subTotalPrice!! - discount + shippingFee - jolieCoin
+        totalPrice = subTotalPrice!! - discount + shippingFee
+        if (isUseJolieCoin == true) totalPrice = totalPrice!! - jolieCoin
     }
 
     private fun createBill(): Bill {
@@ -467,7 +469,7 @@ class CheckoutActivity : AppCompatActivity() {
             discountCost = discount.toDouble(),
             shippingFee = shippingFee.toDouble(),
             voucherApply = voucherList.toList(),
-            scoreApply = 20, // Coi như mỗi lần mua là được 20 điểm
+            scoreApply = jolieCoin,
             paid = false, // Chưa thanh toán
             paymentMethod = paymentMethod, // Tạm cho ntn nhé
             orderDate = DateTimeUtil.getCurrentDate(),
