@@ -79,7 +79,9 @@ class HomeViewModel @Inject constructor(
             }
             response.isSuccessful -> {
                 //saveUserToken(result!!.data!!.token)
-                ApiResult.Success(result!!.data!!)
+                saveCoin(result!!.data!!.coins)
+                ApiResult.Success(result.data!!)
+
             }
             else -> {
                 ApiResult.Error(response.message())
@@ -105,7 +107,6 @@ class HomeViewModel @Inject constructor(
         when {
             response.isSuccessful -> {
                 saveUserToken(userToken = result!!.data!!.token)
-                saveCoin(result.data!!.coins)
             }
             else -> {
                 saveUserToken("")
