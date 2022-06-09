@@ -104,6 +104,7 @@ class CheckoutActivity : AppCompatActivity() {
             voucherList.clear()
             voucherList.addAll(Gson().fromJson<List<Voucher>>(voucherJson, object : TypeToken<List<Voucher>>() {}.type))
             println("voucher json: $voucherJson")
+
             try {
                 discount = (voucherList.first { it.type == "Discount" }.discountPercent * subTotalPrice!! / 100).toInt()
                 binding.tvDiscountDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(discount.toDouble()))
@@ -396,6 +397,7 @@ class CheckoutActivity : AppCompatActivity() {
             val voucherJson = Gson().toJson(voucherList)
             println("voucher json: $voucherJson")
             intent.putExtra("selectedVoucher", voucherJson)
+
             subTotalPrice?.let { it1 -> intent.putExtra("subTotal", it1.toInt()) }
 
 

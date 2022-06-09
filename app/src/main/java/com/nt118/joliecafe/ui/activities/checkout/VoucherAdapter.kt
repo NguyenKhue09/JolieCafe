@@ -58,6 +58,7 @@ class VoucherAdapter(
     fun selectVoucher(voucher: Voucher) {
         selectedPosition = dataset.withIndex().first { it.value.code == voucher.code }.index
         notifyItemChanged(selectedPosition)
+
     }
 
     fun getSelected(): Voucher? {
