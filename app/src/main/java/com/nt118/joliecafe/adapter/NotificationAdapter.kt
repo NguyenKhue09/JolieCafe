@@ -52,6 +52,8 @@ class NotificationAdapter(
                     placeholder(R.drawable.image_logo)
                 }
 
+            } else {
+                holder.binding.ivNotificationImage.visibility = View.GONE
             }
             holder.binding.tvTime.text =
                 notification.createdAt.toDate()?.formatTo(LOCAL_TIME_FORMAT)

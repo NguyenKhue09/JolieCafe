@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -25,7 +26,9 @@ class VoucherDialog : AppCompatActivity() {
     private val binding get() = _binding!!
     private val viewModel by viewModels<CheckoutViewModel>()
     private var subTotal = 0
+
     private var selectedVoucher: List<Voucher> = listOf()
+
     private lateinit var discountAdapter: VoucherAdapter
     private lateinit var freeShipAdapter: VoucherAdapter
 
@@ -41,6 +44,7 @@ class VoucherDialog : AppCompatActivity() {
         val rvFreeShip = binding.rvFreeShip
 
         getExtra()
+        getSubTotal()
         observeResponse()
         viewModel.getVouchers()
         listeners()
@@ -70,6 +74,8 @@ class VoucherDialog : AppCompatActivity() {
         subTotal = intent.getIntExtra("subTotal", 0)
         val voucherJson = intent.getStringExtra("selectedVoucher")
         selectedVoucher = Gson().fromJson(voucherJson, object: TypeToken<List<Voucher>>() {}.type )
+    private fun getSubTotal() {
+        subTotal = intent.getIntExtra("subTotal", 0)
     }
 
     private fun observeResponse() {

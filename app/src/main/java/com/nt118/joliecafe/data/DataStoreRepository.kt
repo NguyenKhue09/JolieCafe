@@ -36,7 +36,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         val isUserDataChange = booleanPreferencesKey(PREFERENCES_IS_USER_DATA_CHANGE)
         val defaultAddressId = stringPreferencesKey(PREFERENCES_USER_DEFAULT_ADDRESS_ID)
         val userNoticeToken = stringPreferencesKey(PREFERENCES_USER_NOTICE_TOKEN)
-        val coin = stringPreferencesKey(PREFERENCES_COIN)
+        val coin = intPreferencesKey(PREFERENCES_COIN)
     }
 
     private val dataStore: DataStore<Preferences> = context.dataStore
@@ -54,7 +54,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         }
     }
 
-    suspend fun saveCoin(coin: String) {
+    suspend fun saveCoin(coin: Int) {
         Log.d("get", "Save coin")
         dataStore.edit { preferences ->
             preferences[PreferenceKeys.coin] = coin
@@ -111,7 +111,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
             userToken
         }.distinctUntilChanged()
 
-    val readCoin: Flow<String> = dataStore.data
+    val readCoin: Flow<Int> = dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -120,7 +120,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
             }
         }
         .map { preferences ->
-            val coin = preferences[PreferenceKeys.coin] ?: ""
+            val coin = preferences[PreferenceKeys.coin] ?: 0
             coin
         }.distinctUntilChanged()
 
