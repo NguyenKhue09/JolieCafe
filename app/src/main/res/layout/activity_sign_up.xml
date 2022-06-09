@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tvAppName"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/raleway_medium"
         android:text="SIGN UP"
         android:textColor="#bc834b"
@@ -35,13 +35,12 @@
         android:id="@+id/tvUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tvSignUp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/raleway_regular"
         android:text="@string/username"
         android:textColor="#e4e4e4"
-        android:fontFamily="@font/raleway_regular"
-        android:layout_marginTop="28dp"
-        android:layout_below="@id/tvSignUp"
-        android:textSize="16sp"
-        />
+        android:textSize="16sp" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@id/etUserNameLayout"
@@ -190,11 +189,11 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/tvOr"
         android:layout_below="@+id/btnSignUp"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="5dp"/>
 
     <LinearLayout
         android:id="@+id/groupIcon"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_below="@id/tvOr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

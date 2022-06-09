@@ -100,5 +100,6 @@
     <string name="order_id">Order ID: %1$s</string>
     <string name="use_coin">[-%1$d]</string>
     <string name="jolie_coin_detail">-%1$d VND</string>
+    <string name="forgot_your_password">FORGOT YOUR PASSWORD?</string>
 
 </resources>

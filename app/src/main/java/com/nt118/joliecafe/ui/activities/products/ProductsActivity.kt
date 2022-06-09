@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -112,9 +113,8 @@ class ProductsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        lifecycleScope.launchWhenStarted {
-            productsViewModel.getFavorite(productsViewModel.userToken)
-        }
+        productsViewModel.getFavorite(productsViewModel.userToken)
+
     }
 
     private fun handleSearchBox() {
