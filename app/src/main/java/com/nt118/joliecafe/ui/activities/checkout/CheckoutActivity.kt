@@ -470,7 +470,7 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun calculateTotalCost() {
         totalPrice = subTotalPrice!! - discount + shippingFee
-        if (isUseJolieCoin == true) totalPrice = totalPrice!! - jolieCoin
+        if (isUseJolieCoin == true) totalPrice = if (totalPrice!! - jolieCoin < 0) 0.0 else totalPrice!! - jolieCoin
     }
 
     private fun createBill(): Bill {
