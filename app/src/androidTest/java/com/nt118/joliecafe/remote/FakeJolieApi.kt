@@ -1,10 +1,11 @@
-package com.nt118.joliecafe.data.remote
+package com.nt118.joliecafe.remote
 
 import com.nt118.joliecafe.data.network.JolieCafeApi
 import com.nt118.joliecafe.models.*
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import retrofit2.Response
 import java.io.IOException
-import java.lang.Exception
 
 class FakeJolieApi : JolieCafeApi {
 
@@ -570,6 +571,7 @@ class FakeJolieApi : JolieCafeApi {
     )
 
     var shouldReturnFavPagingError = false
+    var shouldReturnDeleteFavError = false
 
     override suspend fun momoRequestPayment(
         body: MomoPaymentRequestBody,
@@ -610,14 +612,14 @@ class FakeJolieApi : JolieCafeApi {
     ): ApiResponseMultiData<FavoriteProduct> {
         val type = productQuery["type"]
 
-        if(shouldReturnFavPagingError) throw IOException("Random error")
+        if(shouldReturnFavPagingError) throw Exception("Random error")
 
         return ApiResponseMultiData(
             data = if (type == "All") favProducts else favProducts.filter { it.product.type == type },
             message = "",
             success = true,
             prevPage = null,
-            nextPage = 2,
+            nextPage = null,
         )
     }
 
@@ -625,7 +627,26 @@ class FakeJolieApi : JolieCafeApi {
         token: String,
         favoriteProductId: String
     ): Response<ApiResponseSingleData<Unit>> {
-        TODO("Not yet implemented")
+
+        println(favProducts.any { it.id == favoriteProductId })
+        if(favProducts.any { it.id == favoriteProductId }) {
+            return Response.success(
+                ApiResponseSingleData(
+                    data = Unit,
+                    message = "",
+                    success = true
+                )
+            )
+        } else {
+            return Response.error(
+                400,
+                ResponseBody.create(
+                    MediaType.parse("application/json"),
+                    "{\"message\":\"Product not found\"}"
+                )
+            )
+        }
+
     }
 
     override suspend fun addNewAddress(

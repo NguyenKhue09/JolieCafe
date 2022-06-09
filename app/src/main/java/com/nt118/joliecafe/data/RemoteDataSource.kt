@@ -50,6 +50,7 @@ class RemoteDataSource @Inject constructor(
     }
 
     fun getUserFavoriteProducts(token: String, productQuery: Map<String, String>) : Flow<PagingData<FavoriteProduct>>{
+        //throw  Exception("Not implemented")
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {
@@ -59,6 +60,7 @@ class RemoteDataSource @Inject constructor(
     }
 
     suspend fun removeUserFavoriteProduct(token: String, favoriteProductId: String): Response<ApiResponseSingleData<Unit>> {
+        //throw  Exception("Not implemented")
         return jolieCafeApi.removeUserFavoriteProduct(token = "Bearer $token", favoriteProductId = favoriteProductId)
     }
 
@@ -210,15 +212,6 @@ class RemoteDataSource @Inject constructor(
     }
 
     fun getAdminNotificationsForUser(token: String, tab: String): Flow<PagingData<Notification>> {
-        return Pager(
-            config = PagingConfig(pageSize = PAGE_SIZE),
-            pagingSourceFactory = {
-                NotificationPagingSource(jolieCafeApi, "Bearer $token", tab)
-            }
-        ).flow
-    }
-
-    fun getAllUserNotifications(token: String, tab: String): Flow<PagingData<Notification>> {
         return Pager(
             config = PagingConfig(pageSize = PAGE_SIZE),
             pagingSourceFactory = {
