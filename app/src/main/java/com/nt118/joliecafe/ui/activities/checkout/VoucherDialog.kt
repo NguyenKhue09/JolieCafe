@@ -73,7 +73,9 @@ class VoucherDialog : AppCompatActivity() {
     private fun getExtra() {
         subTotal = intent.getIntExtra("subTotal", 0)
         val voucherJson = intent.getStringExtra("selectedVoucher")
-        selectedVoucher = Gson().fromJson(voucherJson, object: TypeToken<List<Voucher>>() {}.type )
+        selectedVoucher = Gson().fromJson(voucherJson, object : TypeToken<List<Voucher>>() {}.type)
+    }
+
     private fun getSubTotal() {
         subTotal = intent.getIntExtra("subTotal", 0)
     }
