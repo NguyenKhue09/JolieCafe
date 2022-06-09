@@ -77,7 +77,10 @@ class CheckoutActivity : AppCompatActivity() {
     private lateinit var momoBillDescription: String
     private lateinit var bill: Bill
 
-    private val cartItems: List<CartItem> get() = checkoutViewModel.cartItems
+    private var cartItems: List<CartItem> get() = checkoutViewModel.cartItems
+        set(value) {
+            checkoutViewModel.cartItems = value
+        }
     private var isUseJolieCoin
         get() = checkoutViewModel.isUseJolieCoin.value
         set(value) { checkoutViewModel.isUseJolieCoin.value = value }
@@ -184,7 +187,7 @@ class CheckoutActivity : AppCompatActivity() {
         // Set adapter
 
         val cartItemsJson = intent.getStringExtra("cartItems")
-        val cartItems = Gson().fromJson<List<CartItem>>(cartItemsJson, object : TypeToken<List<CartItem>>() {}.type)
+        cartItems = Gson().fromJson(cartItemsJson, object : TypeToken<List<CartItem>>() {}.type)
         rvProduct.adapter = CheckoutAdapter(cartItems, this)
         subTotalPrice = cartItems.sumOf { it.price }
     }
@@ -438,6 +441,7 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun requestCODPayment() {
         val bill = createBill()
+        println(bill.products.toString())
         val map = mapOf(
             "userInfo" to bill.userInfo,
             "products" to Gson().toJson(bill.products),
@@ -470,6 +474,7 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun createBill(): Bill {
         val billProductList = mutableListOf<BillProduct>()
+        println(cartItems)
         cartItems.forEach { cartItem ->
             billProductList.add(BillProduct(
                 cartItem.productDetail.id,

@@ -45,12 +45,16 @@ class CheckoutViewModel@Inject constructor(
 
     init {
         viewModelScope.launch {
+
             readUserToken.collectLatest { token ->
                 userToken = token
             }
+
+
         }
         viewModelScope.launch {
             dataStoreRepository.readCoin.collectLatest { coin ->
+                println(coin)
                 jolieCoin = coin
             }
         }
