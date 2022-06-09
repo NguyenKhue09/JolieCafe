@@ -44,6 +44,8 @@ import com.nt118.joliecafe.viewmodels.checkout.CheckoutViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import vn.momo.momo_partner.MoMoParameterNamePayment
 import java.util.*
+import kotlin.math.ceil
+import kotlin.math.floor
 
 @AndroidEntryPoint
 class CheckoutActivity : AppCompatActivity() {
@@ -360,12 +362,19 @@ class CheckoutActivity : AppCompatActivity() {
             }
         }
 
-        subTotalPrice.observe(this@CheckoutActivity) {
-            tvSubtotalDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(it))
+        subTotalPrice.observe(this@CheckoutActivity) { price ->
+            if (price / 2 < jolieCoin && price > 0) {
+                println(ceil(price / 2).toInt())
+                jolieCoin = ceil(price / 2).toInt()
+                tvUseJolieCoin.text = resources.getString(R.string.use_jolie_coin, jolieCoin)
+                binding.tvUseJolieCoinDetail.text = resources.getString(R.string.use_coin, jolieCoin)
+                tvJolieCoinDetail.text = resources.getString(R.string.jolie_coin_detail, jolieCoin)
+            }
+            tvSubtotalDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(price))
         }
 
-        totalPrice.observe(this@CheckoutActivity) {
-            tvTotalDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(it))
+        totalPrice.observe(this@CheckoutActivity) { price ->
+            tvTotalDetail.text = getString(R.string.product_price, NumberUtil.addSeparator(price))
         }
 
         isUseJolieCoin.observe(this@CheckoutActivity) {
@@ -470,7 +479,7 @@ class CheckoutActivity : AppCompatActivity() {
 
     private fun calculateTotalCost() {
         totalPrice = subTotalPrice!! - discount + shippingFee
-        if (isUseJolieCoin == true) totalPrice = if (totalPrice!! - jolieCoin < 0) 0.0 else totalPrice!! - jolieCoin
+        if (isUseJolieCoin == true) totalPrice = totalPrice!! - jolieCoin
     }
 
     private fun createBill(): Bill {

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
+import kotlin.math.floor
 
 @HiltViewModel
 class CheckoutViewModel@Inject constructor(
