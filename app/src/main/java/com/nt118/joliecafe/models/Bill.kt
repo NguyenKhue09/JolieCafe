@@ -14,7 +14,7 @@ data class Bill(
     val voucherApply: List<Voucher>,
     val scoreApply: Int,
     val paid: Boolean,
-    val paymentMethod: String,
+    var paymentMethod: String,
     val orderDate: String,
     val status: String,
     val orderId: String,

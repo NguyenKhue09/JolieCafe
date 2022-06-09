@@ -29,6 +29,7 @@ class CheckoutViewModel@Inject constructor(
     val getAddressByIdResponse: MutableLiveData<ApiResult<Address>> = MutableLiveData()
     val momoPaymentRequestResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
     val getVoucherResponse: MutableLiveData<ApiResult<List<Voucher>>> = MutableLiveData()
+    val createBillResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
 
     var userToken = ""
     var networkStatus = false
@@ -44,12 +45,16 @@ class CheckoutViewModel@Inject constructor(
 
     init {
         viewModelScope.launch {
+
             readUserToken.collectLatest { token ->
                 userToken = token
             }
+
+
         }
         viewModelScope.launch {
             dataStoreRepository.readCoin.collectLatest { coin ->
+                println(coin)
                 jolieCoin = coin
             }
         }
@@ -75,6 +80,18 @@ class CheckoutViewModel@Inject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
                 getAddressByIdResponse.value = ApiResult.Error(e.message.toString())
+            }
+        }
+
+    fun createBill(bill: Bill) =
+        viewModelScope.launch {
+            createBillResponse.value = ApiResult.Loading()
+            try {
+                val response = repository.remote.createBill(token = userToken, bill)
+                createBillResponse.value = handleNullDataApiResponse(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                createBillResponse.value = ApiResult.Error(e.message.toString())
             }
         }
 
@@ -149,7 +166,7 @@ class CheckoutViewModel@Inject constructor(
             response.isSuccessful -> {
                 val result = response.body()
                 if (result != null) {
-                    ApiResult.Success(result.data!!)
+                    ApiResult.NullDataSuccess()
                 } else {
                     ApiResult.Error("Voucher not found!")
                 }
@@ -176,4 +193,5 @@ class CheckoutViewModel@Inject constructor(
             }
         }
     }
+
 }
