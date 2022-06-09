@@ -7,7 +7,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
@@ -20,6 +20,7 @@ import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import coil.load
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.nt118.joliecafe.R
@@ -35,8 +36,12 @@ import com.nt118.joliecafe.ui.activities.login.LoginActivity
 import com.nt118.joliecafe.ui.activities.notifications.NotificationActivity
 import com.nt118.joliecafe.ui.activities.products.ProductsActivity
 import com.nt118.joliecafe.util.ApiResult
+import com.nt118.joliecafe.util.Constants
+import com.nt118.joliecafe.util.Constants.Companion.SNACK_BAR_STATUS_ERROR
 import com.nt118.joliecafe.util.NetworkListener
 import com.nt118.joliecafe.util.ProductComparator
+import com.nt118.joliecafe.util.extenstions.setCustomBackground
+import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.home.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -161,7 +166,7 @@ class HomeFragment : Fragment() {
         // RecyclerView Best Seller
         val diffCallBack = ProductComparator
         val recyclerViewBS = binding.recyclerViewBestSeller
-        val bestSellerAdapter = BestSellerAdapter(requireActivity(), diffCallBack = diffCallBack)
+        val bestSellerAdapter = BestSellerAdapter(requireActivity(), diffCallBack = diffCallBack, binding.root)
         recyclerViewBS.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerViewBS.adapter = bestSellerAdapter
 
@@ -213,7 +218,7 @@ class HomeFragment : Fragment() {
                     else -> null
                 }
                 error?.let {
-                    Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
+                    showSnackBar(it.error.message!!, SNACK_BAR_STATUS_ERROR, R.drawable.ic_error)
                 }
             }
         }
@@ -225,7 +230,7 @@ class HomeFragment : Fragment() {
                     setUserData(user = useData.data!!)
                 }
                 is ApiResult.Error -> {
-                    Toast.makeText(requireContext(), "Get your data infos failed!. Please login again", Toast.LENGTH_SHORT).show()
+                    showSnackBar("Get your data infos failed!. Please login again", SNACK_BAR_STATUS_ERROR, R.drawable.ic_error)
                 }
                 else -> {}
             }
@@ -313,5 +318,31 @@ class HomeFragment : Fragment() {
         } catch (e: Exception) {
             // i.e. NetworkCallback was already unregistered
         }
+    }
+
+    private fun showSnackBar(message: String, status: Int, icon: Int) {
+        val drawable = requireContext().getDrawable(icon)
+
+        val snackBarContentColor = when (status) {
+            Constants.SNACK_BAR_STATUS_SUCCESS -> R.color.text_color_2
+            Constants.SNACK_BAR_STATUS_DISABLE -> R.color.dark_text_color
+            Constants.SNACK_BAR_STATUS_ERROR -> R.color.error_color
+            else -> R.color.text_color_2
+        }
+
+
+        val snackBar = Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setAction("Ok") {
+            }
+            .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.grey_primary))
+            .setTextColor(ContextCompat.getColor(requireContext(), snackBarContentColor))
+            .setIcon(
+                drawable = drawable!!,
+                colorTint = ContextCompat.getColor(requireContext(), snackBarContentColor),
+                iconPadding = resources.getDimensionPixelOffset(R.dimen.small_margin)
+            )
+            .setCustomBackground(requireContext().getDrawable(R.drawable.snackbar_normal_custom_bg)!!)
+
+        snackBar.show()
     }
 }

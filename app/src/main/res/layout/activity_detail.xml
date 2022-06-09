@@ -57,6 +57,7 @@
                     android:layout_height="32dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_arrow_left"
+                    app:tint="@color/black"
                     tools:ignore="ContentDescription" />
             </androidx.cardview.widget.CardView>
 

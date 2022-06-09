@@ -3,6 +3,7 @@ package com.nt118.joliecafe.adapter
 import android.app.Activity
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.paging.PagingDataAdapter
@@ -20,7 +21,8 @@ import java.util.*
 
 class BestSellerAdapter(
     private val activity: Activity,
-    diffCallBack: DiffUtil.ItemCallback<Product>
+    diffCallBack: DiffUtil.ItemCallback<Product>,
+    private val rootView: View
 ) : PagingDataAdapter<Product, BestSellerAdapter.ViewHolder>(diffCallBack) {
 
     class ViewHolder(var binding: ItemRvBestsallerBinding) :
@@ -59,7 +61,7 @@ class BestSellerAdapter(
 
             holder.binding.btnAddCard.setOnClickListener {
                 val ft = (activity as AppCompatActivity).supportFragmentManager.beginTransaction()
-                val bottomSheet = CategoriesBottomSheetFragment(product)
+                val bottomSheet = CategoriesBottomSheetFragment(product, rootView)
                 bottomSheet.show(ft, "TAG")
             }
 
