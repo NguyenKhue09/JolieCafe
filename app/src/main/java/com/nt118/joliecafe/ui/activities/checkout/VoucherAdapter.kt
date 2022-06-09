@@ -35,12 +35,12 @@ class VoucherAdapter(
 
     override fun onBindViewHolder(holder: VoucherViewHolder, position: Int) {
         holder.rbVoucher.isChecked = selectedPosition == holder.absoluteAdapterPosition
-        holder.rbVoucher.setOnCheckedChangeListener { _, b ->
-            if (b) {
+        holder.rbVoucher.setOnClickListener { it as RadioButton
+            if (it.isChecked && selectedPosition != holder.absoluteAdapterPosition) {
                 val prevSelectedPosition = selectedPosition
                 selectedPosition = holder.absoluteAdapterPosition
                 notifyItemChanged(prevSelectedPosition)
-            }
+            } else if (it.isChecked && selectedPosition == holder.absoluteAdapterPosition) clearSelection()
         }
         holder.binding.tvVoucherCode.text = dataset[position].code
         holder.binding.tvVoucherDescription.text = context.getString(R.string.voucher_description, NumberUtil.addSeparator(dataset[position].condition.toDouble()))
@@ -50,8 +50,14 @@ class VoucherAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun clearSelection() {
+        val prevSelectedPosition = selectedPosition
         selectedPosition = -1
-        notifyDataSetChanged()
+        notifyItemChanged(prevSelectedPosition)
+    }
+
+    fun selectVoucher(voucher: Voucher) {
+        selectedPosition = dataset.withIndex().first { it.value.code == voucher.code }.index
+        notifyItemChanged(selectedPosition)
     }
 
     fun getSelected(): Voucher? {

@@ -5,7 +5,6 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -26,6 +25,7 @@ class VoucherDialog : AppCompatActivity() {
     private val binding get() = _binding!!
     private val viewModel by viewModels<CheckoutViewModel>()
     private var subTotal = 0
+    private var selectedVoucher: List<Voucher> = listOf()
     private lateinit var discountAdapter: VoucherAdapter
     private lateinit var freeShipAdapter: VoucherAdapter
 
@@ -40,7 +40,7 @@ class VoucherDialog : AppCompatActivity() {
         val rvDiscount = binding.rvDiscount
         val rvFreeShip = binding.rvFreeShip
 
-        getSubTotal()
+        getExtra()
         observeResponse()
         viewModel.getVouchers()
         listeners()
@@ -66,8 +66,10 @@ class VoucherDialog : AppCompatActivity() {
         }
     }
 
-    private fun getSubTotal() {
+    private fun getExtra() {
         subTotal = intent.getIntExtra("subTotal", 0)
+        val voucherJson = intent.getStringExtra("selectedVoucher")
+        selectedVoucher = Gson().fromJson(voucherJson, object: TypeToken<List<Voucher>>() {}.type )
     }
 
     private fun observeResponse() {
@@ -83,6 +85,7 @@ class VoucherDialog : AppCompatActivity() {
                         val freeShipData = data.filter { it.type == "Ship" && it.condition <= subTotal }
                         discountAdapter = VoucherAdapter(discountData, this)
                         freeShipAdapter = VoucherAdapter(freeShipData, this)
+                        selectVoucher()
                         binding.rvDiscount.adapter = discountAdapter
                         binding.rvFreeShip.adapter = freeShipAdapter
                         if (discountData.isEmpty()) {
@@ -98,6 +101,15 @@ class VoucherDialog : AppCompatActivity() {
                 else -> {}
             }
         }
+    }
+
+    private fun selectVoucher() {
+        try {
+            discountAdapter.selectVoucher(selectedVoucher.first { it.type == "Discount" })
+        } catch (e: Exception) {}
+        try {
+            freeShipAdapter.selectVoucher(selectedVoucher.first { it.type == "Ship" })
+        } catch (e: Exception) {}
     }
 
     override fun onDestroy() {
