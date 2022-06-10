@@ -226,4 +226,8 @@ class RemoteDataSource @Inject constructor(
         return jolieCafeApi.getVouchers(token = "Bearer $token")
     }
 
+    suspend fun reviewBill(token: String, body: BillReviewBody): Response<ApiResponseSingleData<Unit>> {
+        return jolieCafeApi.reviewBill(token = "Bearer $token", body = body)
+    }
+
 }

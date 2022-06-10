@@ -18,4 +18,5 @@ data class Bill(
     val orderDate: String,
     val status: String,
     val orderId: String,
+    val isRated: Boolean,
 )

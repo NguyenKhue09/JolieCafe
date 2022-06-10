@@ -156,4 +156,46 @@
         <item name="fontFamily">@font/raleway_regular</item>
         <item name="android:textSize">18sp</item>
     </style>
+
+    <style name="ShapeAppearanceOverlay.MyApp.Button.Rounded" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+        <item name="backgroundTint">@color/text_color</item>
+    </style>
+
+    <style name="Button.Rounded" parent="Widget.MaterialComponents.Button.Icon">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+        <item name="backgroundTint">@color/grey_secondary</item>
+        <item name="iconTint">@color/grey_primary</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="ThemeOverlay.MaterialComponents.MaterialAlertDialog_Background" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <!-- Background Color-->
+        <item name="android:background">@color/grey_opacity60_primary</item>
+
+        <!-- Style for positive button -->
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveDialogButtonStyle</item>
+        <!-- Style for negative button -->
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeDialogButtonStyle</item>
+    </style>
+
+    <style name="PositiveDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button">
+        <!-- text color for the button -->
+        <!-- Background tint for the button -->
+        <item name="backgroundTint">@color/text_color_2</item>
+    </style>
+
+    <style name="NegativeDialogButtonStyle" parent="@style/Widget.MaterialComponents.Button">
+        <!-- text color for the button -->
+        <!-- Background tint for the button -->
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="elevation">0dp</item>
+    </style>
 </resources>

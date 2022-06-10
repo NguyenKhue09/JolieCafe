@@ -60,11 +60,26 @@
                 android:fontFamily="@font/montserrat_regular"
                 android:text="@string/order_id"
                 android:textColor="@color/grey_secondary"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_order_date">
 
             </TextView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_review"
+                style="@style/Button.Rounded"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/dark_text_color"
+                android:padding="@dimen/small_margin"
+                app:icon="@drawable/ic_baseline_rate_review_24"
+                app:iconPadding="0dp"
+                app:iconSize="20dp"
+                app:iconTint="@color/text_color_2"
+                app:layout_constraintEnd_toStartOf="@+id/btn_collapse"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.Rounded" />
 
             <TextView
                 android:id="@+id/tv_order_number_item"

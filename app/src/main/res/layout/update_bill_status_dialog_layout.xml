@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/activity_vertical_margin"
+    android:background="@color/grey_opacity60_primary">
+
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/RegularText"
+        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bill_review"
+        android:textColor="@color/title_text_color"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+    </TextView>
+
+    <TextView
+        android:id="@+id/tv_status"
+        style="@style/RegularText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/rating"
+        android:layout_marginTop="@dimen/small_margin"
+        android:textColor="@color/title_text_color"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/tv_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
+
+    </TextView>
+
+    <RatingBar
+        android:id="@+id/bill_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:numStars="5"
+        android:progressBackgroundTint="@color/text_color"
+        android:progressTint="@color/text_color_2"
+        android:rating="5"
+        android:stepSize="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_status">
+
+    </RatingBar>
+
+
+    <TextView
+        android:id="@+id/tv_payment"
+        style="@style/RegularText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/comment"
+        android:textColor="@color/title_text_color"
+        android:textSize="16sp"
+        android:layout_marginTop="@dimen/small_margin"
+        app:layout_constraintStart_toStartOf="@+id/bill_rating"
+        app:layout_constraintTop_toBottomOf="@+id/bill_rating">
+
+    </TextView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/et_product_description_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/TextInputLayoutAppearance"
+        app:boxBackgroundColor="@color/text_input_custom_bg"
+        app:boxStrokeColor="@color/box_stroke_color_textinput"
+        app:errorEnabled="true"
+        app:hintEnabled="false"
+        android:layout_marginTop="@dimen/small_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_payment">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_bill_comment"
+            style="@style/RegularText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:hint="@string/how_do_you_feel_about_the_bill"
+            android:imeOptions="actionNext"
+            android:inputType="textMultiLine"
+            android:maxLines="6"
+            android:paddingStart="@dimen/very_small_margin"
+            android:paddingEnd="@dimen/very_small_margin"
+            android:textColor="#ffffff"
+            android:textColorHint="@color/text_color" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
