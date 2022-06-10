@@ -105,5 +105,6 @@
     <string name="rating">Rating</string>
     <string name="how_do_you_feel_about_the_bill">How do you feel about the bill?</string>
     <string name="comment">Comment</string>
+    <string name="size">Size:</string>
 
 </resources>

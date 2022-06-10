@@ -71,7 +71,6 @@
                     android:text="@string/quantity"
                     android:textColor="@color/text_color"
                     android:textSize="11sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/tv_order_item_name"
                     app:layout_constraintTop_toBottomOf="@+id/tv_order_item_name">
 
@@ -90,6 +89,36 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tv_order_item_quantity"
                     app:layout_constraintTop_toTopOf="@+id/tv_order_item_quantity">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tv_order_item_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway_regular"
+                    android:text="@string/size"
+                    android:textColor="@color/text_color"
+                    android:textSize="11sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/tv_order_item_quantity"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_order_item_quantity">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/oder_item_size_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:text="M"
+                    android:textColor="@color/text_color"
+                    android:textSize="11sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_order_item_size"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_order_item_size"
+                    app:layout_constraintTop_toTopOf="@+id/tv_order_item_size">
 
                 </TextView>
 
