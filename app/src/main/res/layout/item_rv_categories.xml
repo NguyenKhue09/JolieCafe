@@ -39,7 +39,7 @@
                 android:gravity="center"
                 android:textAlignment="center"
                 android:text="Milk shake"
-                android:fontFamily="@font/raleway_variable_font_wght"
+                android:fontFamily="@font/raleway_regular"
                 android:textColor="@color/white"
                 android:layout_below="@id/imgCart"/>
 
