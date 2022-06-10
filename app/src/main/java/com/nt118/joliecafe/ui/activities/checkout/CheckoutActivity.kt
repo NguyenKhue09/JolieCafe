@@ -511,7 +511,8 @@ class CheckoutActivity : AppCompatActivity() {
             paymentMethod = paymentMethod, // Tạm cho ntn nhé
             orderDate = DateTimeUtil.getCurrentDate(),
             status = "Pending",
-            orderId = orderId
+            orderId = orderId,
+            isRated = false
         )
     }
 

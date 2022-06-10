@@ -17,5 +17,6 @@ data class OrderHistory(
     val orderDate: String,
     val status: String,
     val orderId: String,
-    val products: List<OrderHistoryProduct>
+    val products: List<OrderHistoryProduct>,
+    val isRated: Boolean = false,
 )

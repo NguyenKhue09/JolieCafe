@@ -9,7 +9,10 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.nt118.joliecafe.data.DataStoreRepository
 import com.nt118.joliecafe.data.Repository
+import com.nt118.joliecafe.models.ApiResponseSingleData
+import com.nt118.joliecafe.models.BillReviewBody
 import com.nt118.joliecafe.models.OrderHistory
+import com.nt118.joliecafe.util.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,6 +38,8 @@ class OrderHistoryViewModel @Inject constructor(
 
     private val _orderHistoryClickedList = MutableLiveData<MutableList<String>>(mutableListOf())
     val orderHistoryClickedList: LiveData<MutableList<String>> = _orderHistoryClickedList
+
+    val reviewBillResponse: MutableLiveData<ApiResult<Unit>> = MutableLiveData()
 
     val networkMessage = MutableLiveData<String>()
 
@@ -74,6 +80,39 @@ class OrderHistoryViewModel @Inject constructor(
             _orderHistory.value = PagingData.empty()
         }
     }
+
+    fun reviewBills(billReviewBody: BillReviewBody) =  viewModelScope.launch {
+        reviewBillResponse.value = ApiResult.Loading()
+        try {
+            val response = repository.remote.reviewBill(
+                token = userToken,
+                body = billReviewBody
+            )
+            reviewBillResponse.value = handleApiResponse(response = response)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            reviewBillResponse.value = ApiResult.Error(e.message)
+        }
+    }
+
+    private fun <T> handleApiResponse(response: Response<ApiResponseSingleData<T>>): ApiResult<T> {
+        println(response)
+        return when {
+            response.message().toString().contains("timeout") -> {
+                ApiResult.Error("Timeout")
+            }
+            response.code() == 500 -> {
+                ApiResult.Error(response.message())
+            }
+            response.isSuccessful -> {
+                ApiResult.NullDataSuccess()
+            }
+            else -> {
+                ApiResult.Error(response.message())
+            }
+        }
+    }
+
 
     private fun saveBackOnline(backOnline: Boolean) =
         viewModelScope.launch(Dispatchers.IO) {

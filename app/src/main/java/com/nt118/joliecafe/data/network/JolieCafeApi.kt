@@ -242,6 +242,13 @@ interface JolieCafeApi {
 
     // End of Voucher API
 
+    //favorite
+    @POST("$API_GATEWAY/comment/add")
+    suspend fun reviewBill(
+        @Header("Authorization") token: String,
+        @Body body: BillReviewBody,
+    ): Response<ApiResponseSingleData<Unit>>
+
    // https://stackoverflow.com/questions/41078866/retrofit2-authorization-global-interceptor-for-access-token
 
 }
