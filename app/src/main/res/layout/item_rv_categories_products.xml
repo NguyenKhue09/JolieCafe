@@ -31,17 +31,17 @@
 
             <TextView
                 android:id="@+id/tv_categories_products"
-                android:layout_marginTop="5dp"
-                android:layout_centerHorizontal="true"
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
+                android:layout_below="@id/img_categories_products"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/raleway_regular"
                 android:gravity="center"
-                android:textAlignment="center"
                 android:text="Milk shake"
-                android:fontFamily="@font/raleway_variable_font_wght"
+                android:textAlignment="center"
                 android:textColor="@color/white"
-                android:layout_below="@id/img_categories_products"/>
+                android:textSize="13sp" />
 
         </RelativeLayout>
 
