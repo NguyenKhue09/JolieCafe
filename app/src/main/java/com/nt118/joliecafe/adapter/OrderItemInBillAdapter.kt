@@ -51,6 +51,7 @@ class OrderItemInBillAdapter(
         )
         holder.binding.oderItemQuantityNumber.text = product.quantity.toString()
         holder.binding.tvOrderItemName.text = product.product.name
+        holder.binding.oderItemSizeText.text = product.size
     }
 
     override fun getItemCount(): Int {
