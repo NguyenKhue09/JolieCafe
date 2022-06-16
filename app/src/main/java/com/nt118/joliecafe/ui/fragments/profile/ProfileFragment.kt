@@ -229,7 +229,7 @@ class ProfileFragment : Fragment() {
                     if (profileViewModel.isFaceOrGGLogin) {
                         binding.userName.text = currentUser?.displayName ?: "You"
                         binding.userImg.load(
-                            uri = currentUser?.photoUrl
+                            data = currentUser?.photoUrl
                         ) {
                             crossfade(600)
                             error(R.drawable.placeholder_image)
@@ -237,7 +237,7 @@ class ProfileFragment : Fragment() {
                     } else {
                         binding.userName.text = userInfos.data.fullName
                         binding.userImg.load(
-                            uri = userInfos.data.thumbnail
+                            data = userInfos.data.thumbnail
                         ) {
                             crossfade(600)
                             error(R.drawable.placeholder_image)

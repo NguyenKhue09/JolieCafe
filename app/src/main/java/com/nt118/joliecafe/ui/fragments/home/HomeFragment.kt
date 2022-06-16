@@ -245,7 +245,7 @@ class HomeFragment : Fragment() {
         if (homeViewModel.isFaceOrGGLogin) {
             toolbar.tvName.text = currentUser?.displayName ?: "You"
             toolbar.imgAvatar.load(
-                uri = currentUser?.photoUrl
+                data = currentUser?.photoUrl
             ) {
                 placeholder(R.drawable.placeholder_image)
                 crossfade(600)
@@ -254,7 +254,7 @@ class HomeFragment : Fragment() {
         } else {
             toolbar.tvName.text = user.fullName
             toolbar.imgAvatar.load(
-                uri = user.thumbnail
+                data = user.thumbnail
             ) {
                 placeholder(R.drawable.placeholder_image)
                 crossfade(600)
