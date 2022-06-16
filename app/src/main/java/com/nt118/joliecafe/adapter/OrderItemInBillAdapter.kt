@@ -39,7 +39,7 @@ class OrderItemInBillAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val product = products[position]
         holder.binding.itemImg.load(
-            uri = product.product.thumbnail
+             data = product.product.thumbnail
         ) {
             crossfade(600)
             error(R.drawable.placeholder_image)
