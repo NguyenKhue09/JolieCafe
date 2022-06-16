@@ -20,7 +20,7 @@ class Constants {
         const val PREFERENCES_USER_NOTICE_TOKEN = "userNoticeToken"
         const val PREFERENCES_COIN = "coin"
         const val API_GATEWAY = "/api/v1/jolie-cafe"
-        const val PAGE_SIZE = 10
+        const val PAGE_SIZE = 30
 
         const val SNACK_BAR_STATUS_SUCCESS = 1
         const val SNACK_BAR_STATUS_DISABLE = 0

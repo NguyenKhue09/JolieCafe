@@ -808,4 +808,11 @@ class FakeJolieApi : JolieCafeApi {
     override suspend fun getVouchers(token: String): Response<ApiResponseMultiData<Voucher>> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun reviewBill(
+        token: String,
+        body: BillReviewBody
+    ): Response<ApiResponseSingleData<Unit>> {
+        TODO("Not yet implemented")
+    }
 }

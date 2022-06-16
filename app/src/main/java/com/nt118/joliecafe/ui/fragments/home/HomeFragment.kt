@@ -93,6 +93,7 @@ class HomeFragment : Fragment() {
         binding.toolbarHome.searchView.setOnClickListener {
             val intent = Intent(context, ProductsActivity::class.java)
             intent.putExtra("position", 0)
+            intent.putExtra("search", binding.toolbarHome.searchView.query.toString())
             startActivity(intent)
         }
 
