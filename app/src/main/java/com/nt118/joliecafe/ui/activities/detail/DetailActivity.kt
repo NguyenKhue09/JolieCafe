@@ -186,7 +186,7 @@ class DetailActivity : AppCompatActivity() {
                     data.let {
                         binding.tvNumberReview.text = data.size.toString()
                         val rvReview = binding.rvReview
-                        reviewProductAdapter = ReviewProductAdapter(data)
+                        reviewProductAdapter = ReviewProductAdapter(data.sortedByDescending { it.rating })
                         rvReview.layoutManager = LinearLayoutManager(this@DetailActivity,
                             LinearLayoutManager.VERTICAL, false)
                         rvReview.adapter = reviewProductAdapter
