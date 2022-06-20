@@ -385,17 +385,6 @@ class FavoriteViewModelTest() {
         }
     }
 
-    @Test
-    fun checkErrorGetUserFavProduct()  = runBlocking {
-        fakeFavoriteViewModel.getUserFavoriteProducts(
-            token = "not empty",
-            productQuery = mapOf(
-                "type" to "All"
-            )
-        ).collectLatest {
-            assertEquals(it, PagingData.empty<FavoriteProduct>())
-        }
-    }
 
     @Test
     fun checkGetUserFavProductReturnList(): Unit = runBlocking {

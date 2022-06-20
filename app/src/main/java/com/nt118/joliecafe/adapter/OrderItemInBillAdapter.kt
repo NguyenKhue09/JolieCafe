@@ -39,7 +39,7 @@ class OrderItemInBillAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val product = products[position]
         holder.binding.itemImg.load(
-            uri = product.product.thumbnail
+             data = product.product.thumbnail
         ) {
             crossfade(600)
             error(R.drawable.placeholder_image)
@@ -51,6 +51,7 @@ class OrderItemInBillAdapter(
         )
         holder.binding.oderItemQuantityNumber.text = product.quantity.toString()
         holder.binding.tvOrderItemName.text = product.product.name
+        holder.binding.oderItemSizeText.text = product.size
     }
 
     override fun getItemCount(): Int {

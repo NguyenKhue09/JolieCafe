@@ -49,7 +49,7 @@
 
             <TextView
                 android:id="@+id/tv_name_product"
-                android:layout_width="0dp"
+                android:layout_width="95dp"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -60,7 +60,6 @@
                 android:text="Sweet Cappuccino Sweet Cappuccino Sweet Cappuccino"
                 android:textColor="@color/text_color"
                 android:textSize="14sp"
-                app:layout_constraintEnd_toStartOf="@id/img_favorite"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_card" />
 

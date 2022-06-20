@@ -3,6 +3,7 @@ package com.nt118.joliecafe.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -23,6 +24,7 @@ import java.util.*
 
 class OrderHistoryAdapter(
     val orderHistoryActivity: OrderHistoryActivity,
+    private val onBillReviewClicked: (String, List<String>) -> Unit,
     diffUtil: DiffUtil.ItemCallback<OrderHistory>
 ) : PagingDataAdapter<OrderHistory, OrderHistoryAdapter.MyViewHolder>(diffCallback = diffUtil) {
 
@@ -124,6 +126,10 @@ class OrderHistoryAdapter(
             holder.binding.tvOrderId.text = orderHistoryActivity.getString(R.string.order_id, bill.orderId)
 
             holder.binding.tvPaidStatus.text = if(bill.paid) "You paid this bill" else "You haven't pay yet!"
+            holder.binding.btnReview.visibility = if (bill.paid && !bill.isRated) View.VISIBLE else View.GONE
+            holder.binding.btnReview.setOnClickListener {
+                onBillReviewClicked(bill.id, bill.products.map { it.product.id })
+            }
         }
     }
 
