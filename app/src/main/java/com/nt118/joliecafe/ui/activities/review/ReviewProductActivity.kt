@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.nt118.joliecafe.R
 import com.nt118.joliecafe.adapter.AllReviewProductAdapter
 import com.nt118.joliecafe.databinding.ActivityReviewProductBinding
+import com.nt118.joliecafe.models.Comment
 import com.nt118.joliecafe.util.ApiResult
 import com.nt118.joliecafe.util.Constants
 import com.nt118.joliecafe.util.NetworkListener
@@ -28,6 +29,7 @@ class ReviewProductActivity : AppCompatActivity() {
     private var _binding: ActivityReviewProductBinding? = null
     private val binding get() = _binding!!
     private lateinit var networkListener: NetworkListener
+    private lateinit var listComtment : List<Comment>
 
     private lateinit var reviewProductAdapter: AllReviewProductAdapter
 
@@ -64,63 +66,13 @@ class ReviewProductActivity : AppCompatActivity() {
                 is ApiResult.Success -> {
                     val data = response.data!!
                     binding.categoriesCircularProgressIndicator.visibility = View.GONE
-
+                    listComtment = data
                     val rvReview = binding.rvReviewProduct
-                    if (binding.chip5Star.isChecked) {
-                        reviewProductAdapter = AllReviewProductAdapter(
-                            data.filter { it.rating == 5 }
-                        )
-                        if(data.filter { it.rating == 5 }.isEmpty()) {
-                            binding.tvReviewProductEmpty.visibility = View.VISIBLE
-                        }
-                        else {
-                            binding.tvReviewProductEmpty.visibility = View.GONE
-                        }
-                    } else if (binding.chip4Star.isChecked) {
-                        reviewProductAdapter = AllReviewProductAdapter(
-                            data.filter { it.rating == 4 }
-                        )
-                        if(data.filter { it.rating == 4 }.isEmpty()) {
-                            binding.tvReviewProductEmpty.visibility = View.VISIBLE
-                        }else {
-                            binding.tvReviewProductEmpty.visibility = View.GONE
-                        }
-                    } else if (binding.chip3Star.isChecked) {
-                        reviewProductAdapter = AllReviewProductAdapter(
-                            data.filter { it.rating == 3 }
-                        )
-                        if(data.filter { it.rating == 3 }.isEmpty()) {
-                            binding.tvReviewProductEmpty.visibility = View.VISIBLE
-                        }else {
-                            binding.tvReviewProductEmpty.visibility = View.GONE
-                        }
-                    } else if (binding.chip2Star.isChecked) {
-                        reviewProductAdapter = AllReviewProductAdapter(
-                            data.filter { it.rating == 2 }
-                        )
-                        if(data.filter { it.rating == 2 }.isEmpty()) {
-                            binding.tvReviewProductEmpty.visibility = View.VISIBLE
-                        }else {
-                            binding.tvReviewProductEmpty.visibility = View.GONE
-                        }
-                    } else if (binding.chip1Star.isChecked) {
-                        reviewProductAdapter = AllReviewProductAdapter(
-                            data.filter { it.rating == 1 }
-                        )
-                        if(data.filter { it.rating == 1 }.isEmpty()) {
-                            binding.tvReviewProductEmpty.visibility = View.VISIBLE
-                        }else {
-                            binding.tvReviewProductEmpty.visibility = View.GONE
-                        }
-                    } else {
-                        reviewProductAdapter = AllReviewProductAdapter(data)
-                        binding.tvReviewProductEmpty.visibility = View.GONE
-                    }
+                    reviewProductAdapter = AllReviewProductAdapter(data.sortedByDescending { it.rating })
+                    binding.tvReviewProductEmpty.visibility = View.GONE
                     rvReview.layoutManager = LinearLayoutManager(this@ReviewProductActivity,
                         LinearLayoutManager.VERTICAL, false)
                     rvReview.adapter = reviewProductAdapter
-
-
                 }
                 is ApiResult.Error -> {
                     binding.categoriesCircularProgressIndicator.visibility = View.GONE
@@ -131,40 +83,87 @@ class ReviewProductActivity : AppCompatActivity() {
         }
 
         binding.chip5Star.setOnClickListener {
-            reviewProductViewModel.getComment(
-                token = reviewProductViewModel.userToken,
-                productId = productId
+            val rvReview = binding.rvReviewProduct
+            reviewProductAdapter = AllReviewProductAdapter(
+                listComtment.filter { it.rating == 5 }
             )
+            if(listComtment.filter { it.rating == 5 }.isEmpty()) {
+                binding.tvReviewProductEmpty.visibility = View.VISIBLE
+            }
+            else {
+                binding.tvReviewProductEmpty.visibility = View.GONE
+            }
+            rvReview.layoutManager = LinearLayoutManager(this@ReviewProductActivity,
+                LinearLayoutManager.VERTICAL, false)
+            rvReview.adapter = reviewProductAdapter
         }
         binding.chip4Star.setOnClickListener {
-            reviewProductViewModel.getComment(
-                token = reviewProductViewModel.userToken,
-                productId = productId
+            val rvReview = binding.rvReviewProduct
+            reviewProductAdapter = AllReviewProductAdapter(
+                listComtment.filter { it.rating == 4 }
             )
+            if(listComtment.filter { it.rating == 4 }.isEmpty()) {
+                binding.tvReviewProductEmpty.visibility = View.VISIBLE
+            }
+            else {
+                binding.tvReviewProductEmpty.visibility = View.GONE
+            }
+            rvReview.layoutManager = LinearLayoutManager(this@ReviewProductActivity,
+                LinearLayoutManager.VERTICAL, false)
+            rvReview.adapter = reviewProductAdapter
         }
         binding.chip3Star.setOnClickListener {
-            reviewProductViewModel.getComment(
-                token = reviewProductViewModel.userToken,
-                productId = productId
+            val rvReview = binding.rvReviewProduct
+            reviewProductAdapter = AllReviewProductAdapter(
+                listComtment.filter { it.rating == 3 }
             )
+            if(listComtment.filter { it.rating == 3 }.isEmpty()) {
+                binding.tvReviewProductEmpty.visibility = View.VISIBLE
+            }
+            else {
+                binding.tvReviewProductEmpty.visibility = View.GONE
+            }
+            rvReview.layoutManager = LinearLayoutManager(this@ReviewProductActivity,
+                LinearLayoutManager.VERTICAL, false)
+            rvReview.adapter = reviewProductAdapter
         }
         binding.chip2Star.setOnClickListener {
-            reviewProductViewModel.getComment(
-                token = reviewProductViewModel.userToken,
-                productId = productId
+            val rvReview = binding.rvReviewProduct
+            reviewProductAdapter = AllReviewProductAdapter(
+                listComtment.filter { it.rating == 2 }
             )
+            if(listComtment.filter { it.rating == 2 }.isEmpty()) {
+                binding.tvReviewProductEmpty.visibility = View.VISIBLE
+            }
+            else {
+                binding.tvReviewProductEmpty.visibility = View.GONE
+            }
+            rvReview.layoutManager = LinearLayoutManager(this@ReviewProductActivity,
+                LinearLayoutManager.VERTICAL, false)
+            rvReview.adapter = reviewProductAdapter
         }
         binding.chip1Star.setOnClickListener {
-            reviewProductViewModel.getComment(
-                token = reviewProductViewModel.userToken,
-                productId = productId
+            val rvReview = binding.rvReviewProduct
+            reviewProductAdapter = AllReviewProductAdapter(
+                listComtment.filter { it.rating == 1 }
             )
+            if(listComtment.filter { it.rating == 1 }.isEmpty()) {
+                binding.tvReviewProductEmpty.visibility = View.VISIBLE
+            }
+            else {
+                binding.tvReviewProductEmpty.visibility = View.GONE
+            }
+            rvReview.layoutManager = LinearLayoutManager(this@ReviewProductActivity,
+                LinearLayoutManager.VERTICAL, false)
+            rvReview.adapter = reviewProductAdapter
         }
         binding.chipRankAll.setOnClickListener {
-            reviewProductViewModel.getComment(
-                token = reviewProductViewModel.userToken,
-                productId = productId
-            )
+            val rvReview = binding.rvReviewProduct
+            reviewProductAdapter = AllReviewProductAdapter(listComtment.sortedByDescending { it.rating })
+            binding.tvReviewProductEmpty.visibility = View.GONE
+            rvReview.layoutManager = LinearLayoutManager(this@ReviewProductActivity,
+                LinearLayoutManager.VERTICAL, false)
+            rvReview.adapter = reviewProductAdapter
         }
     }
 
