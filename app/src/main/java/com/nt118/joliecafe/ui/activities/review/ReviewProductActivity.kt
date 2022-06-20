@@ -114,6 +114,7 @@ class ReviewProductActivity : AppCompatActivity() {
                         }
                     } else {
                         reviewProductAdapter = AllReviewProductAdapter(data)
+                        binding.tvReviewProductEmpty.visibility = View.GONE
                     }
                     rvReview.layoutManager = LinearLayoutManager(this@ReviewProductActivity,
                         LinearLayoutManager.VERTICAL, false)
