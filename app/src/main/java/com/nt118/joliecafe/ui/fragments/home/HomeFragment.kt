@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -45,6 +46,7 @@ import com.nt118.joliecafe.util.extenstions.setIcon
 import com.nt118.joliecafe.viewmodels.home.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 
@@ -91,11 +93,38 @@ class HomeFragment : Fragment() {
         }
 
         binding.toolbarHome.searchView.setOnClickListener {
-            val intent = Intent(context, ProductsActivity::class.java)
-            intent.putExtra("position", 0)
-            intent.putExtra("search", binding.toolbarHome.searchView.query.toString())
-            startActivity(intent)
+            if (!binding.toolbarHome.searchView.query.isNullOrEmpty()) {
+                val intent = Intent(context, ProductsActivity::class.java)
+                intent.putExtra("position", 0)
+                intent.putExtra("search", binding.toolbarHome.searchView.query.toString())
+                startActivity(intent)
+            } else {
+                val intent = Intent(context, ProductsActivity::class.java)
+                intent.putExtra("position", 0)
+                startActivity(intent)
+            }
+            binding.toolbarHome.searchView.clearFocus()
         }
+
+        binding.toolbarHome.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                println("onQueryTextSubmit")
+                println(query)
+                if(!query.isNullOrEmpty()) {
+                    val intent = Intent(context, ProductsActivity::class.java)
+                    intent.putExtra("position", 0)
+                    intent.putExtra("search", query)
+                    startActivity(intent)
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                return false
+            }
+        })
+
 
 
         viewPager2 = binding.viewpagerImageSlider
