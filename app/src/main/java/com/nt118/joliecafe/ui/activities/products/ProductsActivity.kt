@@ -142,6 +142,7 @@ class ProductsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        println("onResume")
         productsViewModel.getFavorite(productsViewModel.userToken)
 
     }

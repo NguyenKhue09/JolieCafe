@@ -134,7 +134,7 @@ class OrderHistoryAdapter(
     }
 
     fun removeOrderListIdObserver() {
-        if(!::orderListIdObserver.isInitialized) orderHistoryActivity.orderHistoryClickedList.removeObserver(orderListIdObserver)
+        if(::orderListIdObserver.isInitialized) orderHistoryActivity.orderHistoryClickedList.removeObserver(orderListIdObserver)
     }
 }
 
