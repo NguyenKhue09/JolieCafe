@@ -54,9 +54,38 @@ class ProductsActivity : AppCompatActivity() {
 
         val bundle : Bundle? = intent.extras
         val position = bundle!!.getInt("position")
+        val searchContent = bundle.getString("search")
+
+        if (searchContent != null) {
+                println(searchContent)
+            } else {
+                println("null rồi chứ gì nữa mà xem")
+            }
 
         productsViewModel.setTabSelected(tab = Constants.listTabContentFavorite[position])
-        setCatagoriesAdapterProducts(position)
+        if (searchContent == null) {
+            setCatagoriesAdapterProducts(position)
+        } else {
+
+            lifecycleScope.launchWhenStarted {
+                productsViewModel.readUserToken.collectLatest { token ->
+                    productsViewModel.userToken = token
+                }
+            }
+
+            lifecycleScope.launchWhenStarted {
+                productsViewModel.getProducts(
+                    mapOf(
+                        "name" to searchContent,
+                        "type" to Constants.listTabContentFavorite[position]
+                    ),
+                    productsViewModel.userToken
+                ).collectLatest { data ->
+                    selectedTab = Constants.listTabContentFavorite[position]
+                    productAdapter.submitData(data)
+                }
+            }
+        }
 
         // back home
         binding.iconBackHome.setOnClickListener {
