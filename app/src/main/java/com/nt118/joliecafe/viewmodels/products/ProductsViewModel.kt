@@ -45,6 +45,7 @@ class ProductsViewModel @Inject constructor(
 
     fun getFavorite(token: String) =
         viewModelScope.launch {
+            println("getFavorite")
             getFavoriteProductResponse.value = ApiResult.Loading()
             try {
                 val response = repository.remote.getUserFavoriteProductsId(token)
