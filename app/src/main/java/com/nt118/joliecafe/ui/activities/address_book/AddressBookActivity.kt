@@ -271,9 +271,10 @@ class AddressBookActivity : AppCompatActivity() {
                         status = SNACK_BAR_STATUS_SUCCESS,
                         icon = R.drawable.ic_success
                     )
-                    addressViewModel.saveDefaultAddressId(
-                        defaultAddressId = response.data?.defaultAddress ?: ""
-                    )
+                    response.data?.defaultAddress?.let {
+                        saveDefaultAddressId(it)
+                    }
+
                     addressBookAdapter.refresh()
                 }
                 is ApiResult.Error -> {
@@ -350,7 +351,9 @@ class AddressBookActivity : AppCompatActivity() {
                         status = SNACK_BAR_STATUS_SUCCESS,
                         icon = R.drawable.ic_success
                     )
-                    saveDefaultAddressId(addressId = response.data?.defaultAddress ?: "")
+                    response.data?.defaultAddress?.let {
+                        saveDefaultAddressId(it)
+                    }
                     addressViewModel.setUpdateAddressStatus(status = true)
                 }
                 is ApiResult.Error -> {

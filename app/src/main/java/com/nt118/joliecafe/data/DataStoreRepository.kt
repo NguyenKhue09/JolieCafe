@@ -75,6 +75,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
     }
 
     suspend fun saveUserDefaultAddressId(addressId: String) {
+        println("Save default address id: $addressId")
         dataStore.edit { preferences ->
             preferences[PreferenceKeys.defaultAddressId] = addressId
         }
@@ -163,6 +164,7 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         }
         .map { preferences ->
             val defaultAddressId = preferences[PreferenceKeys.defaultAddressId] ?: ""
+            println("read default address id: $defaultAddressId")
             defaultAddressId
         }.distinctUntilChanged()
 
