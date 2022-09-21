@@ -89,6 +89,7 @@ class AddressBookViewModel@Inject constructor(
 
     fun deleteAddress(addressId: String, token: String)  =
         viewModelScope.launch {
+            println("deleteAddress: $addressId")
             deleteAddressResponse.value = ApiResult.Loading()
             try {
                 if (token.isEmpty()) Throwable("Unauthorized")
@@ -171,6 +172,7 @@ class AddressBookViewModel@Inject constructor(
 
     fun saveDefaultAddressId(defaultAddressId: String) =
         viewModelScope.launch(Dispatchers.IO) {
+            println("saveDefaultAddressId: $defaultAddressId")
             dataStoreRepository.saveUserDefaultAddressId(addressId = defaultAddressId)
         }
 

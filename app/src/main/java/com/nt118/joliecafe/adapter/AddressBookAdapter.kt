@@ -36,11 +36,11 @@ class AddressBookAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val address = getItem(position)
         address?.let { addressItem ->
-
+            println("address item id: ${addressItem.id}")
             defaultAddressIdObserver = Observer<String> { id ->
-                holder.binding.isDefaultAddress.isChecked = (id == address.id)
-                holder.binding.isDefaultAddress.isClickable = id != address.id
-                if(id == address.id) {
+                holder.binding.isDefaultAddress.isChecked = (id == addressItem.id)
+                holder.binding.isDefaultAddress.isClickable = id != addressItem.id
+                if(id == addressItem.id) {
                     holder.binding.cardAddAddress.strokeWidth = 4
                 } else {
                     holder.binding.cardAddAddress.strokeWidth = 0
@@ -49,13 +49,13 @@ class AddressBookAdapter(
 
             addressBookActivity.readDefaultAddressId.observeForever(defaultAddressIdObserver)
 
-
             holder.binding.isDefaultAddress.setOnCheckedChangeListener { _, isChecked ->
                 //addressBookActivity.updateAddressStatus.observeForever(updateStatusObserver)
                 if (isChecked) {
                     createObserverEdit(holder = holder)
+                    println("address item id default: ${addressItem.id}")
                     addressBookActivity.updateUserInfos(newData = mapOf(
-                        "defaultAddress" to address.id
+                        "defaultAddress" to addressItem.id
                     ))
                 }
             }
@@ -80,6 +80,10 @@ class AddressBookAdapter(
             holder.binding.btnSave.setOnClickListener {
                 createObserverEdit(holder = holder)
                 validateAddressNewData(holder = holder, addressId = address.id)
+            }
+
+            holder.binding.btnDelete.setOnClickListener {
+                addressBookActivity.deleteAddress(addressItem.id)
             }
         }
     }
@@ -112,9 +116,6 @@ class AddressBookAdapter(
         holder.binding.etName.setText(addressItem.userName)
         holder.binding.etPhone.setText(addressItem.phone)
         holder.binding.etAddress.setText(addressItem.address)
-        holder.binding.btnDelete.setOnClickListener {
-            addressBookActivity.deleteAddress(addressItem.id)
-        }
     }
 
     private fun validateAddressNewData(holder: ViewHolder, addressId: String) {
